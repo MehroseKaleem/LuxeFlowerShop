@@ -95,6 +95,19 @@ Handing this API to a frontend developer? Send them [`docs/API_INTEGRATION_GUIDE
 
 [`data-import/`](./data-import/) has the spreadsheet template and instructions guide for collecting the client's product catalog (names, prices, descriptions, categories, photos) in one structured batch instead of manual admin entry.
 
+## Contributing / Branch Workflow
+
+`main` is a protected branch: no direct pushes, and merging requires a pull request with at least one approving review (the repo owner can still push directly in an emergency, but shouldn't by default). Standard flow for any change, including frontend-driven backend changes:
+
+```bash
+git checkout main && git pull
+git checkout -b feature/short-description
+# ...make changes, commit...
+git push -u origin feature/short-description
+```
+
+Then open a pull request into `main` on GitHub and request a review. Squash-merge once approved.
+
 ## Deployment
 
 ### Option A — PM2 on a VPS
