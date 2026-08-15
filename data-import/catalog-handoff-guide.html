@@ -1,0 +1,651 @@
+<title>Catalog Data Handoff</title>
+<style>
+  :root {
+    --bg: #f6f7f1;
+    --surface: #ffffff;
+    --surface-sunk: #eef0e7;
+    --ink: #22271d;
+    --ink-soft: #5b6355;
+    --ink-faint: #8a917f;
+    --accent: #435c43;
+    --accent-ink: #ffffff;
+    --accent-berry: #8a2e3b;
+    --line: #dfe3d6;
+    --line-strong: #c7cdb9;
+    --shadow: 0 1px 2px rgba(34, 39, 29, 0.06), 0 8px 24px -12px rgba(34, 39, 29, 0.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171a14;
+      --surface: #1f2419;
+      --surface-sunk: #191d14;
+      --ink: #edefe6;
+      --ink-soft: #a8af9c;
+      --ink-faint: #798070;
+      --accent: #8fb388;
+      --accent-ink: #12180f;
+      --accent-berry: #d9808c;
+      --line: #2c3324;
+      --line-strong: #3a4330;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #171a14;
+    --surface: #1f2419;
+    --surface-sunk: #191d14;
+    --ink: #edefe6;
+    --ink-soft: #a8af9c;
+    --ink-faint: #798070;
+    --accent: #8fb388;
+    --accent-ink: #12180f;
+    --accent-berry: #d9808c;
+    --line: #2c3324;
+    --line-strong: #3a4330;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 6rem;
+  }
+
+  h1, h2, h3 {
+    font-family: Iowan Old Style, Palatino Linotype, Palatino, Georgia, ui-serif, serif;
+    font-weight: 600;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.9rem;
+  }
+
+  header.hero {
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 3rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    line-height: 1.15;
+  }
+
+  .hero p.lede {
+    max-width: 56ch;
+    margin: 1.1rem 0 0;
+    font-size: 1.125rem;
+    color: var(--ink-soft);
+  }
+
+  section.step {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: 0 1.5rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .step-index {
+    font-family: Iowan Old Style, Palatino Linotype, Georgia, ui-serif, serif;
+    font-size: 1.75rem;
+    color: var(--accent);
+    font-weight: 600;
+    line-height: 1;
+    padding-top: 0.15rem;
+  }
+
+  .step-body { min-width: 0; }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-body > p.desc {
+    color: var(--ink-soft);
+    margin: 0 0 1.5rem;
+    max-width: 60ch;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+
+  /* --- Step 1: download + column reference --- */
+
+  .download-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .download-row .file-meta {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .file-meta .name {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .file-meta .sub {
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  .dl {
+    appearance: none;
+    border: none;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.7rem 1.15rem;
+    border-radius: 7px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .dl:hover { opacity: 0.88; }
+  .dl:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  details.fallback {
+    margin-bottom: 1.5rem;
+  }
+
+  details.fallback summary {
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    padding: 0.2rem 0;
+  }
+
+  details.fallback summary:hover { color: var(--ink); }
+
+  .copy-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+  }
+
+  button.copy {
+    appearance: none;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  button.copy:hover { border-color: var(--accent); color: var(--accent); }
+  button.copy.done { border-color: var(--accent); color: var(--accent); }
+
+  pre.csv-preview {
+    background: var(--surface-sunk);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    overflow-x: auto;
+    white-space: pre;
+    margin: 0;
+    user-select: all;
+  }
+
+  table.cols {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  table.cols th, table.cols td {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  table.cols thead th {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--surface-sunk);
+    font-weight: 600;
+  }
+
+  table.cols tbody tr:last-child td { border-bottom: none; }
+
+  table.cols td.col-name {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  table.cols td.example {
+    color: var(--ink-faint);
+    font-size: 0.9rem;
+  }
+
+  .required {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--accent-berry);
+    margin-left: 0.4rem;
+  }
+
+  /* --- Step 2: image naming --- */
+
+  .example-mapping {
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .map-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .map-row .cell {
+    background: var(--surface-sunk);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 0.6rem 0.8rem;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    overflow-wrap: anywhere;
+  }
+
+  .map-row .cell.sku { color: var(--accent); font-weight: 600; }
+
+  .map-row .arrow-sep {
+    color: var(--ink-faint);
+    font-size: 1.1rem;
+  }
+
+  ul.rules {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  ul.rules li {
+    display: flex;
+    gap: 0.65rem;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  ul.rules li::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: 0.55rem;
+    flex-shrink: 0;
+  }
+
+  ul.rules li strong { color: var(--ink); font-weight: 600; }
+
+  /* --- Step 3: categories --- */
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    padding: 1.4rem 1.5rem;
+  }
+
+  .chip {
+    background: var(--surface-sunk);
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+  }
+
+  .note {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface-sunk);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-top: 1.25rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  .note .mark {
+    color: var(--accent-berry);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* --- Step 4: handoff --- */
+
+  .handoff {
+    padding: 1.75rem;
+    text-align: left;
+    background: linear-gradient(165deg, var(--surface) 0%, var(--surface-sunk) 100%);
+  }
+
+  .handoff h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .handoff p {
+    color: var(--ink-soft);
+    margin: 0 0 1rem;
+    max-width: 56ch;
+  }
+
+  .send-to {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.95rem;
+    background: var(--surface);
+    border: 1px dashed var(--line-strong);
+    border-radius: 7px;
+    padding: 0.55rem 0.9rem;
+    color: var(--ink-faint);
+  }
+
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 520px) {
+    section.step {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+    .step-index { display: none; }
+    .map-row { grid-template-columns: 1fr; }
+    .arrow-sep { transform: rotate(90deg); justify-self: start; }
+    table.cols { display: block; overflow-x: auto; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <p class="eyebrow">For Karaz Flowers &middot; Catalog setup</p>
+    <h1>Let's get your products loaded</h1>
+    <p class="lede">
+      Three things, and your full catalog goes live: one spreadsheet, one folder of photos,
+      and a link back to us. No admin panel to learn — we load everything on our end.
+    </p>
+  </header>
+
+  <section class="step">
+    <div class="step-index">01</div>
+    <div class="step-body">
+      <h2>Fill in the spreadsheet</h2>
+      <p class="desc">One row per product. Download the template below — it already has one
+        example row filled in (a red rose bouquet) so you can see the pattern.</p>
+
+      <div class="card download-row">
+        <div class="file-meta">
+          <div class="name">product_import_template.csv</div>
+          <div class="sub">Opens in Excel, Numbers, or Google Sheets</div>
+        </div>
+        <a class="dl" id="dlLink" download="product_import_template.csv"
+           href="data:text/csv;charset=utf-8;base64,bmFtZSxjYXRlZ29yaWVzLGJhc2VQcmljZSxkaXNjb3VudFByaWNlLHN0b2NrLHNob3J0RGVzY3JpcHRpb24sZGVzY3JpcHRpb24sdGFncyxpbWFnZXMsaXNGZWF0dXJlZApSZWQgUm9zZSBCb3VxdWV0LE91ciBDb2xsZWN0aW9uOyBGbG93ZXJzOyBSb3NlIEJvdXF1ZXRzOyBWYWxlbnRpbmUncyBEYXkgQ29sbGVjdGlvbiwxNDksLDUwLEEgY2xhc3NpYyBib3VxdWV0IG9mIGZyZXNoIHJlZCByb3Nlcy4sQSBoYW5kLXRpZWQgYm91cXVldCBvZiBwcmVtaXVtIHJlZCByb3NlcyB3cmFwcGVkIGluIHNpZ25hdHVyZSBwYWNrYWdpbmcuIFBlcmZlY3QgZm9yIFZhbGVudGluZSdzIERheSBvciBhbnkgcm9tYW50aWMgb2NjYXNpb24uLFJvbWFudGljOyBCZXN0IFNlbGxlcixyZWQtcm9zZS1ib3VxdWV0LTEuanBnOyByZWQtcm9zZS1ib3VxdWV0LTIuanBnLHllcwo=">
+          <span aria-hidden="true">&#8595;</span>
+          <span>Download template</span>
+        </a>
+      </div>
+
+      <details class="fallback">
+        <summary>Download not working? Copy the template instead</summary>
+        <p class="desc" style="margin-top: 0.9rem;">Select the text below (or use the Copy
+          button), paste it into a blank spreadsheet, then save/export it as a
+          <strong>.csv</strong> file.</p>
+        <div class="copy-row">
+          <button class="copy" id="copyBtn" type="button">Copy text</button>
+        </div>
+        <pre id="csvText" class="csv-preview">name,categories,basePrice,discountPrice,stock,shortDescription,description,tags,images,isFeatured
+Red Rose Bouquet,Our Collection; Flowers; Rose Bouquets; Valentine's Day Collection,149,,50,A classic bouquet of fresh red roses.,A hand-tied bouquet of premium red roses wrapped in signature packaging. Perfect for Valentine's Day or any romantic occasion.,Romantic; Best Seller,red-rose-bouquet-1.jpg; red-rose-bouquet-2.jpg,yes</pre>
+      </details>
+
+      <table class="cols card">
+        <thead>
+          <tr><th>Column</th><th>What to write</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-name">name<span class="required">required</span></td>
+            <td>The product's name, as customers should see it.</td>
+            <td class="example">Red Rose Bouquet</td>
+          </tr>
+          <tr>
+            <td class="col-name">categories<span class="required">required</span></td>
+            <td>One or more categories from the list in Step 3, separated by a semicolon.</td>
+            <td class="example">Flowers; Rose Bouquets</td>
+          </tr>
+          <tr>
+            <td class="col-name">basePrice<span class="required">required</span></td>
+            <td>Price in AED, numbers only (no "AED" or commas).</td>
+            <td class="example">149</td>
+          </tr>
+          <tr>
+            <td class="col-name">discountPrice</td>
+            <td>Sale price, if any. Leave blank otherwise.</td>
+            <td class="example">129</td>
+          </tr>
+          <tr>
+            <td class="col-name">stock</td>
+            <td>How many you currently have ready to sell.</td>
+            <td class="example">50</td>
+          </tr>
+          <tr>
+            <td class="col-name">shortDescription</td>
+            <td>One sentence, shown on the product grid.</td>
+            <td class="example">A classic bouquet of fresh red roses.</td>
+          </tr>
+          <tr>
+            <td class="col-name">description</td>
+            <td>The full details, shown on the product page.</td>
+            <td class="example">A hand-tied bouquet of premium&hellip;</td>
+          </tr>
+          <tr>
+            <td class="col-name">tags</td>
+            <td>Optional occasion words, semicolon-separated.</td>
+            <td class="example">Romantic; Best Seller</td>
+          </tr>
+          <tr>
+            <td class="col-name">images<span class="required">required</span></td>
+            <td>Photo filenames for this product — see Step 2.</td>
+            <td class="example">red-rose-bouquet-1.jpg</td>
+          </tr>
+          <tr>
+            <td class="col-name">isFeatured</td>
+            <td>Write "yes" to feature it on the homepage.</td>
+            <td class="example">yes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="step-index">02</div>
+    <div class="step-body">
+      <h2>Name your photos to match</h2>
+      <p class="desc">Put all product photos in one folder. Name each file so it matches
+        what you wrote in the <em>images</em> column — that's the only link between the
+        spreadsheet and the photos.</p>
+
+      <div class="card example-mapping">
+        <div class="map-row">
+          <div class="cell sku">images column says:</div>
+          <div class="arrow-sep">&#8594;</div>
+          <div class="cell">red-rose-bouquet-1.jpg; red-rose-bouquet-2.jpg</div>
+        </div>
+        <div class="map-row">
+          <div class="cell sku">folder should contain:</div>
+          <div class="arrow-sep">&#8594;</div>
+          <div class="cell">red-rose-bouquet-1.jpg<br />red-rose-bouquet-2.jpg</div>
+        </div>
+      </div>
+
+      <ul class="rules">
+        <li><strong>At least 1 photo per product</strong>, ideally 2&ndash;3 from different angles.</li>
+        <li><strong>The first filename listed is the main photo</strong> shown in search results and listings.</li>
+        <li><strong>JPG or PNG</strong>, and the biggest, clearest version you have — we'll optimize the size on our end.</li>
+        <li><strong>No two products should reuse the same filename</strong>, even across different rows.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="step-index">03</div>
+    <div class="step-body">
+      <h2>Categories to choose from</h2>
+      <p class="desc">Use these exact names in the <em>categories</em> column. A product can
+        belong to more than one &mdash; just separate them with a semicolon, like in the example row.</p>
+
+      <div class="card chips">
+        <span class="chip">Our Collection</span>
+        <span class="chip">Flowers</span>
+        <span class="chip">Rose Bouquets</span>
+        <span class="chip">Roses In A Box</span>
+        <span class="chip">Julieta Mix</span>
+        <span class="chip">Mixed Flowers</span>
+        <span class="chip">Valentine's Day Collection</span>
+        <span class="chip">Anniversary Special</span>
+        <span class="chip">Birthday Special</span>
+      </div>
+
+      <div class="note">
+        <span class="mark">&#9679;</span>
+        <span>Most products should include <strong>Our Collection</strong> and <strong>Flowers</strong>
+          alongside their specific category — that's what puts them on the general shop pages as
+          well as the themed one.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="step-index">04</div>
+    <div class="step-body">
+      <h2>Send it back</h2>
+      <p class="desc">Upload the completed spreadsheet and the photo folder to Google Drive,
+        Dropbox, or WeTransfer, then share the link with us.</p>
+
+      <div class="card handoff">
+        <h3>Where to send it</h3>
+        <p>Share the folder link by email or WhatsApp to:</p>
+        <span class="send-to">your-email@karazflowers.ae</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Once we have the spreadsheet and photos, we load the full catalog in one pass —
+    no manual entry needed on your side.
+  </footer>
+
+</div>
+
+<script>
+  var copyBtn = document.getElementById('copyBtn');
+  var csvPre = document.getElementById('csvText');
+
+  copyBtn.addEventListener('click', function () {
+    var text = csvPre.textContent;
+
+    function markCopied() {
+      copyBtn.classList.add('done');
+      copyBtn.textContent = 'Copied';
+      setTimeout(function () {
+        copyBtn.classList.remove('done');
+        copyBtn.textContent = 'Copy text';
+      }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(markCopied, selectFallback);
+    } else {
+      selectFallback();
+    }
+
+    function selectFallback() {
+      var range = document.createRange();
+      range.selectNodeContents(csvPre);
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      copyBtn.textContent = 'Selected — press Ctrl/Cmd+C';
+      setTimeout(function () { copyBtn.textContent = 'Copy text'; }, 2500);
+    }
+  });
+</script>

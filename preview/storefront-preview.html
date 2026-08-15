@@ -1,0 +1,726 @@
+<title>Karaz Storefront Preview</title>
+<style>
+  :root {
+    --paper: #fbf3f0;
+    --surface: #ffffff;
+    --surface-sunk: #f5e9e4;
+    --ink: #2b1e1d;
+    --ink-soft: #7a6660;
+    --ink-faint: #a3908a;
+    --rose: #9c3448;
+    --rose-deep: #6e1f30;
+    --rose-tint: #f3dde1;
+    --leaf: #4b6b4f;
+    --leaf-tint: #e1ead9;
+    --gold: #a67a3d;
+    --gold-tint: #f1e4cd;
+    --line: #e8d9d3;
+    --shadow: 0 1px 2px rgba(43, 30, 29, 0.05), 0 16px 40px -20px rgba(43, 30, 29, 0.35);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1b1412;
+      --surface: #241a18;
+      --surface-sunk: #2c201d;
+      --ink: #f3e9e5;
+      --ink-soft: #b8a29a;
+      --ink-faint: #85716b;
+      --rose: #e08599;
+      --rose-deep: #f2a8b8;
+      --rose-tint: #3a2429;
+      --leaf: #8fb08f;
+      --leaf-tint: #223224;
+      --gold: #d4b483;
+      --gold-tint: #3a301f;
+      --line: #3a2a26;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 20px 44px -20px rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #1b1412;
+    --surface: #241a18;
+    --surface-sunk: #2c201d;
+    --ink: #f3e9e5;
+    --ink-soft: #b8a29a;
+    --ink-faint: #85716b;
+    --rose: #e08599;
+    --rose-deep: #f2a8b8;
+    --rose-tint: #3a2429;
+    --leaf: #8fb08f;
+    --leaf-tint: #223224;
+    --gold: #d4b483;
+    --gold-tint: #3a301f;
+    --line: #3a2a26;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 20px 44px -20px rgba(0, 0, 0, 0.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .serif {
+    font-family: Iowan Old Style, "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- announcement bar ---------- */
+  .announce {
+    background: var(--rose-deep);
+    color: #fbeef1;
+    text-align: center;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    padding: 0.5rem 1rem;
+  }
+
+  /* ---------- header ---------- */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .header-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .wordmark {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .wordmark em { color: var(--rose); font-style: italic; }
+
+  nav.pills {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    flex: 1;
+    scrollbar-width: none;
+  }
+  nav.pills::-webkit-scrollbar { display: none; }
+
+  .pill {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  .pill:hover { border-color: var(--rose); color: var(--rose); }
+  .pill.active { background: var(--rose); border-color: var(--rose); color: #fff; }
+
+  button.cart-btn {
+    position: relative;
+    appearance: none;
+    border: none;
+    background: var(--ink);
+    color: var(--paper);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .cart-count {
+    background: var(--rose);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.3rem;
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 4.5rem 1.5rem 3.5rem;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .hero .eyebrow {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--leaf);
+    margin: 0 0 1rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.3rem, 4.6vw, 3.6rem);
+    line-height: 1.08;
+    margin: 0 0 1.2rem;
+    text-wrap: balance;
+    font-weight: 600;
+  }
+
+  .hero p.lede {
+    max-width: 46ch;
+    color: var(--ink-soft);
+    font-size: 1.08rem;
+    margin: 0 0 2rem;
+  }
+
+  .hero-ctas { display: flex; gap: 0.85rem; flex-wrap: wrap; }
+
+  .btn-primary, .btn-ghost {
+    appearance: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.92rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary { background: var(--rose); color: #fff; border: 1px solid var(--rose); }
+  .btn-primary:hover { background: var(--rose-deep); border-color: var(--rose-deep); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn-ghost:hover { border-color: var(--ink); }
+
+  .hero-art {
+    aspect-ratio: 1 / 1;
+    border-radius: 18px;
+    background: linear-gradient(155deg, var(--rose-tint), var(--gold-tint) 60%, var(--leaf-tint));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  /* ---------- section headings ---------- */
+  .section-head {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-head h2 { font-size: 1.6rem; margin: 0; font-weight: 600; }
+  .section-head .count { color: var(--ink-faint); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+
+  /* ---------- product grid ---------- */
+  .grid-wrap { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.5rem 1.25rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(10px);
+    animation: riseIn 0.5s ease forwards;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card { opacity: 1; transform: none; animation: none; }
+  }
+  @keyframes riseIn { to { opacity: 1; transform: translateY(0); } }
+
+  .card.out-of-stock { opacity: 0.72; }
+
+  .art-frame {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    background: var(--surface-sunk);
+  }
+  .art-frame svg { width: 100%; height: 100%; display: block; }
+
+  .badges {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: flex-start;
+  }
+  .badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    color: #fff;
+  }
+  .badge.sale { background: var(--rose); }
+  .badge.featured { background: var(--gold); color: #2b1e1d; }
+  .badge.low { background: var(--ink); }
+  .badge.oos {
+    position: absolute; top: 0.6rem; right: 0.6rem; left: auto;
+    background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line);
+  }
+
+  .card-body { padding: 1rem 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+
+  .card-cat {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--leaf);
+  }
+
+  .card-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .card-rating {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .card-rating .stars { color: var(--gold); letter-spacing: 1px; }
+
+  .card-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.4rem;
+  }
+
+  .price-row { display: flex; align-items: baseline; gap: 0.45rem; font-variant-numeric: tabular-nums; }
+  .price-now { font-weight: 700; font-size: 1.02rem; }
+  .price-was { font-size: 0.82rem; color: var(--ink-faint); text-decoration: line-through; }
+
+  button.add-btn {
+    appearance: none;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+  }
+  button.add-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+  button.add-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  button.add-btn.bump { animation: bump 0.3s ease; }
+  @keyframes bump { 50% { transform: scale(1.15); } }
+
+  /* ---------- cart drawer ---------- */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(20, 12, 11, 0.45);
+    opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 40;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100%; width: min(400px, 92vw);
+    background: var(--surface); box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+    transform: translateX(100%); transition: transform 0.3s ease; z-index: 41;
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+
+  .drawer-head {
+    padding: 1.25rem 1.4rem; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .drawer-head h3 { margin: 0; font-size: 1.15rem; }
+  .drawer-close {
+    appearance: none; border: none; background: none; font-size: 1.3rem; cursor: pointer; color: var(--ink-soft); line-height: 1;
+  }
+
+  .drawer-items { flex: 1; overflow-y: auto; padding: 0.5rem 1.4rem; }
+  .drawer-empty { color: var(--ink-faint); text-align: center; padding: 3rem 1rem; font-size: 0.9rem; }
+
+  .drawer-item {
+    display: flex; gap: 0.75rem; padding: 0.9rem 0; border-bottom: 1px solid var(--line);
+  }
+  .drawer-item .thumb {
+    width: 3.2rem; height: 3.2rem; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: var(--surface-sunk);
+  }
+  .drawer-item .thumb svg { width: 100%; height: 100%; }
+  .drawer-item .meta { flex: 1; min-width: 0; }
+  .drawer-item .meta .name { font-size: 0.88rem; font-weight: 600; margin: 0 0 0.2rem; }
+  .drawer-item .meta .qty-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--ink-soft); }
+  .qty-btn {
+    appearance: none; border: 1px solid var(--line); background: var(--surface); width: 1.5rem; height: 1.5rem;
+    border-radius: 5px; cursor: pointer; font-size: 0.85rem; line-height: 1;
+  }
+  .drawer-item .line-total { font-size: 0.88rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .drawer-foot { padding: 1.1rem 1.4rem 1.4rem; border-top: 1px solid var(--line); }
+  .drawer-total { display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 0.9rem; font-variant-numeric: tabular-nums; }
+  .drawer-total strong { font-size: 1.1rem; }
+
+  .toast {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(10px);
+    background: var(--ink); color: var(--paper); font-size: 0.85rem; padding: 0.7rem 1.1rem;
+    border-radius: 8px; opacity: 0; pointer-events: none; transition: all 0.25s ease; z-index: 50;
+    max-width: 90vw; text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  footer.site {
+    border-top: 1px solid var(--line);
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+  }
+  footer.site .foot-word { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--ink); }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; padding-top: 2.5rem; }
+    .hero-art { order: -1; max-width: 320px; margin: 0 auto; }
+    .header-inner { flex-wrap: wrap; }
+    nav.pills { order: 3; width: 100%; }
+  }
+</style>
+
+<div class="announce">Free delivery on orders over AED 200 — UAE-wide, same-day in Dubai</div>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="wordmark serif">Karaz <em>Flowers</em></div>
+    <nav class="pills" id="filterPills"></nav>
+    <button class="cart-btn" id="cartBtn" type="button">
+      Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Karaz Flowers &middot; UAE</p>
+    <h1 class="serif">Flowers, arranged<br />with intention.</h1>
+    <p class="lede">Hand-tied bouquets, roses in a box, and seasonal arrangements —
+      freshly made and delivered across the UAE. This page previews the live
+      product catalog from the store's own database.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#shop">Shop the Collection</a>
+      <a class="btn-ghost" href="#shop">See What's on Sale</a>
+    </div>
+  </div>
+  <div class="hero-art" id="heroArt"></div>
+</section>
+
+<div class="section-head" id="shop">
+  <h2 class="serif">The Collection</h2>
+  <span class="count" id="resultCount"></span>
+</div>
+
+<div class="grid-wrap">
+  <div class="grid" id="productGrid"></div>
+</div>
+
+<footer class="site">
+  <div class="foot-word serif">Karaz Flowers</div>
+  <div>This is a static preview of the product catalog — built from real data seeded into the backend, with placeholder artwork standing in for photography.</div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+  <div class="drawer-head">
+    <h3 class="serif">Your Cart</h3>
+    <button class="drawer-close" id="drawerClose" type="button" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot">
+    <div class="drawer-total"><span>Subtotal</span><strong id="drawerSubtotal">AED 0.00</strong></div>
+    <button class="btn-primary" style="width:100%;" id="checkoutBtn" type="button">Checkout</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---- Real product data, pulled from the live database (see chat) ----
+  const PRODUCTS = [
+    { id: 1, name: 'Red Rose Bouquet', price: 149, was: null, cat: 'Rose Bouquets', stock: 40, featured: true, rating: 5, reviews: 1 },
+    { id: 2, name: 'Birthday Surprise Bouquet', price: 199, was: null, cat: 'Birthday Special', stock: 49, featured: true, rating: 5, reviews: 2 },
+    { id: 5, name: 'Mixed Seasonal Bouquet', price: 129, was: null, cat: 'Mixed Flowers', stock: 50, featured: true, rating: 4, reviews: 1 },
+    { id: 7, name: 'Roses In A Box - Classic Red', price: 219, was: null, cat: 'Roses In A Box', stock: 50, featured: true, rating: 0, reviews: 0 },
+    { id: 8, name: 'Julieta Mix Bouquet', price: 179, was: null, cat: 'Julieta Mix', stock: 49, featured: true, rating: 0, reviews: 0 },
+    { id: 10, name: 'Anniversary Roses In A Box', price: 249, was: null, cat: 'Roses In A Box', stock: 50, featured: true, rating: 0, reviews: 0 },
+    { id: 12, name: 'Pink Rose Bouquet', price: 139, was: null, cat: 'Rose Bouquets', stock: 45, featured: false, rating: 0, reviews: 0 },
+    { id: 13, name: 'White Rose Elegance', price: 159, was: null, cat: 'Rose Bouquets', stock: 30, featured: false, rating: 0, reviews: 0 },
+    { id: 14, name: 'Rainbow Rose Bouquet', price: 159, was: 189, cat: 'Rose Bouquets', stock: 25, featured: false, rating: 0, reviews: 0 },
+    { id: 15, name: 'Roses In A Box - Pink Elegance', price: 209, was: null, cat: 'Roses In A Box', stock: 20, featured: false, rating: 0, reviews: 0 },
+    { id: 16, name: 'Roses In A Box - White & Gold', price: 229, was: 259, cat: 'Roses In A Box', stock: 15, featured: false, rating: 0, reviews: 0 },
+    { id: 17, name: 'Julieta Mix Deluxe', price: 229, was: null, cat: 'Julieta Mix', stock: 18, featured: false, rating: 0, reviews: 0 },
+    { id: 18, name: 'Garden Fresh Mixed Bouquet', price: 119, was: null, cat: 'Mixed Flowers', stock: 40, featured: false, rating: 4, reviews: 1 },
+    { id: 19, name: 'Tropical Bloom Arrangement', price: 169, was: null, cat: 'Mixed Flowers', stock: 22, featured: false, rating: 0, reviews: 0 },
+    { id: 20, name: 'Sunshine Birthday Bouquet', price: 149, was: null, cat: 'Birthday Special', stock: 35, featured: false, rating: 0, reviews: 0 },
+    { id: 21, name: 'Balloon & Bloom Birthday Combo', price: 219, was: null, cat: 'Birthday Special', stock: 12, featured: false, rating: 0, reviews: 0 },
+    { id: 22, name: 'Golden Anniversary Arrangement', price: 249, was: 279, cat: 'Anniversary Special', stock: 10, featured: false, rating: 0, reviews: 0 },
+    { id: 23, name: 'Eternal Love Bouquet', price: 199, was: null, cat: 'Anniversary Special', stock: 28, featured: false, rating: 0, reviews: 0 },
+    { id: 24, name: "Valentine's Heart Bouquet", price: 189, was: null, cat: "Valentine's Day Collection", stock: 0, featured: false, rating: 0, reviews: 0 },
+    { id: 25, name: 'Sweetheart Rose Box', price: 199, was: 229, cat: "Valentine's Day Collection", stock: 18, featured: true, rating: 0, reviews: 0 },
+  ];
+
+  const CATEGORIES = ['All', 'Rose Bouquets', 'Roses In A Box', 'Julieta Mix', 'Mixed Flowers', "Valentine's Day Collection", 'Anniversary Special', 'Birthday Special'];
+
+  // ---- deterministic "bouquet" art per product: simple layered petals via SVG, no photos needed ----
+  const HUES = [
+    ['#9c3448', '#e3a9b4'], ['#a67a3d', '#e7c893'], ['#4b6b4f', '#a9c3ab'],
+    ['#6e1f30', '#d98da0'], ['#7d5a2e', '#d9b878'], ['#3f5b45', '#8fae90'],
+  ];
+
+  function flowerSvg(seedIndex) {
+    const [core, petal] = HUES[seedIndex % HUES.length];
+    const petals = 5 + (seedIndex % 3);
+    const cx = 150, cy = 150, r = 34;
+    let petalEls = '';
+    for (let i = 0; i < petals; i++) {
+      const angle = (i / petals) * Math.PI * 2 + seedIndex;
+      const px = cx + Math.cos(angle) * 46;
+      const py = cy + Math.sin(angle) * 46;
+      petalEls += `<ellipse cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" rx="30" ry="20" fill="${petal}" opacity="0.85" transform="rotate(${(angle * 180) / Math.PI} ${px.toFixed(1)} ${py.toFixed(1)})"/>`;
+    }
+    const stemX = cx;
+    return `<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <rect width="300" height="300" fill="none"/>
+      <line x1="${stemX}" y1="${cy + 30}" x2="${stemX - 6}" y2="270" stroke="#4b6b4f" stroke-width="4" stroke-linecap="round"/>
+      <line x1="${stemX}" y1="${cy + 60}" x2="${stemX + 22}" y2="230" stroke="#4b6b4f" stroke-width="3" stroke-linecap="round"/>
+      ${petalEls}
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="${core}"/>
+    </svg>`;
+  }
+
+  function heroArt() {
+    let out = '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">';
+    const positions = [[130, 210, 0], [230, 190, 2], [180, 140, 4], [270, 250, 1], [100, 270, 3]];
+    positions.forEach(([x, y, seed], i) => {
+      const [core, petal] = HUES[seed % HUES.length];
+      const petals = 6;
+      let petalEls = '';
+      for (let p = 0; p < petals; p++) {
+        const angle = (p / petals) * Math.PI * 2 + seed;
+        const px = x + Math.cos(angle) * 30;
+        const py = y + Math.sin(angle) * 30;
+        petalEls += `<ellipse cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" rx="20" ry="13" fill="${petal}" opacity="0.9" transform="rotate(${(angle * 180) / Math.PI} ${px.toFixed(1)} ${py.toFixed(1)})"/>`;
+      }
+      out += `<g>${petalEls}<circle cx="${x}" cy="${y}" r="16" fill="${core}"/></g>`;
+    });
+    out += '</svg>';
+    return out;
+  }
+  document.getElementById('heroArt').innerHTML = heroArt();
+
+  // ---- render filter pills ----
+  const pillsEl = document.getElementById('filterPills');
+  let activeCat = 'All';
+  CATEGORIES.forEach((cat) => {
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (cat === activeCat ? ' active' : '');
+    btn.textContent = cat;
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      activeCat = cat;
+      document.querySelectorAll('.pill').forEach((p) => p.classList.toggle('active', p.textContent === cat));
+      renderGrid();
+    });
+    pillsEl.appendChild(btn);
+  });
+
+  // ---- cart state ----
+  let cart = {}; // id -> qty
+
+  function money(n) { return 'AED ' + n.toFixed(2); }
+
+  function renderGrid() {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = '';
+    const items = activeCat === 'All' ? PRODUCTS : PRODUCTS.filter((p) => p.cat === activeCat);
+    document.getElementById('resultCount').textContent = items.length + (items.length === 1 ? ' arrangement' : ' arrangements');
+
+    if (!items.length) {
+      grid.innerHTML = '<div class="empty-state">No products in this category yet.</div>';
+      return;
+    }
+
+    items.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'card' + (p.stock === 0 ? ' out-of-stock' : '');
+      card.style.animationDelay = (i * 0.04) + 's';
+
+      const salePct = p.was ? Math.round(((p.was - p.price) / p.was) * 100) : 0;
+      const lowStock = p.stock > 0 && p.stock <= 5;
+
+      card.innerHTML = `
+        <div class="art-frame">
+          ${flowerSvg(p.id)}
+          <div class="badges">
+            ${p.featured ? '<span class="badge featured">Featured</span>' : ''}
+            ${p.was ? `<span class="badge sale">-${salePct}%</span>` : ''}
+            ${lowStock ? `<span class="badge low">Only ${p.stock} left</span>` : ''}
+          </div>
+          ${p.stock === 0 ? '<span class="badge oos">Out of Stock</span>' : ''}
+        </div>
+        <div class="card-body">
+          <div class="card-cat">${p.cat}</div>
+          <p class="card-name">${p.name}</p>
+          ${p.reviews > 0 ? `<div class="card-rating"><span class="stars">${'&#9733;'.repeat(Math.round(p.rating))}${'&#9734;'.repeat(5 - Math.round(p.rating))}</span> (${p.reviews})</div>` : '<div class="card-rating">&nbsp;</div>'}
+          <div class="card-footer">
+            <div class="price-row">
+              <span class="price-now">${money(p.price)}</span>
+              ${p.was ? `<span class="price-was">${money(p.was)}</span>` : ''}
+            </div>
+            <button class="add-btn" data-id="${p.id}" ${p.stock === 0 ? 'disabled' : ''} aria-label="Add ${p.name} to cart">+</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    grid.querySelectorAll('.add-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.dataset.id);
+        cart[id] = (cart[id] || 0) + 1;
+        btn.classList.remove('bump');
+        void btn.offsetWidth;
+        btn.classList.add('bump');
+        updateCartUI();
+        showToast(PRODUCTS.find((p) => p.id === id).name + ' added to cart');
+      });
+    });
+  }
+
+  function updateCartUI() {
+    const count = Object.values(cart).reduce((a, b) => a + b, 0);
+    document.getElementById('cartCount').textContent = count;
+
+    const itemsEl = document.getElementById('drawerItems');
+    const ids = Object.keys(cart).filter((id) => cart[id] > 0);
+
+    if (!ids.length) {
+      itemsEl.innerHTML = '<div class="drawer-empty">Your cart is empty. Add something beautiful.</div>';
+      document.getElementById('drawerSubtotal').textContent = money(0);
+      return;
+    }
+
+    itemsEl.innerHTML = '';
+    let subtotal = 0;
+    ids.forEach((id) => {
+      const p = PRODUCTS.find((x) => x.id === Number(id));
+      const qty = cart[id];
+      subtotal += p.price * qty;
+      const row = document.createElement('div');
+      row.className = 'drawer-item';
+      row.innerHTML = `
+        <div class="thumb">${flowerSvg(p.id)}</div>
+        <div class="meta">
+          <p class="name">${p.name}</p>
+          <div class="qty-row">
+            <button class="qty-btn" data-id="${id}" data-dir="-1">&minus;</button>
+            <span>${qty}</span>
+            <button class="qty-btn" data-id="${id}" data-dir="1">+</button>
+          </div>
+        </div>
+        <div class="line-total">${money(p.price * qty)}</div>
+      `;
+      itemsEl.appendChild(row);
+    });
+
+    itemsEl.querySelectorAll('.qty-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const dir = Number(btn.dataset.dir);
+        cart[id] = Math.max(0, (cart[id] || 0) + dir);
+        updateCartUI();
+      });
+    });
+
+    document.getElementById('drawerSubtotal').textContent = money(subtotal);
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  const scrim = document.getElementById('scrim');
+  const drawer = document.getElementById('drawer');
+  function openDrawer() { scrim.classList.add('open'); drawer.classList.add('open'); }
+  function closeDrawer() { scrim.classList.remove('open'); drawer.classList.remove('open'); }
+  document.getElementById('cartBtn').addEventListener('click', openDrawer);
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  document.getElementById('checkoutBtn').addEventListener('click', () => {
+    showToast('This is a preview — wire this button to POST /api/v1/orders in the real frontend.');
+  });
+
+  renderGrid();
+  updateCartUI();
+</script>
