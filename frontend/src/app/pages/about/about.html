@@ -7,7 +7,7 @@
   </header>
 
   <main class="container about-content">
-    <section>
+    <section appReveal="up">
       <h2>Our Story</h2>
       <p>
         Karaz Flowers was founded with a simple belief: every occasion deserves flowers that feel personal.
@@ -15,7 +15,7 @@
         each bouquet with care, using fresh blooms sourced for their quality and longevity.
       </p>
     </section>
-    <section>
+    <section appReveal="up" [revealDelay]="100">
       <h2>What We Promise</h2>
       <ul>
         <li>Fresh flowers, hand-arranged by experienced florists</li>
@@ -24,7 +24,7 @@
         <li>Dedicated support for every order, every time</li>
       </ul>
     </section>
-    <div class="cta">
+    <div class="cta" appReveal="scale">
       <a routerLink="/shop" class="cta-btn">Explore Our Collections</a>
     </div>
   </main>

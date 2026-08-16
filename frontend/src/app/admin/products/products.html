@@ -56,7 +56,7 @@
         @for (product of products(); track product.id) {
           <tr>
             <td><input type="checkbox" [checked]="selectedProducts().has(product.id)" (change)="toggleSelect(product.id)" /></td>
-            <td><img [src]="imageUrl(product)" class="product-thumb" alt="Product Image" /></td>
+            <td><img [src]="imageUrl(product)" class="product-thumb" alt="Product Image" loading="lazy" /></td>
             <td>{{ product.name }}</td>
             <td>{{ getCategoryNames(product) }}</td>
             <td>{{ (product.discountPrice || product.basePrice) | aedCurrency }}</td>

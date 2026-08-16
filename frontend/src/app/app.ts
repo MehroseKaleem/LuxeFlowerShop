@@ -3,12 +3,21 @@ import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { HeaderComponent } from './components/header/header';
 import { FooterComponent } from './components/footer/footer';
 import { ToastContainerComponent } from './core/components/toast-container/toast-container';
+import { AmbientBackgroundComponent } from './core/components/ambient-background/ambient-background';
+import { FloatingActionsComponent } from './core/components/floating-actions/floating-actions';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, ToastContainerComponent],
+  imports: [
+    RouterOutlet,
+    HeaderComponent,
+    FooterComponent,
+    ToastContainerComponent,
+    AmbientBackgroundComponent,
+    FloatingActionsComponent
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

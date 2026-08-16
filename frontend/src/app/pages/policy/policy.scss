@@ -1,6 +1,6 @@
 .policy-page {
-  padding: 60px 24px 100px;
-  background-color: #fafafa;
+  padding: 70px 24px 110px;
+  background-color: var(--lux-grey-100);
   min-height: 80vh;
   display: flex;
   justify-content: center;
@@ -10,14 +10,13 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  background: #ffffff;
-  padding: 50px 48px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  border: 1px solid #eeeeee;
+  background: var(--lux-white);
+  padding: 56px 52px;
+  border-radius: 6px;
+  box-shadow: var(--lux-shadow-md);
 
   @media (max-width: 600px) {
-    padding: 30px 20px;
+    padding: 34px 22px;
   }
 }
 
@@ -28,17 +27,27 @@
 .policy-title {
   font-size: 36px;
   font-weight: 600;
-  color: #111111;
-  margin-bottom: 24px;
-  font-family: inherit;
+  color: var(--lux-black);
+  margin-bottom: 8px;
+  font-family: var(--lux-font-display);
+}
+
+.policy-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 2px;
+  background: var(--lux-pink);
+  margin: 18px auto 0;
 }
 
 .intro-text,
 .policy-text {
   font-size: 16px;
   line-height: 1.8;
-  color: #444444;
+  color: var(--lux-grey-700);
   margin-bottom: 32px;
+  margin-top: 24px;
   text-align: center;
 }
 
@@ -47,9 +56,10 @@
   text-align: left;
 
   h2 {
+    font-family: var(--lux-font-display);
     font-size: 20px;
     font-weight: 600;
-    color: #222222;
+    color: var(--lux-black);
     margin-bottom: 12px;
     text-align: center;
   }
@@ -57,7 +67,7 @@
   p {
     font-size: 15px;
     line-height: 1.7;
-    color: #555555;
+    color: var(--lux-grey-700);
     margin-bottom: 12px;
     text-align: center;
   }
@@ -73,14 +83,14 @@
     li {
       font-size: 15px;
       line-height: 1.7;
-      color: #555555;
+      color: var(--lux-grey-700);
       margin-bottom: 10px;
       position: relative;
       padding-left: 24px;
 
       &::before {
         content: '•';
-        color: #c2185b;
+        color: var(--lux-pink);
         font-weight: bold;
         font-size: 18px;
         position: absolute;
@@ -89,7 +99,7 @@
       }
 
       strong {
-        color: #222222;
+        color: var(--lux-black);
       }
     }
   }

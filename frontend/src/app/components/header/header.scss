@@ -2,8 +2,13 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--lux-pink-blush);
+  border-bottom: 1px solid var(--lux-pink-blush-2);
+  transition: box-shadow 0.4s ease, padding 0.3s ease;
+
+  &.scrolled {
+    box-shadow: 0 10px 34px rgba(12, 12, 14, 0.14);
+  }
 }
 
 .header-container {
@@ -13,6 +18,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 24px;
+  transition: padding 0.3s ease;
+}
+
+.scrolled .header-container {
+  padding: 8px 24px;
 }
 
 /* Logo */
@@ -27,6 +37,11 @@
   height: 70px;
   width: auto;
   object-fit: contain;
+  transition: height 0.3s ease;
+}
+
+.scrolled .logo-img {
+  height: 54px;
 }
 
 /* Navigation */
@@ -54,28 +69,49 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #333;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--lux-charcoal);
   text-decoration: none;
-  letter-spacing: 0.2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   white-space: nowrap;
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
   position: relative;
 
+  span {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      right: 50%;
+      bottom: -6px;
+      height: 1.5px;
+      background: var(--lux-pink);
+      transition: left 0.3s var(--lux-ease), right 0.3s var(--lux-ease);
+    }
+  }
+
   &:hover {
-    color: #c2185b;
+    color: var(--lux-pink);
+
+    span::after {
+      left: 0;
+      right: 0;
+    }
   }
 
   &.active {
-    color: #333;
-    font-weight: 500;
-    
-    span {
-      text-decoration: underline;
-      text-underline-offset: 5px;
-      text-decoration-thickness: 1.5px;
+    color: var(--lux-black);
+    font-weight: 600;
+
+    span::after {
+      left: 0;
+      right: 0;
+      background: var(--lux-pink);
     }
   }
 }
@@ -93,21 +129,22 @@
   transform: rotate(180deg);
 }
 
-/* Dropdown Menu styling matching screenshots */
+/* Dropdown Menu — soft luxury elevation */
 .dropdown-menu {
   position: absolute;
   top: 100%;
   left: 0;
-  min-width: 220px;
-  background: #ffffff;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
-  padding: 12px 0;
+  min-width: 240px;
+  background: var(--lux-white);
+  border: 1px solid var(--lux-grey-150);
+  box-shadow: var(--lux-shadow-lg);
+  border-radius: 2px;
+  padding: 14px 0;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px);
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  transform: translateY(10px) rotateX(-6deg);
+  transform-origin: top center;
+  transition: opacity 0.3s ease, transform 0.35s var(--lux-ease), visibility 0.3s;
   z-index: 1100;
   pointer-events: none;
 }
@@ -115,7 +152,7 @@
 .nav-item:hover .dropdown-menu {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateY(0) rotateX(0);
   pointer-events: auto;
 }
 
@@ -131,17 +168,18 @@
 
 .dropdown-link {
   display: block;
-  padding: 10px 24px;
-  font-size: 13.5px;
-  color: #4a4a4a;
+  padding: 10px 26px;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  color: var(--lux-grey-700);
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.2s ease;
 
   &:hover, &.active-sub {
-    background-color: #fafafa;
-    color: #c2185b;
-    padding-left: 28px;
+    background-color: var(--lux-pink-blush);
+    color: var(--lux-pink);
+    padding-left: 32px;
   }
 }
 
@@ -149,7 +187,7 @@
 .header-icons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
@@ -164,13 +202,14 @@
   background: transparent;
   border-radius: 50%;
   cursor: pointer;
-  color: #333;
+  color: var(--lux-charcoal);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 
   &:hover {
-    background: #fce4ec;
-    color: #c2185b;
+    background: var(--lux-pink-blush);
+    color: var(--lux-pink);
+    transform: translateY(-1px);
   }
 }
 
@@ -182,12 +221,13 @@
   height: 16px;
   padding: 0 4px;
   border-radius: 999px;
-  background: #c2185b;
+  background: var(--lux-pink);
   color: #fff;
   font-size: 10px;
   font-weight: 600;
   line-height: 16px;
   text-align: center;
+  box-shadow: 0 0 0 2px var(--lux-white);
 }
 
 .search-wrap {
@@ -195,7 +235,7 @@
   align-items: center;
 
   &.open {
-    background: #fafafa;
+    background: var(--lux-grey-100);
     border-radius: 999px;
     padding-left: 12px;
   }
@@ -208,7 +248,7 @@
   font-size: 14px;
   padding: 6px 4px;
   width: 160px;
-  color: #333;
+  color: var(--lux-charcoal);
 }
 
 /* Hamburger */
@@ -226,7 +266,7 @@
   display: block;
   width: 24px;
   height: 2px;
-  background: #333;
+  background: var(--lux-charcoal);
   border-radius: 2px;
   transition: all 0.3s ease;
 
@@ -244,10 +284,10 @@
 /* Mobile Menu */
 .mobile-menu {
   display: none;
-  background: #fff;
-  border-top: 1px solid #f0f0f0;
+  background: var(--lux-white);
+  border-top: 1px solid var(--lux-grey-150);
   padding: 16px 24px;
-  animation: slideDown 0.3s ease;
+  animation: slideDown 0.35s var(--lux-ease);
 }
 
 @keyframes slideDown {
@@ -268,7 +308,7 @@
 }
 
 .mobile-nav-item {
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--lux-grey-100);
 }
 
 .mobile-nav-row {
@@ -280,14 +320,16 @@
 .mobile-nav-link {
   flex: 1;
   padding: 14px 0;
-  font-size: 15px;
-  color: #333;
+  font-size: 14px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--lux-charcoal);
   text-decoration: none;
   transition: color 0.2s ease;
 
   &:hover,
   &.active {
-    color: #c2185b;
+    color: var(--lux-pink);
   }
 }
 
@@ -296,7 +338,7 @@
   border: none;
   padding: 12px;
   cursor: pointer;
-  color: #555;
+  color: var(--lux-grey-700);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -306,18 +348,18 @@
   list-style: none;
   margin: 0 0 12px 0;
   padding: 0 0 0 16px;
-  border-left: 2px solid #fce4ec;
+  border-left: 2px solid var(--lux-pink-blush);
 }
 
 .mobile-sublink {
   display: block;
   padding: 8px 0;
   font-size: 14px;
-  color: #666;
+  color: var(--lux-grey-700);
   text-decoration: none;
 
   &:hover {
-    color: #c2185b;
+    color: var(--lux-pink);
   }
 }
 

@@ -27,9 +27,9 @@ const createRules = [
   body('basePrice').isFloat({ min: 0 }).withMessage('Base price must be a positive number'),
   body('discountPrice').optional({ nullable: true }).isFloat({ min: 0 }),
   body('costPrice').optional({ nullable: true }).isFloat({ min: 0 }),
-  body('stock').optional().isInt({ min: 0 }),
-  body('lowStockThreshold').optional().isInt({ min: 0 }),
-  body('weightGrams').optional().isInt({ min: 0 }),
+  body('stock').optional().isInt({ min: 0 }).toInt(),
+  body('lowStockThreshold').optional().isInt({ min: 0 }).toInt(),
+  body('weightGrams').optional().isInt({ min: 0 }).toInt(),
   body('isActive').optional().isBoolean().toBoolean(),
   body('isFeatured').optional().isBoolean().toBoolean(),
   body('shortDescription').optional().trim().isLength({ max: 500 }),
@@ -46,9 +46,9 @@ const updateRules = [
   body('basePrice').optional().isFloat({ min: 0 }),
   body('discountPrice').optional({ nullable: true }).isFloat({ min: 0 }),
   body('costPrice').optional({ nullable: true }).isFloat({ min: 0 }),
-  body('stock').optional().isInt({ min: 0 }),
-  body('lowStockThreshold').optional().isInt({ min: 0 }),
-  body('weightGrams').optional().isInt({ min: 0 }),
+  body('stock').optional().isInt({ min: 0 }).toInt(),
+  body('lowStockThreshold').optional().isInt({ min: 0 }).toInt(),
+  body('weightGrams').optional().isInt({ min: 0 }).toInt(),
   body('isActive').optional().isBoolean().toBoolean(),
   body('isFeatured').optional().isBoolean().toBoolean(),
   body('shortDescription').optional().trim().isLength({ max: 500 }),
@@ -59,7 +59,7 @@ const variantRules = [
   body('name').trim().notEmpty().withMessage('Variant name is required'),
   body('sku').trim().notEmpty().withMessage('Variant SKU is required'),
   body('priceAdjustment').optional().isFloat(),
-  body('stock').optional().isInt({ min: 0 }),
+  body('stock').optional().isInt({ min: 0 }).toInt(),
   body('isDefault').optional().isBoolean().toBoolean(),
 ];
 
@@ -67,14 +67,14 @@ const variantUpdateRules = [
   body('name').optional().trim().notEmpty(),
   body('sku').optional().trim().notEmpty(),
   body('priceAdjustment').optional().isFloat(),
-  body('stock').optional().isInt({ min: 0 }),
+  body('stock').optional().isInt({ min: 0 }).toInt(),
   body('isDefault').optional().isBoolean().toBoolean(),
   body('isActive').optional().isBoolean().toBoolean(),
 ];
 
 const stockAdjustRules = [
   body('mode').isIn(['SET', 'INCREMENT', 'DECREMENT']).withMessage('mode must be SET, INCREMENT or DECREMENT'),
-  body('quantity').isInt({ min: 0 }).withMessage('quantity must be a non-negative integer'),
+  body('quantity').isInt({ min: 0 }).withMessage('quantity must be a non-negative integer').toInt(),
 ];
 
 module.exports = {

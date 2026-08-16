@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CategoryService } from '../../services/category.service';
@@ -31,11 +31,20 @@ export class HeaderComponent implements OnInit {
   protected cart = inject(CartService);
   protected auth = inject(AuthService);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   protected readonly mobileMenuOpen = signal(false);
   protected readonly expandedMobileItem = signal<string | null>(null);
   protected readonly searchOpen = signal(false);
   protected readonly searchTerm = signal('');
+  protected readonly scrolled = signal(false);
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.scrolled.set(window.scrollY > 24);
+    }
+  }
 
   protected readonly navItems = signal<NavItem[]>([
     { label: 'Home', link: '/', id: 'home', hasDropdown: false },

@@ -10,7 +10,7 @@ h2 {
 .empty-state a {
   display: inline-block;
   margin-top: 10px;
-  color: #c2185b;
+  color: var(--lux-pink);
   font-weight: 600;
 }
 
@@ -47,10 +47,10 @@ h2 {
   color: #222;
   text-decoration: none;
 
-  &:hover { color: #c2185b; }
+  &:hover { color: var(--lux-pink); }
 }
 
-.card-price { font-size: 13px; color: #c2185b; font-weight: 700; }
+.card-price { font-size: 13px; color: var(--lux-pink); font-weight: 700; }
 
 .card-actions {
   display: flex;
@@ -65,8 +65,8 @@ h2 {
     cursor: pointer;
     padding: 0;
 
-    &:hover { color: #c2185b; }
+    &:hover { color: var(--lux-pink); }
   }
 
-  .remove-btn { color: #d64545; }
+  .remove-btn { color: var(--lux-pink); }
 }

@@ -7,7 +7,7 @@
   color: #666;
   text-decoration: none;
 
-  &:hover { color: #c2185b; }
+  &:hover { color: var(--lux-pink); }
 }
 
 .order-header {
@@ -28,7 +28,7 @@
   text-transform: capitalize;
 
   &.status-delivered { background: #e6f7ed; color: #1f9d55; }
-  &.status-cancelled, &.status-refunded { background: #fdecea; color: #d64545; }
+  &.status-cancelled, &.status-refunded { background: #fdecea; color: var(--lux-pink); }
   &.status-pending { background: #fff8e1; color: #b8860b; }
 }
 

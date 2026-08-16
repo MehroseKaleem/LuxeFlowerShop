@@ -17,15 +17,15 @@
 
       <div class="product-layout">
         <!-- Gallery -->
-        <div class="gallery">
-          <div class="gallery-main">
+        <div class="gallery" appReveal="left">
+          <div class="gallery-main" appTilt3d [tiltMax]="4" [tiltLift]="0">
             <img [src]="primaryImageUrl" [alt]="product()!.name" />
           </div>
           @if (product()!.images.length > 1) {
             <div class="gallery-thumbs">
               @for (image of product()!.images; track image.id; let i = $index) {
                 <button type="button" class="thumb" [class.active]="selectedImageIndex() === i" (click)="selectedImageIndex.set(i)">
-                  <img [src]="imageUrl(image.url)" [alt]="image.altText || product()!.name" />
+                  <img [src]="imageUrl(image.url)" [alt]="image.altText || product()!.name" loading="lazy" />
                 </button>
               }
             </div>
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Info -->
-        <div class="info">
+        <div class="info" appReveal="right">
           <h1 class="product-name">{{ product()!.name }}</h1>
 
           @if (+product()!.avgRating > 0) {
@@ -149,7 +149,11 @@
     </div>
 
     @if (related().length) {
-      <app-product-carousel title="You may also like" [products]="related()" />
+      <app-carousel title="You may also like" [items]="related()" ariaLabel="Related products">
+        <ng-template let-relatedProduct>
+          <app-product-card [product]="relatedProduct" />
+        </ng-template>
+      </app-carousel>
     }
   }
 </div>

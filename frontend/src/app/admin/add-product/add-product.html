@@ -90,7 +90,7 @@
           <div class="image-gallery">
             @for (image of existingImages(); track image.id) {
               <div class="gallery-thumb" [class.primary]="image.isPrimary">
-                <img [src]="imageUrl(image.url)" [alt]="image.altText || 'Product image'" />
+                <img [src]="imageUrl(image.url)" [alt]="image.altText || 'Product image'" loading="lazy" />
                 @if (image.isPrimary) { <span class="primary-badge">Primary</span> }
                 <div class="thumb-actions">
                   @if (!image.isPrimary) {

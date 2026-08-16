@@ -20,6 +20,12 @@ export class ReviewService {
       .pipe(map(res => ({ items: res.data.reviews, meta: res.meta as ApiMeta })));
   }
 
+  featured(limit = 6): Observable<Review[]> {
+    return this.http
+      .get<{ data: { reviews: Review[] } }>(`${this.baseUrl}/featured`, { params: toHttpParams({ limit }) })
+      .pipe(map(res => res.data.reviews));
+  }
+
   create(payload: CreateReviewPayload): Observable<Review> {
     return this.http.post<{ data: { review: Review } }>(this.baseUrl, payload).pipe(map(res => res.data.review));
   }

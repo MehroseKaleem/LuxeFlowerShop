@@ -6,6 +6,7 @@ const { protect } = require('../../middlewares/auth.middleware');
 
 const router = express.Router();
 
+router.get('/featured', controller.featured);
 router.get('/product/:slug', rules.slugParamRule, validate, controller.listForProduct);
 router.post('/', protect, rules.createRules, validate, controller.create);
 router.patch('/:id', protect, rules.updateRules, validate, controller.updateOwn);

@@ -7,6 +7,11 @@ const listForProduct = asyncHandler(async (req, res) => {
   new ApiResponse(200, { reviews: items }, 'Success', meta).send(res);
 });
 
+const featured = asyncHandler(async (req, res) => {
+  const reviews = await reviewsService.featured(req.query);
+  new ApiResponse(200, { reviews }, 'Success').send(res);
+});
+
 const create = asyncHandler(async (req, res) => {
   const review = await reviewsService.create(req.user.id, req.body);
   new ApiResponse(201, { review }, 'Review submitted and pending approval').send(res);
@@ -22,4 +27,4 @@ const deleteOwn = asyncHandler(async (req, res) => {
   new ApiResponse(200, null, 'Review deleted').send(res);
 });
 
-module.exports = { listForProduct, create, updateOwn, deleteOwn };
+module.exports = { listForProduct, featured, create, updateOwn, deleteOwn };

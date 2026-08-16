@@ -1,7 +1,7 @@
 .cart-page {
   min-height: 80vh;
-  padding: 40px 0 60px;
-  background: #fafafa;
+  padding: 48px 0 70px;
+  background: var(--lux-grey-100);
 }
 
 .container {
@@ -11,38 +11,45 @@
 }
 
 .page-title {
-  font-size: 30px;
-  font-family: serif, sans-serif;
-  margin: 0 0 28px 0;
-  color: #1a1a1a;
+  font-size: 32px;
+  font-family: var(--lux-font-display);
+  font-weight: 600;
+  margin: 0 0 32px 0;
+  color: var(--lux-black);
 }
 
 .state-message {
   text-align: center;
   padding: 60px 0;
-  color: #888;
+  color: var(--lux-grey-500);
 }
 
 .empty-state {
   text-align: center;
-  padding: 80px 0;
-  color: #666;
+  padding: 90px 0;
+  color: var(--lux-grey-700);
 
   .shop-link {
     display: inline-block;
-    margin-top: 16px;
-    padding: 12px 28px;
-    background: #c2185b;
+    margin-top: 18px;
+    padding: 13px 32px;
+    background: var(--lux-black);
     color: #fff;
-    border-radius: 6px;
+    border-radius: 2px;
     text-decoration: none;
     font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    font-size: 12.5px;
+    transition: background 0.3s ease;
+
+    &:hover { background: var(--lux-pink); }
   }
 }
 
 .cart-layout {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: 1fr 360px;
   gap: 32px;
   align-items: start;
 }
@@ -55,21 +62,24 @@
 
 .cart-item {
   display: grid;
-  grid-template-columns: 80px 1fr auto auto auto;
+  grid-template-columns: 84px 1fr auto auto auto;
   align-items: center;
   gap: 16px;
-  background: #fff;
-  border-radius: 8px;
-  padding: 14px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  background: var(--lux-white);
+  border-radius: 4px;
+  padding: 16px;
+  box-shadow: var(--lux-shadow-sm);
+  transition: box-shadow 0.3s ease;
+
+  &:hover { box-shadow: var(--lux-shadow-md); }
 }
 
 .item-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 6px;
+  width: 84px;
+  height: 84px;
+  border-radius: 4px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: var(--lux-grey-100);
   display: block;
 
   img { width: 100%; height: 100%; object-fit: cover; }
@@ -83,23 +93,23 @@
 }
 
 .item-name {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 600;
-  color: #222;
+  color: var(--lux-black);
   text-decoration: none;
 
-  &:hover { color: #c2185b; }
+  &:hover { color: var(--lux-pink); }
 }
 
-.item-variant { font-size: 12px; color: #888; }
-.stock-warning { font-size: 12px; color: #d64545; }
-.item-price { font-size: 13px; color: #666; }
+.item-variant { font-size: 12px; color: var(--lux-grey-500); }
+.stock-warning { font-size: 12px; color: var(--lux-pink); }
+.item-price { font-size: 13px; color: var(--lux-grey-500); }
 
 .item-qty {
   display: flex;
   align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border: 1px solid var(--lux-grey-150);
+  border-radius: 2px;
 
   button {
     width: 30px;
@@ -108,7 +118,9 @@
     background: transparent;
     cursor: pointer;
     font-size: 15px;
+    transition: color 0.2s ease;
 
+    &:hover:not(:disabled) { color: var(--lux-pink); }
     &:disabled { opacity: 0.4; }
   }
 
@@ -117,7 +129,7 @@
 
 .item-total {
   font-weight: 700;
-  color: #c2185b;
+  color: var(--lux-black);
   font-size: 14px;
   white-space: nowrap;
 }
@@ -126,24 +138,25 @@
   background: none;
   border: none;
   font-size: 22px;
-  color: #999;
+  color: var(--lux-grey-300);
   cursor: pointer;
+  transition: color 0.2s ease;
 
-  &:hover { color: #d64545; }
+  &:hover { color: var(--lux-pink); }
 }
 
 .cart-summary {
-  background: #fff;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  background: var(--lux-white);
+  border-radius: 4px;
+  padding: 26px;
+  box-shadow: var(--lux-shadow-sm);
   position: sticky;
   top: 100px;
 
-  h3 { margin: 0 0 16px 0; font-size: 17px; }
+  h3 { margin: 0 0 18px 0; font-size: 17px; font-family: var(--lux-font-display); color: var(--lux-black); }
 }
 
-.coupon-row { margin-bottom: 16px; }
+.coupon-row { margin-bottom: 18px; }
 
 .coupon-input {
   display: flex;
@@ -152,21 +165,27 @@
   input {
     flex: 1;
     min-width: 0;
-    padding: 9px 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    padding: 10px 12px;
+    border: 1px solid var(--lux-grey-150);
+    border-radius: 2px;
     font-size: 13px;
+
+    &:focus { outline: none; border-color: var(--lux-pink); }
   }
 
   button {
-    padding: 9px 14px;
-    background: #333;
+    padding: 10px 16px;
+    background: var(--lux-black);
     color: #fff;
     border: none;
-    border-radius: 6px;
-    font-size: 13px;
+    border-radius: 2px;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
     cursor: pointer;
+    transition: background 0.25s ease;
 
+    &:hover:not(:disabled) { background: var(--lux-pink); }
     &:disabled { opacity: 0.6; }
   }
 }
@@ -177,8 +196,8 @@
   align-items: center;
   background: #f0fdf4;
   color: #1f9d55;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 9px 12px;
+  border-radius: 4px;
   font-size: 13px;
 
   button {
@@ -195,45 +214,50 @@
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  color: #444;
+  color: var(--lux-grey-700);
   padding: 8px 0;
 
   &.discount { color: #1f9d55; }
-  &.note { font-size: 12px; color: #999; }
+  &.note { font-size: 12px; color: var(--lux-grey-500); }
 
   &.total {
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--lux-grey-150);
     margin-top: 8px;
-    padding-top: 14px;
-    font-size: 17px;
+    padding-top: 16px;
+    font-size: 18px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--lux-black);
+    font-family: var(--lux-font-display);
   }
 }
 
 .checkout-btn {
   display: block;
   text-align: center;
-  margin-top: 16px;
-  padding: 13px;
-  background: #c2185b;
+  margin-top: 18px;
+  padding: 14px;
+  background: var(--lux-black);
   color: #fff;
-  border-radius: 6px;
+  border-radius: 2px;
   text-decoration: none;
   font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-size: 12.5px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 
-  &:hover { background: #a01449; }
+  &:hover { background: var(--lux-pink); box-shadow: var(--lux-shadow-pink); }
 }
 
 .continue-link {
   display: block;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 13px;
-  color: #666;
+  color: var(--lux-grey-500);
   text-decoration: none;
 
-  &:hover { color: #c2185b; }
+  &:hover { color: var(--lux-pink); }
 }
 
 @media (max-width: 800px) {

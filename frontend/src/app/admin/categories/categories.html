@@ -28,7 +28,7 @@
     @for (cat of filteredCategories(); track cat.id) {
       <div class="category-card">
         <div class="card-image">
-          <img [src]="imageUrl(cat.image)" [alt]="cat.name" />
+          <img [src]="imageUrl(cat.image)" [alt]="cat.name" loading="lazy" />
           <span class="status-badge" [class]="cat.isActive === false ? 'inactive' : 'active'">{{ cat.isActive === false ? 'inactive' : 'active' }}</span>
         </div>
         <div class="card-body">
@@ -62,7 +62,7 @@
       <tbody>
         @for (cat of filteredCategories(); track cat.id) {
           <tr>
-            <td><img class="list-img" [src]="imageUrl(cat.image)" [alt]="cat.name" /></td>
+            <td><img class="list-img" [src]="imageUrl(cat.image)" [alt]="cat.name" loading="lazy" /></td>
             <td><strong>{{ cat.name }}</strong></td>
             <td>{{ cat.slug }}</td>
             <td>{{ getProductCount(cat) }}</td>

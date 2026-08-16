@@ -1,0 +1,116 @@
+:host {
+  display: block;
+}
+
+.ambient-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Outer slot: positioned in the viewport and shifted by scroll (JS-driven,
+   see offset() in the component). Kept separate from the shape's own CSS
+   drift animation below so the two transforms don't fight each other. */
+.orb-slot {
+  position: absolute;
+  will-change: transform;
+}
+
+.slot-a { top: -12vh; left: -10vw; }
+.slot-b { top: 45vh; right: -12vw; }
+.slot-c { top: 95vh; left: 8vw; }
+.slot-d { top: 150vh; right: 4vw; }
+.slot-e { top: 205vh; left: -8vw; }
+.slot-f { top: 260vh; right: -6vw; }
+
+/* Inner shape: the actual blurred, colored blob with its own gentle
+   perpetual float so the background always feels alive, not just on scroll. */
+.orb-shape {
+  display: block;
+  width: 42vw;
+  height: 42vw;
+  max-width: 560px;
+  max-height: 560px;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.shape-pink {
+  background: radial-gradient(circle, rgba(156, 39, 72, 0.22) 0%, rgba(156, 39, 72, 0) 68%);
+}
+
+.shape-dark {
+  background: radial-gradient(circle, rgba(12, 12, 14, 0.14) 0%, rgba(12, 12, 14, 0) 68%);
+}
+
+.shape-blush {
+  background: radial-gradient(circle, rgba(199, 106, 134, 0.18) 0%, rgba(199, 106, 134, 0) 68%);
+}
+
+.drift-1 { animation-name: drift-1; animation-duration: 22s; }
+.drift-2 { animation-name: drift-2; animation-duration: 28s; }
+.drift-3 { animation-name: drift-3; animation-duration: 25s; }
+
+@keyframes drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(4vw, 3vh) scale(1.08); }
+}
+
+@keyframes drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-3vw, 4vh) scale(0.94); }
+}
+
+@keyframes drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3vw, -3vh) scale(1.06); }
+}
+
+.sparkle-field {
+  position: absolute;
+  inset: 0;
+}
+
+.sparkle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--lux-white);
+  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  animation-name: sparkle-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+
+  &.sparkle--pink {
+    background: var(--lux-pink-soft);
+    box-shadow: 0 0 8px 1px rgba(199, 106, 134, 0.8);
+  }
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sparkle,
+  .orb-shape {
+    animation: none;
+  }
+
+  .sparkle {
+    opacity: 0.4;
+  }
+}
+
+@media (max-width: 700px) {
+  .orb-shape {
+    filter: blur(50px);
+    width: 60vw;
+    height: 60vw;
+  }
+}

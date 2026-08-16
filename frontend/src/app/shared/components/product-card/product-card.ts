@@ -7,12 +7,13 @@ import { WishlistService } from '../../../services/wishlist.service';
 import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AedCurrencyPipe } from '../../pipes/aed-currency.pipe';
-import { mediaUrl } from '../../utils/media.util';
+import { Tilt3dDirective } from '../../directives/tilt-3d.directive';
+import { mediaUrl } from '../../../shared/utils/media.util';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [CommonModule, RouterLink, AedCurrencyPipe],
+  imports: [CommonModule, RouterLink, AedCurrencyPipe, Tilt3dDirective],
   templateUrl: './product-card.html',
   styleUrl: './product-card.scss'
 })

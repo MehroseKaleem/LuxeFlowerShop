@@ -22,7 +22,7 @@
   animation: toast-in 0.2s ease-out;
 
   &--success { background: #1f9d55; }
-  &--error { background: #d64545; }
+  &--error { background: var(--lux-pink); }
   &--info { background: #33475b; }
 }
 

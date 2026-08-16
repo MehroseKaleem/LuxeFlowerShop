@@ -12,13 +12,25 @@ import { WishlistService } from '../../services/wishlist.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
-import { ProductCarouselComponent } from '../../shared/components/product-carousel/product-carousel';
+import { CarouselComponent } from '../../shared/components/carousel/carousel';
+import { ProductCardComponent } from '../../shared/components/product-card/product-card';
 import { mediaUrl } from '../../shared/utils/media.util';
+import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
+import { Tilt3dDirective } from '../../shared/directives/tilt-3d.directive';
 
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AedCurrencyPipe, ProductCarouselComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    AedCurrencyPipe,
+    CarouselComponent,
+    ProductCardComponent,
+    ScrollRevealDirective,
+    Tilt3dDirective
+  ],
   templateUrl: './product.html',
   styleUrl: './product.scss'
 })

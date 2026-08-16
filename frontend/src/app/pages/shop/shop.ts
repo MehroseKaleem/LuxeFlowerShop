@@ -9,13 +9,14 @@ import { CategoryService } from '../../services/category.service';
 import { ProductListItem, ProductQuery } from '../../models/product.model';
 import { Category } from '../../models/category.model';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card';
+import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 
 type SortOption = 'newest' | 'price-low' | 'price-high' | 'rating';
 
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductCardComponent],
+  imports: [CommonModule, FormsModule, ProductCardComponent, ScrollRevealDirective],
   templateUrl: './shop.html',
   styleUrl: './shop.scss'
 })

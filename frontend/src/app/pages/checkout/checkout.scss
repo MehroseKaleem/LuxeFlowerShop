@@ -1,7 +1,7 @@
 .checkout-page {
   min-height: 80vh;
-  padding: 40px 0 60px;
-  background: #fafafa;
+  padding: 48px 0 70px;
+  background: var(--lux-grey-100);
 }
 
 .container {
@@ -11,44 +11,51 @@
 }
 
 .page-title {
-  font-size: 30px;
-  font-family: serif, sans-serif;
-  margin: 0 0 28px 0;
-  color: #1a1a1a;
+  font-size: 32px;
+  font-family: var(--lux-font-display);
+  font-weight: 600;
+  margin: 0 0 32px 0;
+  color: var(--lux-black);
 }
 
 .state-message {
   text-align: center;
   padding: 60px 0;
-  color: #888;
+  color: var(--lux-grey-500);
 
   .shop-link {
     display: inline-block;
     margin-top: 16px;
-    padding: 12px 28px;
-    background: #c2185b;
+    padding: 13px 32px;
+    background: var(--lux-black);
     color: #fff;
-    border-radius: 6px;
+    border-radius: 2px;
     text-decoration: none;
     font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    font-size: 12.5px;
+    transition: background 0.3s ease;
+
+    &:hover { background: var(--lux-pink); }
   }
 }
 
 .checkout-layout {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: 1fr 360px;
   gap: 32px;
   align-items: start;
 }
 
 .form-section {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px 24px;
+  background: var(--lux-white);
+  border-radius: 4px;
+  padding: 22px 26px;
   margin-bottom: 20px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--lux-shadow-sm);
 
-  h2 { font-size: 16px; margin: 0 0 14px 0; color: #222; }
+  h2 { font-family: var(--lux-font-display); font-size: 17px; margin: 0 0 16px 0; color: var(--lux-black); }
 }
 
 .form-grid {
@@ -60,18 +67,21 @@
 }
 
 input, select, textarea {
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 11px 13px;
+  border: 1px solid var(--lux-grey-150);
+  border-radius: 2px;
   font-size: 14px;
   font-family: inherit;
   width: 100%;
+  transition: border-color 0.2s ease;
+
+  &:focus { outline: none; border-color: var(--lux-pink); }
 }
 
 .link-btn {
   background: none;
   border: none;
-  color: #c2185b;
+  color: var(--lux-pink);
   font-size: 13px;
   cursor: pointer;
   margin-bottom: 12px;
@@ -88,21 +98,22 @@ input, select, textarea {
 .address-option {
   display: flex;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 13px;
+  border: 1px solid var(--lux-grey-150);
+  border-radius: 4px;
   font-size: 13px;
   cursor: pointer;
+  transition: all 0.2s ease;
 
-  &.selected { border-color: #c2185b; background: #fce4ec; }
+  &.selected { border-color: var(--lux-pink); background: var(--lux-pink-blush); }
 }
 
 .hint {
   font-size: 12.5px;
-  color: #888;
+  color: var(--lux-grey-500);
   margin: 10px 0 0 0;
 
-  a { color: #c2185b; font-weight: 600; }
+  a { color: var(--lux-pink); font-weight: 600; }
 }
 
 .payment-options {
@@ -115,109 +126,118 @@ input, select, textarea {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 15px;
+  border: 1px solid var(--lux-grey-150);
+  border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
   position: relative;
+  transition: all 0.2s ease;
 
-  &.selected { border-color: #c2185b; background: #fce4ec; }
+  &.selected { border-color: var(--lux-pink); background: var(--lux-pink-blush); }
   &.disabled { opacity: 0.6; cursor: not-allowed; }
 
   .soon-badge {
     margin-left: auto;
     font-size: 11px;
-    color: #999;
+    color: var(--lux-grey-500);
   }
 }
 
 .place-order-btn {
   width: 100%;
-  padding: 14px;
-  background: #c2185b;
+  padding: 15px;
+  background: var(--lux-black);
   color: #fff;
   border: none;
-  border-radius: 6px;
-  font-size: 15px;
+  border-radius: 2px;
+  font-size: 13px;
   font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
   cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 
-  &:hover:not(:disabled) { background: #a01449; }
+  &:hover:not(:disabled) { background: var(--lux-pink); box-shadow: var(--lux-shadow-pink); }
   &:disabled { opacity: 0.6; cursor: default; }
 }
 
 .order-summary {
-  background: #fff;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  background: var(--lux-white);
+  border-radius: 4px;
+  padding: 26px;
+  box-shadow: var(--lux-shadow-sm);
   position: sticky;
   top: 100px;
 
-  h3 { margin: 0 0 16px 0; font-size: 17px; }
+  h3 { margin: 0 0 18px 0; font-size: 17px; font-family: var(--lux-font-display); color: var(--lux-black); }
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  color: #555;
+  color: var(--lux-grey-700);
   padding: 6px 0;
 }
 
 .summary-line {
   display: flex;
   justify-content: space-between;
-  padding-top: 12px;
+  padding-top: 14px;
   margin-top: 8px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--lux-grey-150);
 
-  &.total { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+  &.total { font-size: 17px; font-weight: 700; color: var(--lux-black); font-family: var(--lux-font-display); }
 }
 
 .payment-panel {
   max-width: 480px;
   margin: 0 auto;
-  background: #fff;
-  border-radius: 8px;
-  padding: 32px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  background: var(--lux-white);
+  border-radius: 4px;
+  padding: 36px;
+  box-shadow: var(--lux-shadow-md);
   text-align: center;
 
-  h2 { margin: 0 0 8px 0; }
+  h2 { font-family: var(--lux-font-display); margin: 0 0 8px 0; color: var(--lux-black); }
 }
 
 .payment-hint {
-  color: #666;
+  color: var(--lux-grey-500);
   font-size: 13px;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .card-element {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-bottom: 16px;
+  padding: 13px;
+  border: 1px solid var(--lux-grey-150);
+  border-radius: 4px;
+  margin-bottom: 18px;
   text-align: left;
 }
 
 .card-error {
-  color: #d64545;
+  color: var(--lux-pink);
   font-size: 13px;
   margin-bottom: 12px;
 }
 
 .pay-btn {
   width: 100%;
-  padding: 13px;
-  background: #c2185b;
+  padding: 14px;
+  background: var(--lux-black);
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 2px;
   font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-size: 13px;
   cursor: pointer;
+  transition: background 0.3s ease;
 
+  &:hover:not(:disabled) { background: var(--lux-pink); }
   &:disabled { opacity: 0.6; }
 }
 

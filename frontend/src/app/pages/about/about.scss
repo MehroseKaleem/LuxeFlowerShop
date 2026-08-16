@@ -1,6 +1,6 @@
 .about-page {
   min-height: 70vh;
-  padding-bottom: 60px;
+  padding-bottom: 70px;
 }
 
 .container {
@@ -10,35 +10,64 @@
 }
 
 .about-header {
-  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-  padding: 50px 0;
+  background: var(--lux-black);
+  padding: 64px 0;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 
-  h1 {
-    font-size: 32px;
-    font-family: serif, sans-serif;
-    margin: 0 0 10px 0;
-    color: #1a1a1a;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 25% 30%, rgba(156, 39, 72, 0.28), transparent 45%),
+      radial-gradient(circle at 75% 70%, rgba(156, 39, 72, 0.2), transparent 45%);
+    pointer-events: none;
   }
 
-  p { color: #666; }
+  h1 {
+    position: relative;
+    font-size: 36px;
+    font-family: var(--lux-font-display);
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    color: var(--lux-white);
+  }
+
+  p {
+    position: relative;
+    color: var(--lux-grey-300);
+    font-family: var(--lux-font-accent);
+    font-style: italic;
+    font-size: 17px;
+  }
 }
 
 .about-content {
-  padding-top: 40px;
+  padding-top: 48px;
 
-  section { margin-bottom: 32px; }
+  section { margin-bottom: 36px; }
 
   h2 {
-    font-size: 20px;
-    margin-bottom: 12px;
-    color: #1a1a1a;
-    font-family: serif, sans-serif;
+    font-size: 22px;
+    margin-bottom: 14px;
+    color: var(--lux-black);
+    font-family: var(--lux-font-display);
+    font-weight: 600;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 2px;
+      background: var(--lux-pink);
+      margin-top: 12px;
+    }
   }
 
   p, li {
-    color: #555;
-    line-height: 1.7;
+    color: var(--lux-grey-700);
+    line-height: 1.8;
     font-size: 15px;
   }
 
@@ -47,17 +76,21 @@
 
 .cta {
   text-align: center;
-  margin-top: 40px;
+  margin-top: 44px;
 }
 
 .cta-btn {
   display: inline-block;
-  padding: 13px 32px;
-  background: #c2185b;
+  padding: 14px 38px;
+  background: var(--lux-black);
   color: #fff;
-  border-radius: 6px;
+  border-radius: 2px;
   text-decoration: none;
   font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  font-size: 12.5px;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 
-  &:hover { background: #a01449; }
+  &:hover { background: var(--lux-pink); box-shadow: var(--lux-shadow-pink); transform: translateY(-2px); }
 }

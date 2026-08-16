@@ -9,7 +9,7 @@
 
   h1 {
     font-size: 72px;
-    color: #c2185b;
+    color: var(--lux-pink);
     margin: 0;
     font-family: serif, sans-serif;
   }
@@ -22,11 +22,11 @@
 
 .home-link {
   padding: 12px 28px;
-  background: #c2185b;
+  background: var(--lux-pink);
   color: #fff;
   border-radius: 6px;
   text-decoration: none;
   font-weight: 600;
 
-  &:hover { background: #a01449; }
+  &:hover { background: var(--lux-pink-dark); }
 }

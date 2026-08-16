@@ -30,6 +30,19 @@ async function listForProduct(productSlug, query) {
   });
 }
 
+async function featured(query) {
+  const limit = Math.min(Number(query.limit) || 6, 20);
+  return prisma.review.findMany({
+    where: { isApproved: true, rating: { gte: 4 }, comment: { not: null } },
+    orderBy: [{ rating: 'desc' }, { createdAt: 'desc' }],
+    take: limit,
+    include: {
+      user: { select: { id: true, name: true } },
+      product: { select: { id: true, name: true, slug: true } },
+    },
+  });
+}
+
 async function create(userId, data) {
   const product = await prisma.product.findUnique({ where: { id: Number(data.productId) } });
   if (!product) throw ApiError.notFound('Product not found');
@@ -127,4 +140,4 @@ async function adminDelete(id) {
   if (review.isApproved) await recomputeProductRating(review.productId);
 }
 
-module.exports = { listForProduct, create, updateOwn, deleteOwn, adminList, adminApprove, adminDelete };
+module.exports = { listForProduct, featured, create, updateOwn, deleteOwn, adminList, adminApprove, adminDelete };
