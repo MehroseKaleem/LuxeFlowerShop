@@ -24,4 +24,13 @@ const applyCouponRules = [
 
 const mergeCartRules = [body('sessionId').trim().notEmpty().withMessage('sessionId is required')];
 
-module.exports = { addItemRules, updateItemRules, itemParamRule, applyCouponRules, mergeCartRules };
+const adminIdParamRule = [param('id').isInt().withMessage('Invalid cart id')];
+
+module.exports = {
+  addItemRules,
+  updateItemRules,
+  itemParamRule,
+  applyCouponRules,
+  mergeCartRules,
+  adminIdParamRule,
+};

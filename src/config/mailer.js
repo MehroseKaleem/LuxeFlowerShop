@@ -91,6 +91,14 @@ const templates = {
       `Order #${order.orderNumber} Update`,
       `<p>Hi ${name}, your order status has been updated to: <strong>${order.status}</strong>.</p>`,
     ),
+
+  contactReply: (name, originalMessage, replyMessage) =>
+    layout(
+      'Re: Your message to us',
+      `<p>Hi ${name}, thank you for contacting ${env.appName}. Here is our reply:</p>
+       <div style="background:#f7f2f4;padding:12px 16px;border-radius:6px;margin:12px 0;white-space:pre-wrap;">${replyMessage}</div>
+       <p style="color:#888;font-size:13px;">Your original message: "${originalMessage}"</p>`,
+    ),
 };
 
 module.exports = { sendMail, templates };

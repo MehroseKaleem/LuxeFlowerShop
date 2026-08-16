@@ -22,4 +22,9 @@ const adminDelete = asyncHandler(async (req, res) => {
   new ApiResponse(200, null, 'Message deleted').send(res);
 });
 
-module.exports = { create, adminList, adminMarkRead, adminDelete };
+const adminReply = asyncHandler(async (req, res) => {
+  const message = await contactService.adminReply(Number(req.params.id), req.body.message);
+  new ApiResponse(200, { message }, 'Reply sent').send(res);
+});
+
+module.exports = { create, adminList, adminMarkRead, adminDelete, adminReply };

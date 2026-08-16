@@ -528,6 +528,7 @@ model ContactMessage {
   subject   String?  @db.VarChar(200)
   message   String   @db.Text
   isRead    Boolean  @default(false)
+  repliedAt DateTime?
   createdAt DateTime @default(now())
 
   @@index([isRead])

@@ -1,6 +1,7 @@
 const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const { validateCoupon, reconfirmCouponForDisplay } = require('../../utils/couponEngine');
+const { parsePagination, paginate } = require('../../utils/pagination');
 
 const ITEM_INCLUDE = {
   product: {
@@ -254,6 +255,68 @@ async function mergeGuestCart(userId, sessionId) {
   return buildCartResponse(userCart);
 }
 
+/**
+ * Admin-facing list of non-empty carts (i.e. "carts in progress" / potential
+ * abandoned carts), with a lightweight summary per cart rather than the full
+ * display-oriented shape `buildCartResponse` produces — this can list many
+ * carts at once so we avoid the coupon-reconfirmation work done per cart.
+ */
+async function adminListCarts(query) {
+  const pagination = parsePagination(query, {
+    defaultSortBy: 'updatedAt',
+    allowedSortFields: ['updatedAt', 'createdAt'],
+  });
+
+  const where = { items: { some: {} } };
+  const abandonedDays = parseInt(query.abandonedDays, 10);
+  if (abandonedDays > 0) {
+    where.updatedAt = { lte: new Date(Date.now() - abandonedDays * 24 * 60 * 60 * 1000) };
+  }
+
+  const { items, meta } = await paginate(prisma.cart, {
+    where,
+    include: {
+      user: { select: { id: true, name: true, email: true, phone: true } },
+      items: {
+        include: { product: { select: { id: true, name: true, slug: true } } },
+      },
+    },
+    pagination,
+  });
+
+  const carts = items.map((cart) => {
+    const itemsCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+    const estimatedTotal =
+      Math.round(cart.items.reduce((sum, item) => sum + Number(item.priceSnapshot) * item.quantity, 0) * 100) / 100;
+
+    return {
+      id: cart.id,
+      isGuest: !cart.userId,
+      user: cart.user,
+      itemsCount,
+      estimatedTotal,
+      items: cart.items.map((item) => ({
+        id: item.id,
+        productId: item.productId,
+        productName: item.product ? item.product.name : null,
+        productSlug: item.product ? item.product.slug : null,
+        quantity: item.quantity,
+        priceSnapshot: item.priceSnapshot,
+      })),
+      createdAt: cart.createdAt,
+      updatedAt: cart.updatedAt,
+    };
+  });
+
+  return { items: carts, meta };
+}
+
+async function adminDeleteCart(id) {
+  const cart = await prisma.cart.findUnique({ where: { id } });
+  if (!cart) throw ApiError.notFound('Cart not found');
+  await prisma.cart.delete({ where: { id } });
+}
+
 module.exports = {
   getOrCreateCart,
   getCart,
@@ -266,4 +329,6 @@ module.exports = {
   removeCoupon,
   mergeGuestCart,
   effectiveUnitPrice,
+  adminListCarts,
+  adminDeleteCart,
 };

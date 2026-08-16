@@ -1,6 +1,7 @@
 const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const { parsePagination, paginate } = require('../../utils/pagination');
+const { sendMail, templates } = require('../../config/mailer');
 
 async function create(data) {
   return prisma.contactMessage.create({
@@ -33,4 +34,20 @@ async function adminDelete(id) {
   await prisma.contactMessage.delete({ where: { id } });
 }
 
-module.exports = { create, adminList, adminMarkRead, adminDelete };
+async function adminReply(id, replyMessage) {
+  const message = await prisma.contactMessage.findUnique({ where: { id } });
+  if (!message) throw ApiError.notFound('Message not found');
+
+  await sendMail({
+    to: message.email,
+    subject: message.subject ? `Re: ${message.subject}` : 'Re: Your message to us',
+    html: templates.contactReply(message.name, message.message, replyMessage),
+  });
+
+  return prisma.contactMessage.update({
+    where: { id },
+    data: { isRead: true, repliedAt: new Date() },
+  });
+}
+
+module.exports = { create, adminList, adminMarkRead, adminDelete, adminReply };

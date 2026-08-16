@@ -46,6 +46,15 @@ app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(cookieParser());
 app.use(hpp());
 
+// Helmet's default Cross-Origin-Resource-Policy (`same-origin`) blocks the
+// storefront/admin frontends — which run on different origins/ports — from
+// loading product/category/banner images. Uploaded files are public assets
+// by design, so relax just this policy for them; the rest of the API keeps
+// helmet's strict defaults.
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+});
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), { maxAge: '7d' }));
 
 app.get('/health', (req, res) => {

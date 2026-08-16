@@ -10,6 +10,7 @@ router.use(protect, restrictTo('ADMIN', 'SUPER_ADMIN'));
 
 router.get('/', controller.adminList);
 router.patch('/:id/read', rules.idParamRule, validate, controller.adminMarkRead);
+router.post('/:id/reply', rules.replyRules, validate, controller.adminReply);
 router.delete('/:id', rules.idParamRule, validate, controller.adminDelete);
 
 module.exports = router;

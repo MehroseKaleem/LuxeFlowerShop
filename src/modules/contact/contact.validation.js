@@ -14,4 +14,9 @@ const createRules = [
   body('message').trim().notEmpty().withMessage('Message is required').isLength({ max: 5000 }),
 ];
 
-module.exports = { idParamRule, createRules };
+const replyRules = [
+  param('id').isInt().withMessage('Invalid id'),
+  body('message').trim().notEmpty().withMessage('Reply message is required').isLength({ max: 5000 }),
+];
+
+module.exports = { idParamRule, createRules, replyRules };

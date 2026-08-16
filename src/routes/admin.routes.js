@@ -11,6 +11,7 @@ const settingsAdminRoutes = require('../modules/settings/settings.admin.routes')
 const newsletterAdminRoutes = require('../modules/newsletter/newsletter.admin.routes');
 const contactAdminRoutes = require('../modules/contact/contact.admin.routes');
 const dashboardAdminRoutes = require('../modules/dashboard/dashboard.admin.routes');
+const cartsAdminRoutes = require('../modules/cart/cart.admin.routes');
 const { adminLimiter } = require('../middlewares/rateLimiter');
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.use('/settings', settingsAdminRoutes);
 router.use('/newsletter', newsletterAdminRoutes);
 router.use('/contact', contactAdminRoutes);
 router.use('/dashboard', dashboardAdminRoutes);
+router.use('/carts', cartsAdminRoutes);
 
 module.exports = router;
