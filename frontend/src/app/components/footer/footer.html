@@ -1,0 +1,81 @@
+<footer class="site-footer" id="site-footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      <!-- Logo Column -->
+      <div class="footer-col footer-logo-col">
+        <a href="/" class="footer-logo-link">
+          <img src="logo.png" alt="Karaz Flowers" class="footer-logo-img" />
+        </a>
+      </div>
+
+      <!-- Customer Services -->
+      <div class="footer-col">
+        <h3 class="footer-heading">Customer Services</h3>
+        <ul class="footer-links">
+          @for (item of customerServices; track item.label) {
+            <li>
+              <a [routerLink]="item.link" class="footer-link">{{ item.label }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Our Policies -->
+      <div class="footer-col">
+        <h3 class="footer-heading">Our Policies</h3>
+        <ul class="footer-links">
+          @for (item of policies; track item.label) {
+            <li>
+              <a [routerLink]="item.link" class="footer-link">{{ item.label }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Our Mission -->
+      <div class="footer-col">
+        <h3 class="footer-heading">Our Mission</h3>
+        <p class="footer-mission">
+          Delivering premium flowers, gifts &amp; hampers across the UAE with
+          elegance, quality &amp; same-day service for every occasion.
+        </p>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="footer-col">
+        <h3 class="footer-heading">Stay in Bloom</h3>
+        <p class="footer-mission">Subscribe for offers, new arrivals &amp; seasonal collections.</p>
+        <form class="newsletter-form" (submit)="$event.preventDefault(); subscribeNewsletter()">
+          <input
+            type="email"
+            class="newsletter-input"
+            placeholder="Your email address"
+            required
+            [ngModel]="newsletterEmail()"
+            (ngModelChange)="newsletterEmail.set($event)"
+            name="newsletterEmail"
+            aria-label="Email address" />
+          <button type="submit" class="newsletter-btn" [disabled]="subscribing()">
+            {{ subscribing() ? 'Subscribing...' : 'Subscribe' }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Social Icons -->
+    <div class="footer-social">
+      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Copyright -->
+    <div class="footer-bottom">
+      <p class="copyright">&copy; {{ currentYear }}, karazflowers.ae</p>
+    </div>
+  </div>
+</footer>

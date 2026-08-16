@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --admin-bg: #0f0f1a;
+  --admin-surface: #161626;
+  --admin-card: rgba(255, 255, 255, 0.05);
+  --admin-card-hover: rgba(255, 255, 255, 0.08);
+  --admin-primary: #b8003c;
+  --admin-accent: #d4a853;
+  --admin-success: #10b981;
+  --admin-warning: #f59e0b;
+  --admin-danger: #ef4444;
+  --admin-text: #f3f4f6;
+  --admin-text-muted: #9ca3af;
+  --admin-border: rgba(255, 255, 255, 0.1);
+  --admin-input-bg: rgba(255, 255, 255, 0.06);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #333;
+  background: #fff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* Global Admin Theme Overrides for High Contrast Luxury Look */
+.admin-wrapper, [class*="app-admin"], app-admin-layout {
+  background-color: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+/* Custom Scrollbar for Admin */
+.admin-wrapper ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.admin-wrapper ::-webkit-scrollbar-track {
+  background: #0f0f1a;
+}
+
+.admin-wrapper ::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 83, 0.3);
+  border-radius: 4px;
+}
+
+.admin-wrapper ::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-accent);
+}

@@ -1,0 +1,51 @@
+<main class="home-page" id="home-page">
+  <!-- Hero Carousel Section -->
+  <section class="section hero-section" id="hero-section">
+    <app-hero-carousel />
+  </section>
+
+  <!-- Our Vision Section -->
+  <section class="vision-section" id="vision-section">
+    <div class="container">
+      <h2 class="vision-title">Our Vision</h2>
+      <p class="vision-text">
+        Our vision is to be the UAE's most trusted online flower shop, delivering fresh blooms that create lasting memories for every occasion.
+      </p>
+    </div>
+  </section>
+
+  <!-- Our Collections Section -->
+  @if (collectionsCards().length) {
+    <section class="collections-section" id="collections-section">
+      <div class="container">
+        <h2 class="section-title">Our Collections</h2>
+        <div class="collections-grid">
+          @for (card of collectionsCards(); track card.title) {
+            <a [routerLink]="card.link" class="collection-card">
+              <div class="card-image-wrap">
+                <img [src]="card.image" [alt]="card.title" class="card-image" loading="lazy" />
+              </div>
+              <div class="card-footer">
+                <span class="card-title">{{ card.title }} &rarr;</span>
+              </div>
+            </a>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Featured Products -->
+  @if (featuredProducts().length) {
+    <app-product-carousel title="Featured Picks" [products]="featuredProducts()" viewAllLink="/shop" />
+  }
+
+  <!-- Per-category carousels -->
+  @for (section of categorySections(); track section.title) {
+    <app-product-carousel [title]="section.title" [products]="section.products" [viewAllLink]="section.link" />
+  }
+
+  @if (loading()) {
+    <div class="home-loading">Loading collections...</div>
+  }
+</main>

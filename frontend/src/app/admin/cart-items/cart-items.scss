@@ -1,0 +1,199 @@
+$admin-bg: #0f0f1a;
+$admin-card: #161626;
+$admin-primary: #b8003c;
+$admin-accent: #d4a853;
+$admin-success: #10b981;
+$admin-warning: #f59e0b;
+$admin-danger: #ef4444;
+$admin-text: #ffffff;
+$admin-text-muted: #9ca3af;
+$admin-border: rgba(255, 255, 255, 0.12);
+$admin-input-bg: rgba(255, 255, 255, 0.08);
+
+.cart-items-container {
+  padding: 2rem;
+  color: $admin-text;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      margin: 0;
+      color: white;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+
+      .search-input {
+        background: $admin-input-bg;
+        border: 1px solid $admin-border;
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        outline: none;
+
+        &:focus {
+          border-color: $admin-primary;
+        }
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        
+        &.btn-warning {
+          background: rgba($admin-warning, 0.1);
+          color: $admin-warning;
+          border: 1px solid rgba($admin-warning, 0.2);
+
+          &:hover, &.active {
+            background: rgba($admin-warning, 0.2);
+          }
+        }
+      }
+    }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .stat-card {
+      background: $admin-card;
+      backdrop-filter: blur(10px);
+      border: 1px solid $admin-border;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: $admin-text-muted;
+
+        &.text-success { color: $admin-success; background: rgba($admin-success, 0.1); }
+        &.text-accent { color: $admin-accent; background: rgba($admin-accent, 0.1); }
+      }
+
+      .stat-info {
+        h3 {
+          margin: 0 0 0.5rem 0;
+          font-size: 0.9rem;
+          color: $admin-text-muted;
+          font-weight: normal;
+        }
+        p {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .table-container {
+    background: $admin-card;
+    backdrop-filter: blur(10px);
+    border: 1px solid $admin-border;
+    border-radius: 12px;
+    overflow: hidden;
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        padding: 1rem 1.5rem;
+        text-align: left;
+        border-bottom: 1px solid $admin-border;
+      }
+
+      th {
+        font-weight: 500;
+        color: $admin-text-muted;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      td {
+        .product-info {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+          }
+        }
+
+        .customer-info {
+          display: flex;
+          flex-direction: column;
+          
+          strong { color: white; }
+          span { font-size: 0.85rem; color: $admin-text-muted; }
+        }
+
+        .btn-icon {
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 0.5rem;
+          border-radius: 4px;
+          
+          &.text-danger {
+            color: $admin-danger;
+            &:hover { background: rgba($admin-danger, 0.1); }
+          }
+        }
+      }
+    }
+
+    .empty-state {
+      padding: 3rem;
+      color: $admin-text-muted;
+    }
+  }
+}
+
+.cart-row {
+  cursor: pointer;
+}
+
+.detail-row td {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 16px;
+}
+
+.cart-item-list {
+  margin: 0;
+  padding-left: 18px;
+  color: $admin-text-muted;
+  font-size: 0.85rem;
+
+  li {
+    padding: 2px 0;
+  }
+}

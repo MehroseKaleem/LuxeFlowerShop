@@ -1,0 +1,143 @@
+.blog-page {
+  min-height: 80vh;
+  background: #fafafa;
+  padding-bottom: 60px;
+}
+
+.blog-header {
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  padding: 40px 0 50px 0;
+  border-bottom: 1px solid #eaeaea;
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 16px;
+
+  a {
+    color: #333;
+    text-decoration: none;
+    &:hover {
+      color: #c2185b;
+    }
+  }
+
+  .separator {
+    color: #ccc;
+  }
+
+  .current {
+    color: #c2185b;
+    font-weight: 500;
+  }
+}
+
+.page-title {
+  font-size: 36px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 12px 0;
+  font-family: serif, sans-serif;
+}
+
+.page-description {
+  font-size: 15px;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.blog-content {
+  padding-top: 40px;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+.post-card {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.post-image-wrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #c2185b;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.post-body {
+  padding: 24px;
+}
+
+.post-date {
+  font-size: 13px;
+  color: #888;
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 8px 0 12px 0;
+  line-height: 1.4;
+}
+
+.post-excerpt {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.read-more {
+  color: #c2185b;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

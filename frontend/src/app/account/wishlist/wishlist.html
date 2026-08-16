@@ -1,0 +1,30 @@
+<div class="wishlist-page">
+  <h2>My Wishlist</h2>
+
+  @if (loading()) {
+    <p class="state-message">Loading wishlist...</p>
+  } @else if (!wishlist.items().length) {
+    <div class="empty-state">
+      <p>Your wishlist is empty.</p>
+      <a routerLink="/shop">Browse Products</a>
+    </div>
+  } @else {
+    <div class="wishlist-grid">
+      @for (item of wishlist.items(); track item.id) {
+        <div class="wishlist-card">
+          <a [routerLink]="['/product', item.product.slug]" class="card-image">
+            <img [src]="imageUrl(item.product.images[0]?.url)" [alt]="item.product.name" />
+          </a>
+          <div class="card-info">
+            <a [routerLink]="['/product', item.product.slug]" class="card-name">{{ item.product.name }}</a>
+            <span class="card-price">{{ (item.product.discountPrice || item.product.basePrice) | aedCurrency }}</span>
+            <div class="card-actions">
+              <button type="button" (click)="addToCart(item.productId, item.product.name)">Add to Cart</button>
+              <button type="button" class="remove-btn" (click)="remove(item.productId)">Remove</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

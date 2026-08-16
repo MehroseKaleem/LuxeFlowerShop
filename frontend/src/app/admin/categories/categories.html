@@ -1,0 +1,142 @@
+<div class="page-header">
+  <div class="page-header-left">
+    <h2>Categories</h2>
+    <span class="count-badge">{{ categories().length }} categories</span>
+  </div>
+  <div class="page-header-right">
+    <div class="view-toggle">
+      <button [class.active]="viewMode() === 'grid'" (click)="viewMode.set('grid')" title="Grid View">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      </button>
+      <button [class.active]="viewMode() === 'list'" (click)="viewMode.set('list')" title="List View">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+      </button>
+    </div>
+    <button class="btn-primary" (click)="openAddModal()">
+      + Add Category
+    </button>
+  </div>
+</div>
+
+<div class="search-bar">
+  <input type="text" placeholder="Search categories..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+</div>
+
+<!-- Grid View -->
+@if (viewMode() === 'grid') {
+  <div class="categories-grid">
+    @for (cat of filteredCategories(); track cat.id) {
+      <div class="category-card">
+        <div class="card-image">
+          <img [src]="imageUrl(cat.image)" [alt]="cat.name" />
+          <span class="status-badge" [class]="cat.isActive === false ? 'inactive' : 'active'">{{ cat.isActive === false ? 'inactive' : 'active' }}</span>
+        </div>
+        <div class="card-body">
+          <h3>{{ cat.name }}</h3>
+          <span class="product-count">{{ getProductCount(cat) }} products</span>
+          <span class="slug">/{{ cat.slug }}</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-edit" (click)="openEditModal(cat)">Edit</button>
+          <button class="btn-delete" (click)="deleteCategory(cat.id)">Delete</button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<!-- List View -->
+@if (viewMode() === 'list') {
+  <div class="table-container">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Slug</th>
+          <th>Products</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cat of filteredCategories(); track cat.id) {
+          <tr>
+            <td><img class="list-img" [src]="imageUrl(cat.image)" [alt]="cat.name" /></td>
+            <td><strong>{{ cat.name }}</strong></td>
+            <td>{{ cat.slug }}</td>
+            <td>{{ getProductCount(cat) }}</td>
+            <td><span class="status-badge" [class]="cat.isActive === false ? 'inactive' : 'active'">{{ cat.isActive === false ? 'inactive' : 'active' }}</span></td>
+            <td>
+              <button class="btn-edit-sm" (click)="openEditModal(cat)">Edit</button>
+              <button class="btn-delete-sm" (click)="deleteCategory(cat.id)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+<!-- Add/Edit Modal -->
+@if (showAddModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editingCategory() ? 'Edit Category' : 'Add New Category' }}</h3>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+      <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+        <div class="form-group">
+          <label>Category Name *</label>
+          <input formControlName="name" placeholder="e.g. Birthday Special" />
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea formControlName="description" rows="2" placeholder="Optional short description"></textarea>
+        </div>
+
+        <!-- Category Image Drag & Drop File Upload -->
+        <div class="form-group">
+          <label>Category Image *</label>
+          <div class="image-upload-zone" (click)="catFileInput.click()" 
+               (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
+            @if (imagePreview()) {
+              <div class="preview-container">
+                <img [src]="imagePreview()" class="image-preview" alt="Category Preview" />
+                <span class="change-overlay">Click or drag to change image</span>
+              </div>
+            } @else {
+              <div class="upload-prompt">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <p>Drag & drop image file or click to browse</p>
+                <span>Supports JPG, PNG, WEBP</span>
+              </div>
+            }
+          </div>
+          <input #catFileInput type="file" accept="image/*" (change)="onImageSelected($event)" hidden />
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select formControlName="status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary" [disabled]="categoryForm.invalid || saving()">
+            {{ saving() ? 'Saving...' : editingCategory() ? 'Update Category' : 'Create Category' }}
+          </button>
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

@@ -1,0 +1,123 @@
+<div class="page-header">
+  <div class="page-header-left">
+    <h2>Coupons</h2>
+    <span class="count-badge">{{ total() }} coupons</span>
+  </div>
+  <button class="btn-primary" (click)="openAddModal()">+ Add Coupon</button>
+</div>
+
+<div class="filters-row">
+  <input type="text" placeholder="Search by code..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" (keyup.enter)="search()" />
+  <button class="btn-secondary" (click)="search()">Search</button>
+</div>
+
+<div class="table-container">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Discount</th>
+        <th>Usage</th>
+        <th>Expires</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (loading()) {
+        <tr><td colspan="6" class="empty-state">Loading coupons...</td></tr>
+      } @else {
+        @for (coupon of coupons(); track coupon.id) {
+          <tr>
+            <td><strong>{{ coupon.code }}</strong>@if (coupon.description) { <br /><span class="muted">{{ coupon.description }}</span> }</td>
+            <td>{{ coupon.discountType === 'PERCENTAGE' ? coupon.discountValue + '%' : 'AED ' + coupon.discountValue }}</td>
+            <td>{{ coupon.usedCount }}@if (coupon.usageLimit) { / {{ coupon.usageLimit }} }</td>
+            <td>{{ coupon.expiresAt | date:'mediumDate' }}</td>
+            <td>
+              @if (isExpired(coupon)) {
+                <span class="status-badge expired">expired</span>
+              } @else {
+                <span class="status-badge" [class]="coupon.isActive ? 'active' : 'inactive'">{{ coupon.isActive ? 'active' : 'inactive' }}</span>
+              }
+            </td>
+            <td class="actions-cell">
+              <button (click)="openEditModal(coupon)">Edit</button>
+              <button (click)="toggle(coupon)">{{ coupon.isActive ? 'Deactivate' : 'Activate' }}</button>
+              <button class="delete" (click)="delete(coupon)">Delete</button>
+            </td>
+          </tr>
+        }
+        @if (!coupons().length) {
+          <tr><td colspan="6" class="empty-state">No coupons yet.</td></tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (showModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editingCoupon() ? 'Edit Coupon' : 'Add Coupon' }}</h3>
+        <button class="close-btn" (click)="closeModal()">&times;</button>
+      </div>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-group">
+          <label>Code *</label>
+          <input formControlName="code" placeholder="e.g. WELCOME10" style="text-transform: uppercase;" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input formControlName="description" placeholder="Optional internal note" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Discount Type</label>
+            <select formControlName="discountType">
+              <option value="PERCENTAGE">Percentage</option>
+              <option value="FIXED">Fixed Amount (AED)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Discount Value *</label>
+            <input type="number" formControlName="discountValue" step="0.01" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Min Order Amount</label>
+            <input type="number" formControlName="minOrderAmount" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Max Discount Amount</label>
+            <input type="number" formControlName="maxDiscountAmount" step="0.01" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Total Usage Limit</label>
+            <input type="number" formControlName="usageLimit" />
+          </div>
+          <div class="form-group">
+            <label>Per-Customer Limit *</label>
+            <input type="number" formControlName="usageLimitPerUser" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Expires On *</label>
+          <input type="date" formControlName="expiresAt" />
+        </div>
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="isActive" /> Active
+        </label>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary" [disabled]="form.invalid || saving()">
+            {{ saving() ? 'Saving...' : editingCoupon() ? 'Update Coupon' : 'Create Coupon' }}
+          </button>
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

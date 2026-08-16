@@ -1,0 +1,58 @@
+.panel {
+  margin-bottom: 32px;
+
+  &:last-child { margin-bottom: 0; }
+
+  h2 {
+    font-size: 17px;
+    margin: 0 0 16px 0;
+    color: #1a1a1a;
+    font-family: serif, sans-serif;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  max-width: 380px;
+
+  label { font-size: 13px; color: #555; font-weight: 500; }
+
+  input, select, textarea {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+
+    &:disabled { background: #f7f7f7; color: #999; }
+  }
+
+  .field-error { color: #d64545; font-size: 12px; }
+}
+
+.save-btn {
+  padding: 10px 22px;
+  background: #c2185b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { background: #a01449; }
+  &:disabled { opacity: 0.6; cursor: default; }
+}
+
+.state-message {
+  color: #888;
+  font-size: 14px;
+  padding: 20px 0;
+}
+
+.empty-state {
+  text-align: center;
+  color: #888;
+  padding: 40px 0;
+}

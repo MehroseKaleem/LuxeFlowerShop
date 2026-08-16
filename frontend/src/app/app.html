@@ -1,0 +1,8 @@
+@if (!isAdminRoute()) {
+  <app-header />
+}
+<router-outlet />
+@if (!isAdminRoute()) {
+  <app-footer />
+}
+<app-toast-container />
