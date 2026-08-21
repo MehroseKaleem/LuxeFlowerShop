@@ -1,9 +1,7 @@
-const fs = require('fs');
-const path = require('path');
 const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const { parsePagination, paginate } = require('../../utils/pagination');
-const { uploadsRoot } = require('../../config/multer');
+const { deleteUploadedImage } = require('../../config/multer');
 const sanitizeUser = require('../../utils/sanitizeUser');
 
 async function updateProfile(userId, { name, phone }) {
@@ -18,15 +16,13 @@ async function updateProfile(userId, { name, phone }) {
   });
 }
 
-async function updateAvatar(userId, filename) {
+async function updateAvatar(userId, avatarUrl) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (user.avatar) {
-    const oldPath = path.join(uploadsRoot, 'avatars', path.basename(user.avatar));
-    fs.promises.unlink(oldPath).catch(() => {});
+    deleteUploadedImage(user.avatar).catch(() => {});
   }
 
-  const avatarUrl = `/uploads/avatars/${filename}`;
   return prisma.user.update({ where: { id: userId }, data: { avatar: avatarUrl } });
 }
 

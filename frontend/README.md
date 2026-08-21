@@ -1,59 +1,66 @@
-# Flowerweb
+# Karaz Flowers — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.3.
+Customer storefront + admin panel for Karaz Flowers, a UAE flower delivery shop. Built with Angular 20 (standalone components, signals, SSR-scaffolded but running as pure client-side rendering + hydration).
 
-## Development server
+## Prerequisites
 
-To start a local development server, run:
+This is the frontend only — it needs the [backend API](../floral%20website%20backend/README.md) running first (MariaDB via XAMPP + `npm run dev` in that project, listening on `http://localhost:5000` by default).
 
-```bash
-ng serve
-```
+## Getting started
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 1. Install dependencies
 
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 2. Point the frontend at the backend
+
+`src/environments/environment.ts` (used by `ng serve` / dev builds):
+
+```ts
+apiUrl: 'http://localhost:5000/api/v1',
+```
+
+This should already be correct for local development against a backend running on the default port. Change it if your backend runs elsewhere. `environment.production.ts` is the equivalent file used by production builds — point it at the real deployed backend URL before building for production.
+
+### 3. Run it
 
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+Open `http://localhost:4200`. The app rebuilds automatically on file changes.
 
-To build the project run:
+- **Storefront**: `/` — home, shop, product pages, cart, checkout, account area.
+- **Admin panel**: `/admin` — login with the backend's seeded Super Admin (`SEED_SUPER_ADMIN_EMAIL` / `SEED_SUPER_ADMIN_PASSWORD` from the backend's `.env`), or any account with an `ADMIN`/`SUPER_ADMIN` role. This is where products, categories, orders, banners, coupons, and everything else get managed day-to-day.
+
+### 4. Production build
 
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Output goes to `dist/flowerweb/`. Uses `environment.production.ts` — make sure `apiUrl` there points at the real backend before building for a deploy.
 
-## Running unit tests
+## Project structure
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```
+src/app/
+  account/             customer account area (login, register, orders, addresses, wishlist)
+  admin/                admin panel pages (products, categories, orders, banners, coupons, ...)
+  components/           site-wide components (header, footer, hero)
+  core/                 interceptors, error handling, ambient background, floating actions, toasts
+  home/                  homepage
+  pages/                 storefront pages (shop, product detail, cart, checkout, about, contact, ...)
+  services/              one HTTP service per backend module, mirrors the API 1:1
+  shared/                reusable components (carousel, product card), directives, pipes, utils
+public/                  static assets (logo, favicon, fallback images)
+src/environments/        apiUrl + Stripe publishable key per build config
 ```
 
-## Running end-to-end tests
+## Notes for whoever picks this up next
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Every service in `src/app/services/` calls a real backend endpoint — there is no mock/localStorage data left in the app.
+- Product/category/banner images come from wherever the backend is currently configured to store them (local disk by default, or Cloudinary if the backend has `CLOUDINARY_*` env vars set) — the frontend doesn't need to know or care which, `mediaUrl()` in `shared/utils/media.util.ts` handles both transparently.
+- Card payment (Stripe) needs a real `stripePublishableKey` in the environment file to activate at checkout — Cash on Delivery works with no configuration.

@@ -44,6 +44,17 @@ module.exports = {
     baseUrl: process.env.UPLOAD_BASE_URL || '/uploads',
   },
 
+  // Optional — when all three are set, uploads go to Cloudinary (optimized,
+  // CDN-served) instead of the local disk. Falls back to local disk storage
+  // in their absence, which is fine for local development but does not
+  // survive most production hosting (ephemeral filesystems, multiple
+  // instances), so this should be configured before a real deployment.
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+    apiKey: process.env.CLOUDINARY_API_KEY || '',
+    apiSecret: process.env.CLOUDINARY_API_SECRET || '',
+  },
+
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY,
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,

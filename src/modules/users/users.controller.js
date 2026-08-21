@@ -11,7 +11,7 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 const uploadAvatar = asyncHandler(async (req, res) => {
   if (!req.file) throw ApiError.badRequest('No image file provided');
-  const user = await usersService.updateAvatar(req.user.id, req.file.filename);
+  const user = await usersService.updateAvatar(req.user.id, req.file.url);
   new ApiResponse(200, { user: sanitizeUser(user) }, 'Avatar updated').send(res);
 });
 

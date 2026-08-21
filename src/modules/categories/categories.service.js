@@ -1,10 +1,8 @@
-const fs = require('fs');
-const path = require('path');
 const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const slugify = require('../../utils/slugify');
 const { parsePagination, paginate } = require('../../utils/pagination');
-const { uploadsRoot } = require('../../config/multer');
+const { deleteUploadedImage } = require('../../config/multer');
 
 async function listPublic() {
   return prisma.category.findMany({
@@ -71,7 +69,7 @@ async function adminCreate(data, file) {
       parentId: data.parentId || null,
       isActive: data.isActive ?? true,
       sortOrder: data.sortOrder ?? 0,
-      image: file ? `/uploads/categories/${file.filename}` : null,
+      image: file ? file.url : null,
     },
   });
 }
@@ -89,9 +87,9 @@ async function adminUpdate(id, data, file) {
   }
 
   if (file) {
-    updateData.image = `/uploads/categories/${file.filename}`;
+    updateData.image = file.url;
     if (category.image) {
-      fs.promises.unlink(path.join(uploadsRoot, 'categories', path.basename(category.image))).catch(() => {});
+      deleteUploadedImage(category.image).catch(() => {});
     }
   }
 
@@ -113,7 +111,7 @@ async function adminDelete(id) {
   }
 
   if (category.image) {
-    fs.promises.unlink(path.join(uploadsRoot, 'categories', path.basename(category.image))).catch(() => {});
+    deleteUploadedImage(category.image).catch(() => {});
   }
 
   await prisma.category.delete({ where: { id } });

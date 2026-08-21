@@ -8,7 +8,7 @@ Production backend for a UAE flower e-commerce store, built with Node.js, Expres
 - Prisma ORM → MariaDB
 - JWT auth (access token + rotating refresh token)
 - Stripe (card payments) + Cash on Delivery
-- Local disk image storage (multer)
+- Image uploads via multer — local disk by default, or Cloudinary (optimized + CDN-served) when `CLOUDINARY_*` env vars are set
 - nodemailer (SMTP) for transactional email
 - Winston logging, PM2 for process management
 
@@ -36,7 +36,16 @@ node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 
 ### 3. Set up the database
 
-Create the MariaDB database referenced in `DATABASE_URL`, then run:
+Needs a running MariaDB/MySQL server. For local development, XAMPP's bundled MariaDB works fine — start the **MySQL** module from the XAMPP Control Panel (Apache is not required, this API has its own server), then create the database and a user matching `DATABASE_URL`, e.g. via phpMyAdmin or the MySQL CLI:
+
+```sql
+CREATE DATABASE karaz_flowers;
+CREATE USER 'karaz_user'@'localhost' IDENTIFIED BY 'your_password_here';
+GRANT ALL PRIVILEGES ON karaz_flowers.* TO 'karaz_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Then run:
 
 ```bash
 npm run prisma:generate

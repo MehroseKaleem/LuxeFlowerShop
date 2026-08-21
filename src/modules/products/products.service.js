@@ -1,10 +1,8 @@
-const fs = require('fs');
-const path = require('path');
 const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const slugify = require('../../utils/slugify');
 const { parsePagination, paginate } = require('../../utils/pagination');
-const { uploadsRoot } = require('../../config/multer');
+const { deleteUploadedImage } = require('../../config/multer');
 
 const CATEGORY_SELECT = { id: true, name: true, slug: true };
 
@@ -231,7 +229,7 @@ async function adminCreate(data, files) {
       images: files && files.length
         ? {
             create: files.map((file, index) => ({
-              url: `/uploads/products/${file.filename}`,
+              url: file.url,
               sortOrder: index,
               isPrimary: index === 0,
             })),
@@ -302,7 +300,7 @@ async function adminDelete(id) {
   await prisma.product.delete({ where: { id } });
 
   for (const image of product.images) {
-    fs.promises.unlink(path.join(uploadsRoot, 'products', path.basename(image.url))).catch(() => {});
+    deleteUploadedImage(image.url).catch(() => {});
   }
 }
 
@@ -317,7 +315,7 @@ async function addImages(productId, files) {
   await prisma.productImage.createMany({
     data: files.map((file, index) => ({
       productId,
-      url: `/uploads/products/${file.filename}`,
+      url: file.url,
       sortOrder: startOrder + index,
       isPrimary: !hasPrimary && index === 0,
     })),
@@ -331,7 +329,7 @@ async function removeImage(productId, imageId) {
   if (!image || image.productId !== productId) throw ApiError.notFound('Image not found');
 
   await prisma.productImage.delete({ where: { id: imageId } });
-  fs.promises.unlink(path.join(uploadsRoot, 'products', path.basename(image.url))).catch(() => {});
+  deleteUploadedImage(image.url).catch(() => {});
 
   if (image.isPrimary) {
     const next = await prisma.productImage.findFirst({ where: { productId }, orderBy: { sortOrder: 'asc' } });

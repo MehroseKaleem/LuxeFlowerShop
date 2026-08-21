@@ -1,9 +1,7 @@
-const fs = require('fs');
-const path = require('path');
 const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const { parsePagination, paginate } = require('../../utils/pagination');
-const { uploadsRoot } = require('../../config/multer');
+const { deleteUploadedImage } = require('../../config/multer');
 
 async function listPublic(position) {
   const now = new Date();
@@ -33,7 +31,7 @@ async function adminCreate(data, file) {
   return prisma.banner.create({
     data: {
       title: data.title,
-      imageUrl: `/uploads/banners/${file.filename}`,
+      imageUrl: file.url,
       link: data.link || null,
       position: data.position || 'HOME_HERO',
       sortOrder: data.sortOrder ?? 0,
@@ -50,8 +48,8 @@ async function adminUpdate(id, data, file) {
 
   const updateData = { ...data };
   if (file) {
-    updateData.imageUrl = `/uploads/banners/${file.filename}`;
-    fs.promises.unlink(path.join(uploadsRoot, 'banners', path.basename(banner.imageUrl))).catch(() => {});
+    updateData.imageUrl = file.url;
+    deleteUploadedImage(banner.imageUrl).catch(() => {});
   }
 
   return prisma.banner.update({ where: { id }, data: updateData });
@@ -62,7 +60,7 @@ async function adminDelete(id) {
   if (!banner) throw ApiError.notFound('Banner not found');
 
   await prisma.banner.delete({ where: { id } });
-  fs.promises.unlink(path.join(uploadsRoot, 'banners', path.basename(banner.imageUrl))).catch(() => {});
+  deleteUploadedImage(banner.imageUrl).catch(() => {});
 }
 
 module.exports = { listPublic, adminList, adminCreate, adminUpdate, adminDelete };
