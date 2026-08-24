@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { SeoService } from '../../core/services/seo.service';
 
 interface BlogPost {
   id: number;
@@ -20,6 +21,7 @@ interface BlogPost {
 })
 export class BlogComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private seo = inject(SeoService);
 
   blogCategory = 'Blog & News';
 
@@ -42,7 +44,7 @@ export class BlogComponent implements OnInit {
     },
     {
       id: 3,
-      title: 'Karaz Flowers Launches Same-Day Luxury Hamper Delivery',
+      title: 'Luxeflower Launches Same-Day Luxury Hamper Delivery',
       category: 'News',
       date: 'July 15, 2026',
       excerpt: 'We are excited to expand our express delivery services across all seven Emirates with custom artisan hampers.',
@@ -51,6 +53,11 @@ export class BlogComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.seo.set({
+      title: 'Blog & News',
+      description: 'Flower care tips, seasonal guides, and news from Luxeflower — the UAE flower delivery shop.'
+    });
+
     this.route.url.subscribe(segments => {
       const pathStr = segments.map(s => s.path).join('/');
       if (pathStr) {

@@ -60,6 +60,12 @@
   &.no-transition {
     transition: none;
   }
+
+  /* Fewer items than fit in one row — center them instead of leaving a
+     trailing gap where the missing slides would have been. */
+  &.static-row {
+    justify-content: center;
+  }
 }
 
 .carousel-slide {

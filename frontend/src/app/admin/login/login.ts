@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -11,9 +12,14 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
+  private seo = inject(SeoService);
+
+  ngOnInit(): void {
+    this.seo.set({ title: 'Admin Sign In', description: 'Luxeflower admin panel sign in.', noindex: true });
+  }
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required]),

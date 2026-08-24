@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "Karaz Flowers API",
-    "description": "Full storefront + admin API for the Karaz Flowers backend. See docs/API_INTEGRATION_GUIDE.md for narrative documentation.",
+    "name": "Luxeflower API",
+    "description": "Full storefront + admin API for the Luxeflower backend. See docs/API_INTEGRATION_GUIDE.md for narrative documentation.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -1449,7 +1449,7 @@
             "description": "Uses the same /auth/login endpoint — role comes back on the user object. Automatically saves the token into {{adminAccessToken}}, used by every request below.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"identifier\": \"admin@karazflowers.ae\",\n  \"password\": \"ChangeMe@12345\"\n}",
+              "raw": "{\n  \"identifier\": \"admin@luxeflower.ae\",\n  \"password\": \"ChangeMe@12345\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

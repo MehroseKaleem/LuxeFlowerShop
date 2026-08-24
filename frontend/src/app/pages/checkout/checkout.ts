@@ -10,6 +10,7 @@ import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { StripeLoaderService } from '../../core/services/stripe-loader.service';
+import { SeoService } from '../../core/services/seo.service';
 import { Address } from '../../models/user.model';
 import { CreateOrderPayload, Order, PaymentMethod } from '../../models/order.model';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
@@ -32,6 +33,7 @@ export class CheckoutComponent implements OnInit {
   private notifications = inject(NotificationService);
   private stripeLoader = inject(StripeLoaderService);
   private router = inject(Router);
+  private seo = inject(SeoService);
 
   protected readonly emirates = EMIRATES;
   protected readonly loading = signal(true);
@@ -67,6 +69,8 @@ export class CheckoutComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.seo.set({ title: 'Checkout', description: 'Complete your Luxeflower order — secure checkout with Cash on Delivery or card.', noindex: true });
+
     this.cartService.loadCart().subscribe({
       next: () => this.loading.set(false),
       error: () => this.loading.set(false)

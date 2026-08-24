@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'karaz-flowers-api',
+      name: 'luxeflower-api',
       script: 'src/server.js',
       instances: 'max',
       exec_mode: 'cluster',

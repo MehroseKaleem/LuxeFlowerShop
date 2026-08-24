@@ -53,7 +53,7 @@ async function register({ name, email, phone, password }, meta) {
     },
   });
 
-  sendMail({ to: user.email, subject: 'Welcome to Karaz Flowers', html: templates.welcome(user.name) });
+  sendMail({ to: user.email, subject: 'Welcome to Luxeflower', html: templates.welcome(user.name) });
   sendMail({
     to: user.email,
     subject: 'Verify your email',

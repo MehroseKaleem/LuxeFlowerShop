@@ -10,6 +10,7 @@ import { CategoryService } from '../services/category.service';
 import { ProductService } from '../services/product.service';
 import { ReviewService } from '../services/review.service';
 import { BannerService } from '../services/banner.service';
+import { SeoService } from '../core/services/seo.service';
 import { Category } from '../models/category.model';
 import { ProductListItem } from '../models/product.model';
 import { Review } from '../models/review.model';
@@ -69,6 +70,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private productService = inject(ProductService);
   private reviewService = inject(ReviewService);
   private bannerService = inject(BannerService);
+  private seo = inject(SeoService);
   private platformId = inject(PLATFORM_ID);
 
   protected readonly loading = signal(true);
@@ -85,6 +87,21 @@ export class HomeComponent implements OnInit, OnDestroy {
   private testimonialTimer: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
+    this.seo.set({
+      title: 'Luxeflower | Premium Flower Delivery in UAE',
+      description: 'Order fresh, handcrafted flower bouquets online with same-day delivery across the UAE. Roses, mixed arrangements, gifts & hampers for every occasion — secure checkout, Cash on Delivery available.'
+    });
+    this.seo.setJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'FloristShop',
+      name: 'Luxeflower',
+      url: 'https://luxeflower.ae',
+      image: 'https://luxeflower.ae/logo.png',
+      description: 'Premium flower delivery across the UAE — fresh, handcrafted bouquets for every occasion.',
+      areaServed: 'AE',
+      priceRange: 'AED'
+    });
+
     this.bannerService.list('HOME_SECONDARY').subscribe({
       next: banners => {
         if (banners.length) {
@@ -120,7 +137,10 @@ export class HomeComponent implements OnInit, OnDestroy {
             link: `/category/${c.slug}`
           }))
         );
-        this.loadSections(categories);
+        this.productService.list({ limit: 1 }).subscribe({
+          next: ({ meta }) => this.loadSections(categories, meta.total),
+          error: () => this.loadSections(categories, 0)
+        });
       },
       error: () => this.loading.set(false)
     });
@@ -131,10 +151,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadSections(categories: Category[]): void {
-    const totalProductCount = Math.max(...categories.map(c => c._count?.products ?? 0), 0);
-    // Skip "catch-all" categories that hold every product — they'd just
-    // duplicate the featured/other sections with no distinct content.
+  private loadSections(categories: Category[], totalProductCount: number): void {
+    // Skip only a true "catch-all" category that holds every single product
+    // in the store — it would just duplicate the featured/other sections
+    // with no distinct content. A category tying with others for the
+    // highest count is NOT the same thing and must still show.
     const distinctCategories = categories
       .filter(c => (c._count?.products ?? 0) > 0 && (c._count?.products ?? 0) < totalProductCount)
       .slice(0, MAX_HOME_CATEGORY_SECTIONS);

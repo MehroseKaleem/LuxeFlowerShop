@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { SeoService } from '../../core/services/seo.service';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
 import { mediaUrl } from '../../shared/utils/media.util';
 
@@ -17,6 +18,7 @@ import { mediaUrl } from '../../shared/utils/media.util';
 export class CartComponent implements OnInit {
   protected cartService = inject(CartService);
   private notifications = inject(NotificationService);
+  private seo = inject(SeoService);
 
   protected readonly loading = signal(true);
   protected readonly couponCode = signal('');
@@ -24,6 +26,8 @@ export class CartComponent implements OnInit {
   protected readonly updatingItemId = signal<number | null>(null);
 
   ngOnInit(): void {
+    this.seo.set({ title: 'Your Cart', description: 'Review the items in your Luxeflower cart before checkout.', noindex: true });
+
     this.cartService.loadCart().subscribe({
       next: () => this.loading.set(false),
       error: () => this.loading.set(false)

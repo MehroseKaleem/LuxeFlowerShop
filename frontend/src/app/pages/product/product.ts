@@ -2,7 +2,6 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Title, Meta } from '@angular/platform-browser';
 import { Product, ProductListItem } from '../../models/product.model';
 import { Review } from '../../models/review.model';
 import { ProductService } from '../../services/product.service';
@@ -17,6 +16,7 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
 import { mediaUrl } from '../../shared/utils/media.util';
 import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 import { Tilt3dDirective } from '../../shared/directives/tilt-3d.directive';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-product',
@@ -43,8 +43,7 @@ export class ProductComponent implements OnInit {
   private wishlistService = inject(WishlistService);
   protected auth = inject(AuthService);
   private notifications = inject(NotificationService);
-  private titleService = inject(Title);
-  private metaService = inject(Meta);
+  private seo = inject(SeoService);
 
   protected readonly loading = signal(true);
   protected readonly notFound = signal(false);
@@ -77,10 +76,35 @@ export class ProductComponent implements OnInit {
         this.product.set(product);
         this.selectedVariantId.set(product.variants.find(v => v.isDefault)?.id ?? null);
         this.loading.set(false);
-        this.titleService.setTitle(product.metaTitle || `${product.name} | Karaz Flowers`);
-        this.metaService.updateTag({
-          name: 'description',
-          content: product.metaDescription || product.shortDescription || `Order ${product.name} online, fresh flowers delivered across the UAE.`
+        const description = product.metaDescription || product.shortDescription || `Order ${product.name} online, fresh flowers delivered across the UAE.`;
+        this.seo.set({
+          title: product.metaTitle || product.name,
+          description,
+          image: mediaUrl(product.images[0]?.url),
+          type: 'product'
+        });
+        this.seo.setJsonLd({
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: product.name,
+          description,
+          image: product.images.map(img => mediaUrl(img.url)),
+          sku: product.sku,
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'AED',
+            price: (product.discountPrice ? Number(product.discountPrice) : Number(product.basePrice)).toFixed(2),
+            availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
+          },
+          ...(product.reviewCount > 0
+            ? {
+                aggregateRating: {
+                  '@type': 'AggregateRating',
+                  ratingValue: Number(product.avgRating).toFixed(1),
+                  reviewCount: product.reviewCount
+                }
+              }
+            : {})
         });
 
         this.productService.related(slug, 8).subscribe({ next: items => this.related.set(items), error: () => undefined });

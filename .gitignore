@@ -24,6 +24,12 @@ dist/
 build/
 coverage/
 
+# Client's real catalog data (spreadsheet + photos) — private, and images
+# are large; the template/guide in data-import/ stay tracked.
+data-import/images/
+data-import/products.csv
+data-import/*.xlsx
+
 .vscode/
 .idea/
 .DS_Store

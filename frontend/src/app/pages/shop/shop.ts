@@ -2,7 +2,6 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Title, Meta } from '@angular/platform-browser';
 import { combineLatest } from 'rxjs';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
@@ -10,6 +9,7 @@ import { ProductListItem, ProductQuery } from '../../models/product.model';
 import { Category } from '../../models/category.model';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card';
 import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
+import { SeoService } from '../../core/services/seo.service';
 
 type SortOption = 'newest' | 'price-low' | 'price-high' | 'rating';
 
@@ -25,8 +25,7 @@ export class ShopComponent implements OnInit {
   private router = inject(Router);
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
-  private titleService = inject(Title);
-  private metaService = inject(Meta);
+  private seo = inject(SeoService);
 
   protected readonly loading = signal(true);
   protected readonly products = signal<ProductListItem[]>([]);
@@ -56,10 +55,9 @@ export class ShopComponent implements OnInit {
         this.categoryService.getBySlug(slug).subscribe({
           next: category => {
             this.activeCategory.set(category);
-            this.titleService.setTitle(`${category.name} | Karaz Flowers`);
-            this.metaService.updateTag({
-              name: 'description',
-              content: category.description || `Shop our ${category.name} collection at Karaz Flowers — fresh flowers delivered across the UAE.`
+            this.seo.set({
+              title: category.name,
+              description: category.description || `Shop our ${category.name} collection at Luxeflower — fresh flowers delivered across the UAE.`
             });
           },
           error: () => this.activeCategory.set(null)
@@ -67,7 +65,11 @@ export class ShopComponent implements OnInit {
         this.fetchProducts({ category: slug, sort, page });
       } else {
         this.activeCategory.set(null);
-        this.titleService.setTitle(q ? `Search: ${q} | Karaz Flowers` : 'Shop | Karaz Flowers');
+        if (q) {
+          this.seo.set({ title: `Search: ${q}`, description: `Search results for "${q}" at Luxeflower.`, noindex: true });
+        } else {
+          this.seo.set({ title: 'Shop All Flowers', description: 'Browse the full Luxeflower catalog — roses, mixed arrangements, gifts & hampers, delivered fresh across the UAE.' });
+        }
         this.fetchProducts({ category: categorySlug || undefined, search: q || undefined, sort, page });
       }
     });

@@ -82,8 +82,8 @@ const folder = (name, items) => ({ name, item: items });
 
 const collection = {
   info: {
-    name: 'Karaz Flowers API',
-    description: 'Full storefront + admin API for the Karaz Flowers backend. See docs/API_INTEGRATION_GUIDE.md for narrative documentation.',
+    name: 'Luxeflower API',
+    description: 'Full storefront + admin API for the Luxeflower backend. See docs/API_INTEGRATION_GUIDE.md for narrative documentation.',
     schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
   },
   variable: [
@@ -223,7 +223,7 @@ const collection = {
 
     folder('Admin', [
       req('Admin login', 'POST', '/auth/login', {
-        body: { identifier: 'admin@karazflowers.ae', password: 'ChangeMe@12345' },
+        body: { identifier: 'admin@luxeflower.ae', password: 'ChangeMe@12345' },
         description: 'Uses the same /auth/login endpoint — role comes back on the user object. Automatically saves the token into {{adminAccessToken}}, used by every request below.',
         saveTokenAs: 'adminAccessToken',
       }),

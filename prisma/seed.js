@@ -65,7 +65,7 @@ async function seedSettings() {
   console.log('Default settings ensured.');
 }
 
-// Exact category list requested by the client for karazflowers.ae. Order
+// Exact category list requested by the client for luxeflower.ae. Order
 // here also drives display sortOrder. "Our Collection" and "Flowers" are
 // broad umbrella categories that most products also belong to, alongside
 // their more specific category/categories (a product can sit in many).
@@ -592,6 +592,15 @@ async function main() {
   console.log('Seeding database...');
   await seedSuperAdmin();
   await seedSettings();
+
+  if (env.isProd) {
+    // Production deploys only need a working admin login and default
+    // settings — no demo catalog, customers, orders, reviews, or coupons.
+    console.log('NODE_ENV=production: skipping demo catalog/customers/orders/reviews/coupons.');
+    console.log('Seeding complete.');
+    return;
+  }
+
   await cleanupLegacyPlaceholderData();
   const categories = await seedCategories();
   const products = await seedProducts(categories);

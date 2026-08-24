@@ -18,8 +18,8 @@ services:
     image: mariadb:11
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: karaz_flowers
-      MYSQL_USER: karaz_user
+      MYSQL_DATABASE: luxeflower
+      MYSQL_USER: luxeflower_user
       MYSQL_PASSWORD: change_me
       MYSQL_ROOT_PASSWORD: change_me_root
     ports:

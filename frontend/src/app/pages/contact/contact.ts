@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ContactService } from '../../services/contact.service';
 import { SettingsService } from '../../services/settings.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-contact',
@@ -16,15 +17,21 @@ export class ContactComponent implements OnInit {
   private contactService = inject(ContactService);
   private settingsService = inject(SettingsService);
   private notifications = inject(NotificationService);
+  private seo = inject(SeoService);
 
   protected readonly storePhone = signal('+971500000000');
-  protected readonly storeEmail = signal('support@karazflowers.ae');
+  protected readonly storeEmail = signal('support@luxeflower.ae');
   protected readonly submitting = signal(false);
   protected readonly submitted = signal(false);
 
   protected form = { name: '', email: '', phone: '', message: '' };
 
   ngOnInit(): void {
+    this.seo.set({
+      title: 'Contact Us',
+      description: 'Get in touch with Luxeflower — call, WhatsApp, or send a message for orders, custom bouquet requests, or support.'
+    });
+
     this.settingsService.get().subscribe({
       next: settings => {
         if (settings['STORE_PHONE']) this.storePhone.set(settings['STORE_PHONE']);

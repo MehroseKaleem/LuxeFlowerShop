@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { CartSessionService } from '../../core/services/cart-session.service';
+import { SeoService } from '../../core/services/seo.service';
 
 const PHONE_PATTERN = /^\+?[0-9]{7,15}$/;
 const PASSWORD_PATTERN = /^(?=.*\d).{8,}$/;
@@ -16,15 +17,20 @@ const PASSWORD_PATTERN = /^(?=.*\d).{8,}$/;
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private cart = inject(CartService);
   private cartSession = inject(CartSessionService);
   private router = inject(Router);
+  private seo = inject(SeoService);
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.seo.set({ title: 'Create Account', description: 'Create a Luxeflower account for faster checkout and order tracking.', noindex: true });
+  }
 
   protected form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],

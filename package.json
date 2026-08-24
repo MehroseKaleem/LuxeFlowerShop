@@ -1,7 +1,7 @@
 {
-  "name": "karaz-flowers-backend",
+  "name": "luxeflower-backend",
   "version": "1.0.0",
-  "description": "Production backend for Karaz Flowers e-commerce (Node.js, Express, MariaDB/Prisma)",
+  "description": "Production backend for Luxeflower e-commerce (Node.js, Express, MariaDB/Prisma)",
   "main": "src/server.js",
   "license": "UNLICENSED",
   "private": true,
@@ -16,6 +16,7 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "seed": "node prisma/seed.js",
+    "import:catalog": "node scripts/import-catalog.js",
     "lint": "eslint \"src/**/*.js\" \"prisma/**/*.js\"",
     "lint:fix": "eslint \"src/**/*.js\" \"prisma/**/*.js\" --fix",
     "format": "prettier --write \"src/**/*.js\" \"prisma/**/*.js\""
@@ -27,6 +28,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "csv-parse": "^7.0.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-rate-limit": "^7.4.0",

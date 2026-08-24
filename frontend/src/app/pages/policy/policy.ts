@@ -1,6 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { SeoService } from '../../core/services/seo.service';
+
+const POLICY_TITLES: Record<string, string> = {
+  privacy: 'Privacy Policy',
+  shipping: 'Shipping Policy',
+  terms: 'Terms of Service',
+  refund: 'Refund & Return Policy'
+};
 
 @Component({
   selector: 'app-policy',
@@ -11,6 +19,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PolicyComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private seo = inject(SeoService);
 
   policyType = 'privacy';
 
@@ -26,6 +35,11 @@ export class PolicyComponent implements OnInit {
       } else {
         this.policyType = 'privacy';
       }
+
+      this.seo.set({
+        title: POLICY_TITLES[this.policyType],
+        description: `Read Luxeflower's ${POLICY_TITLES[this.policyType].toLowerCase()} for online flower orders and delivery across the UAE.`
+      });
     });
   }
 }

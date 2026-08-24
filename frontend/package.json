@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
     "serve:ssr:flowerweb": "node dist/flowerweb/server/server.mjs"
   },
   "prettier": {

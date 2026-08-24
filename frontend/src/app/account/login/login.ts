@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { CartSessionService } from '../../core/services/cart-session.service';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-account-login',
@@ -13,16 +14,21 @@ import { CartSessionService } from '../../core/services/cart-session.service';
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
-export class AccountLoginComponent {
+export class AccountLoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private cart = inject(CartService);
   private cartSession = inject(CartSessionService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private seo = inject(SeoService);
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.seo.set({ title: 'Sign In', description: 'Sign in to your Luxeflower account.', noindex: true });
+  }
 
   protected form = this.fb.nonNullable.group({
     identifier: ['', [Validators.required]],

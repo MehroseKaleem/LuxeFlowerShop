@@ -1,6 +1,6 @@
-# Karaz Flowers — E-commerce Backend
+# Luxeflower — E-commerce Backend
 
-Production backend for a UAE flower e-commerce store, built with Node.js, Express, and MariaDB (via Prisma). Sample/reference project (domain `luxefloraluae`, modeled after karazflowers.ae).
+Production backend for Luxeflower, a UAE flower e-commerce store, built with Node.js, Express, and MariaDB (via Prisma).
 
 ## Tech Stack
 
@@ -39,9 +39,9 @@ node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 Needs a running MariaDB/MySQL server. For local development, XAMPP's bundled MariaDB works fine — start the **MySQL** module from the XAMPP Control Panel (Apache is not required, this API has its own server), then create the database and a user matching `DATABASE_URL`, e.g. via phpMyAdmin or the MySQL CLI:
 
 ```sql
-CREATE DATABASE karaz_flowers;
-CREATE USER 'karaz_user'@'localhost' IDENTIFIED BY 'your_password_here';
-GRANT ALL PRIVILEGES ON karaz_flowers.* TO 'karaz_user'@'localhost';
+CREATE DATABASE luxeflower;
+CREATE USER 'luxeflower_user'@'localhost' IDENTIFIED BY 'your_password_here';
+GRANT ALL PRIVILEGES ON luxeflower.* TO 'luxeflower_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
 

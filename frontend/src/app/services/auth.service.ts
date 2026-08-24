@@ -11,8 +11,8 @@ interface AuthResponseData {
   accessToken: string;
 }
 
-const ACCESS_TOKEN_KEY = 'karaz_access_token';
-const USER_CACHE_KEY = 'karaz_auth_user';
+const ACCESS_TOKEN_KEY = 'luxeflower_access_token';
+const USER_CACHE_KEY = 'luxeflower_auth_user';
 
 @Injectable({
   providedIn: 'root'

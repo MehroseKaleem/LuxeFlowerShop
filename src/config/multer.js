@@ -28,7 +28,7 @@ class CloudinaryFileStorage {
   _handleFile(req, file, cb) {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: `karaz-flowers/${this.subfolder}`,
+        folder: `luxeflower/${this.subfolder}`,
         resource_type: 'image',
         quality: 'auto',
         fetch_format: 'auto',

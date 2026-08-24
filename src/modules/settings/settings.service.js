@@ -6,7 +6,7 @@ const DEFAULTS = {
   TAX_RATE_PERCENT: '5',
   CURRENCY: 'AED',
   STORE_PHONE: '+971500000000',
-  STORE_EMAIL: 'support@karazflowers.ae',
+  STORE_EMAIL: 'support@luxeflower.ae',
 };
 
 async function getAllPublic() {

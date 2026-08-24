@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { ReviewService } from '../../services/review.service';
 import { ContactService } from '../../services/contact.service';
+import { SeoService } from '../../core/services/seo.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -21,6 +22,7 @@ export class AdminLayoutComponent implements OnInit {
   protected authService = inject(AuthService);
   private reviewService = inject(ReviewService);
   private contactService = inject(ContactService);
+  private seo = inject(SeoService);
 
   sidebarCollapsed = signal(false);
   mobileSidebarOpen = signal(false);
@@ -111,6 +113,8 @@ export class AdminLayoutComponent implements OnInit {
   }));
 
   ngOnInit() {
+    this.seo.set({ title: 'Admin', description: 'Luxeflower admin panel.', noindex: true });
+
     this.reviewService.adminList({ isApproved: 'false', limit: 1 }).subscribe({
       next: ({ meta }) => this.pendingReviewsCount.set(meta.total),
       error: () => undefined

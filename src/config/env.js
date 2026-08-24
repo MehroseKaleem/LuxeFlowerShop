@@ -22,7 +22,7 @@ module.exports = {
   isProd: process.env.NODE_ENV === 'production',
   port: toInt(process.env.PORT, 5000),
   apiPrefix: process.env.API_PREFIX || '/api/v1',
-  appName: process.env.APP_NAME || 'Karaz Flowers',
+  appName: process.env.APP_NAME || 'Luxeflower',
   clientUrl: process.env.CLIENT_URL || 'http://localhost:3000',
   adminClientUrl: process.env.ADMIN_CLIENT_URL || 'http://localhost:3001',
   corsOrigins: toList(process.env.CORS_ORIGINS, ['http://localhost:3000']),
@@ -34,7 +34,7 @@ module.exports = {
     accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
     refreshSecret: process.env.JWT_REFRESH_SECRET,
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
-    refreshCookieName: process.env.REFRESH_COOKIE_NAME || 'karaz_refresh_token',
+    refreshCookieName: process.env.REFRESH_COOKIE_NAME || 'luxeflower_refresh_token',
   },
 
   bcryptSaltRounds: toInt(process.env.BCRYPT_SALT_ROUNDS, 12),
@@ -67,8 +67,8 @@ module.exports = {
     secure: toBool(process.env.SMTP_SECURE, false),
     user: process.env.SMTP_USER,
     password: process.env.SMTP_PASSWORD,
-    fromName: process.env.EMAIL_FROM_NAME || 'Karaz Flowers',
-    fromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@karazflowers.ae',
+    fromName: process.env.EMAIL_FROM_NAME || 'Luxeflower',
+    fromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@luxeflower.ae',
   },
 
   rateLimit: {
@@ -79,8 +79,8 @@ module.exports = {
   },
 
   seed: {
-    superAdminName: process.env.SEED_SUPER_ADMIN_NAME || 'Karaz Admin',
-    superAdminEmail: process.env.SEED_SUPER_ADMIN_EMAIL || 'admin@karazflowers.ae',
+    superAdminName: process.env.SEED_SUPER_ADMIN_NAME || 'Luxeflower Admin',
+    superAdminEmail: process.env.SEED_SUPER_ADMIN_EMAIL || 'admin@luxeflower.ae',
     superAdminPhone: process.env.SEED_SUPER_ADMIN_PHONE || '+971500000000',
     superAdminPassword: process.env.SEED_SUPER_ADMIN_PASSWORD || 'ChangeMe@12345',
   },

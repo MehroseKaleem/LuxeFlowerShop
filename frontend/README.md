@@ -1,6 +1,6 @@
-# Karaz Flowers — Frontend
+# Luxeflower — Frontend
 
-Customer storefront + admin panel for Karaz Flowers, a UAE flower delivery shop. Built with Angular 20 (standalone components, signals, SSR-scaffolded but running as pure client-side rendering + hydration).
+Customer storefront + admin panel for Luxeflower, a UAE flower delivery shop. Built with Angular 20 (standalone components, signals, SSR-scaffolded but running as pure client-side rendering + hydration).
 
 ## Prerequisites
 

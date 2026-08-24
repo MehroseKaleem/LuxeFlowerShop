@@ -1,7 +1,7 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-const STORAGE_KEY = 'karaz_cart_session';
+const STORAGE_KEY = 'luxeflower_cart_session';
 
 @Injectable({
   providedIn: 'root'
