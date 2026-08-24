@@ -14,6 +14,10 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
   padding: 2rem;
   color: $admin-text;
 
+  @media (max-width: 600px) {
+    padding: 1rem;
+  }
+
   .page-header {
     margin-bottom: 2rem;
     h1 {
@@ -28,10 +32,20 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
     grid-template-columns: 250px 1fr;
     gap: 2rem;
 
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+
     .settings-sidebar {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+
+      @media (max-width: 900px) {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
 
       .tab-btn {
         background: transparent;
@@ -46,6 +60,11 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
         display: flex;
         align-items: center;
         gap: 0.75rem;
+
+        @media (max-width: 900px) {
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
 
         &:hover {
           background: rgba(255, 255, 255, 0.05);
@@ -70,6 +89,10 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
         border-radius: 12px;
         padding: 2rem;
         animation: fadeIn 0.3s ease;
+
+        @media (max-width: 600px) {
+          padding: 1.25rem;
+        }
 
         h2 {
           font-family: 'Playfair Display', serif;
@@ -118,6 +141,10 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 1.5rem;
+
+          @media (max-width: 640px) {
+            grid-template-columns: 1fr;
+          }
         }
 
         .toggle-group {
@@ -219,6 +246,12 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s forwards;
     z-index: 1000;
+
+    @media (max-width: 480px) {
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+    }
 
     &.success {
       border-left: 4px solid $admin-success;

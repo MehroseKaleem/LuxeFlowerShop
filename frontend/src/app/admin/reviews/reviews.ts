@@ -1,9 +1,11 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ReviewService } from '../../services/review.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Review } from '../../models/review.model';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 @Component({
   selector: 'app-admin-reviews',
@@ -65,7 +67,8 @@ export class ReviewsComponent implements OnInit {
         this.notifications.success('Review approved');
         this.refreshReviews();
         this.refreshCounts();
-      }
+      },
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not approve the review. Please try again.'))
     });
   }
 
@@ -75,7 +78,8 @@ export class ReviewsComponent implements OnInit {
       next: () => {
         this.refreshReviews();
         this.refreshCounts();
-      }
+      },
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the review. Please try again.'))
     });
   }
 

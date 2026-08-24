@@ -1,18 +1,21 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray, FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Category } from '../../models/category.model';
 import { Product, ProductImage } from '../../models/product.model';
 import { mediaUrl } from '../../shared/utils/media.util';
+import { formatApiError } from '../../shared/utils/api-error.util';
+import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 @Component({
   selector: 'app-admin-add-product',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ImgFallbackDirective],
   templateUrl: './add-product.html',
   styleUrl: './add-product.scss'
 })
@@ -56,12 +59,16 @@ export class AddProductComponent implements OnInit {
     });
   }
 
+  private static notBlank(control: AbstractControl) {
+    return control.value && String(control.value).trim().length > 0 ? null : { required: true };
+  }
+
   initForm() {
     this.productForm = this.fb.group({
-      name: ['', Validators.required],
-      sku: ['', Validators.required],
+      name: ['', AddProductComponent.notBlank as ValidatorFn],
+      sku: ['', AddProductComponent.notBlank as ValidatorFn],
       shortDescription: [''],
-      description: ['', Validators.required],
+      description: ['', AddProductComponent.notBlank as ValidatorFn],
       basePrice: [0, [Validators.required, Validators.min(0.01)]],
       discountPrice: [null],
       stock: [0, [Validators.required, Validators.min(0)]],
@@ -143,7 +150,10 @@ export class AddProductComponent implements OnInit {
         this.existingImages.set([...this.existingImages(), ...images]);
         this.uploadingImages.set(false);
       },
-      error: () => this.uploadingImages.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.uploadingImages.set(false);
+        this.notifications.error(formatApiError(err, 'Could not upload the image(s). Please try again.'));
+      }
     });
   }
 
@@ -159,14 +169,16 @@ export class AddProductComponent implements OnInit {
   deleteExistingImage(imageId: number): void {
     if (!this.editProductId) return;
     this.productService.adminDeleteImage(this.editProductId, imageId).subscribe({
-      next: () => this.existingImages.update(list => list.filter(i => i.id !== imageId))
+      next: () => this.existingImages.update(list => list.filter(i => i.id !== imageId)),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the image. Please try again.'))
     });
   }
 
   setPrimaryImage(imageId: number): void {
     if (!this.editProductId) return;
     this.productService.adminSetPrimaryImage(this.editProductId, imageId).subscribe({
-      next: () => this.existingImages.update(list => list.map(i => ({ ...i, isPrimary: i.id === imageId })))
+      next: () => this.existingImages.update(list => list.map(i => ({ ...i, isPrimary: i.id === imageId }))),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update the primary image. Please try again.'))
     });
   }
 
@@ -205,7 +217,10 @@ export class AddProductComponent implements OnInit {
             this.notifications.success('Product updated');
             this.router.navigate(['/admin/products']);
           },
-          error: () => this.isSubmitting.set(false)
+          error: (err: HttpErrorResponse) => {
+            this.isSubmitting.set(false);
+            this.notifications.error(formatApiError(err, 'Could not save the product. Please try again.'));
+          }
         });
     } else {
       const formData = new FormData();
@@ -226,7 +241,10 @@ export class AddProductComponent implements OnInit {
           this.notifications.success('Product created');
           this.router.navigate(['/admin/products']);
         },
-        error: () => this.isSubmitting.set(false)
+        error: (err: HttpErrorResponse) => {
+          this.isSubmitting.set(false);
+          this.notifications.error(formatApiError(err, 'Could not save the product. Please try again.'));
+        }
       });
     }
   }

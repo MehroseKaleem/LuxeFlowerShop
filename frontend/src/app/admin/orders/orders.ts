@@ -1,9 +1,11 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { OrderService } from '../../services/order.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Order, OrderStatus, ORDER_STATUS_TRANSITIONS } from '../../models/order.model';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 const ALL_STATUSES: OrderStatus[] = [
   'PENDING',
@@ -107,7 +109,10 @@ export class OrdersComponent implements OnInit {
         this.refreshOrders();
         this.closeStatusModal();
       },
-      error: () => this.updatingStatus.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.updatingStatus.set(false);
+        this.notifications.error(formatApiError(err, 'Could not update the order status. Please try again.'));
+      }
     });
   }
 
@@ -116,7 +121,8 @@ export class OrdersComponent implements OnInit {
       next: () => {
         this.notifications.success('Marked as paid');
         this.refreshOrders();
-      }
+      },
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update the payment status. Please try again.'))
     });
   }
 

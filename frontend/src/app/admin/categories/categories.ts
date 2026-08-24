@@ -1,15 +1,18 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CategoryService } from '../../services/category.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Category } from '../../models/category.model';
 import { mediaUrl } from '../../shared/utils/media.util';
+import { formatApiError } from '../../shared/utils/api-error.util';
+import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ImgFallbackDirective],
   templateUrl: './categories.html',
   styleUrl: './categories.scss'
 })
@@ -122,12 +125,18 @@ export class CategoriesComponent implements OnInit {
         this.refreshCategories();
         this.closeModal();
       },
-      error: () => this.saving.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.saving.set(false);
+        this.notifications.error(formatApiError(err, 'Could not save the category. Please try again.'));
+      }
     });
   }
 
   deleteCategory(id: number) {
     if (!confirm('Are you sure you want to delete this category?')) return;
-    this.categoryService.adminDelete(id).subscribe({ next: () => this.refreshCategories() });
+    this.categoryService.adminDelete(id).subscribe({
+      next: () => this.refreshCategories(),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the category. Please try again.'))
+    });
   }
 }

@@ -15,7 +15,7 @@
     @for (banner of banners(); track banner.id) {
       <div class="banner-card">
         <div class="card-image">
-          <img [src]="imageUrl(banner.imageUrl)" [alt]="banner.title" loading="lazy" />
+          <img [src]="imageUrl(banner.imageUrl)" [alt]="banner.title" loading="lazy" appImgFallback />
           <span class="status-badge" [class]="banner.isActive ? 'active' : 'inactive'">{{ banner.isActive ? 'active' : 'inactive' }}</span>
         </div>
         <div class="card-body">

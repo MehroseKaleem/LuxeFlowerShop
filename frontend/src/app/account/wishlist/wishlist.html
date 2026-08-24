@@ -13,7 +13,7 @@
       @for (item of wishlist.items(); track item.id) {
         <div class="wishlist-card">
           <a [routerLink]="['/product', item.product.slug]" class="card-image">
-            <img [src]="imageUrl(item.product.images[0]?.url)" [alt]="item.product.name" loading="lazy" />
+            <img [src]="imageUrl(item.product.images[0]?.url)" [alt]="item.product.name" loading="lazy" appImgFallback />
           </a>
           <div class="card-info">
             <a [routerLink]="['/product', item.product.slug]" class="card-name">{{ item.product.name }}</a>

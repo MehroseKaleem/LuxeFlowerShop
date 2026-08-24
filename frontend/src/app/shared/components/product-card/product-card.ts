@@ -1,6 +1,7 @@
 import { Component, Input, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ProductListItem } from '../../../models/product.model';
 import { CartService } from '../../../services/cart.service';
 import { WishlistService } from '../../../services/wishlist.service';
@@ -9,11 +10,13 @@ import { NotificationService } from '../../../core/services/notification.service
 import { AedCurrencyPipe } from '../../pipes/aed-currency.pipe';
 import { Tilt3dDirective } from '../../directives/tilt-3d.directive';
 import { mediaUrl } from '../../../shared/utils/media.util';
+import { formatApiError } from '../../../shared/utils/api-error.util';
+import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [CommonModule, RouterLink, AedCurrencyPipe, Tilt3dDirective],
+  imports: [CommonModule, RouterLink, AedCurrencyPipe, Tilt3dDirective, ImgFallbackDirective],
   templateUrl: './product-card.html',
   styleUrl: './product-card.scss'
 })
@@ -63,7 +66,10 @@ export class ProductCardComponent {
         this.adding.set(false);
         this.notifications.success(`${this.product.name} added to cart`);
       },
-      error: () => this.adding.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.adding.set(false);
+        this.notifications.error(formatApiError(err, 'Could not add this item to your cart. Please try again.'));
+      }
     });
   }
 
@@ -77,9 +83,13 @@ export class ProductCardComponent {
     }
 
     if (this.isWishlisted) {
-      this.wishlist.remove(this.product.id).subscribe();
+      this.wishlist.remove(this.product.id).subscribe({
+        error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update your wishlist. Please try again.'))
+      });
     } else {
-      this.wishlist.add(this.product.id).subscribe();
+      this.wishlist.add(this.product.id).subscribe({
+        error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update your wishlist. Please try again.'))
+      });
     }
   }
 }

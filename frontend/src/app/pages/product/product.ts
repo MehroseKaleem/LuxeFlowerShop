@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Product, ProductListItem } from '../../models/product.model';
 import { Review } from '../../models/review.model';
 import { ProductService } from '../../services/product.service';
@@ -17,6 +18,8 @@ import { mediaUrl } from '../../shared/utils/media.util';
 import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 import { Tilt3dDirective } from '../../shared/directives/tilt-3d.directive';
 import { SeoService } from '../../core/services/seo.service';
+import { formatApiError } from '../../shared/utils/api-error.util';
+import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 @Component({
   selector: 'app-product',
@@ -28,6 +31,7 @@ import { SeoService } from '../../core/services/seo.service';
     AedCurrencyPipe,
     CarouselComponent,
     ProductCardComponent,
+    ImgFallbackDirective,
     ScrollRevealDirective,
     Tilt3dDirective
   ],
@@ -169,7 +173,10 @@ export class ProductComponent implements OnInit {
         this.addingToCart.set(false);
         this.notifications.success(`${product.name} added to cart`);
       },
-      error: () => this.addingToCart.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.addingToCart.set(false);
+        this.notifications.error(formatApiError(err, 'Could not add this item to your cart. Please try again.'));
+      }
     });
   }
 
@@ -186,9 +193,13 @@ export class ProductComponent implements OnInit {
       return;
     }
     if (this.isWishlisted) {
-      this.wishlistService.remove(product.id).subscribe();
+      this.wishlistService.remove(product.id).subscribe({
+        error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update your wishlist. Please try again.'))
+      });
     } else {
-      this.wishlistService.add(product.id).subscribe();
+      this.wishlistService.add(product.id).subscribe({
+        error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update your wishlist. Please try again.'))
+      });
     }
   }
 
@@ -216,7 +227,10 @@ export class ProductComponent implements OnInit {
           this.reviewForm.rating = 5;
           this.notifications.success('Thanks for your review! It will appear once approved.');
         },
-        error: () => this.submittingReview.set(false)
+        error: (err: HttpErrorResponse) => {
+          this.submittingReview.set(false);
+          this.notifications.error(formatApiError(err, 'Could not submit your review. Please try again.'));
+        }
       });
   }
 

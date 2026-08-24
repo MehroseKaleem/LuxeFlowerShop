@@ -1,17 +1,20 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { BannerService } from '../../services/banner.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Banner } from '../../models/banner.model';
 import { mediaUrl } from '../../shared/utils/media.util';
+import { formatApiError } from '../../shared/utils/api-error.util';
+import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 const POSITIONS = ['HOME_HERO', 'HOME_SECONDARY', 'CATEGORY_TOP'];
 
 @Component({
   selector: 'app-admin-banners',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ImgFallbackDirective],
   templateUrl: './banners.html',
   styleUrl: './banners.scss'
 })
@@ -125,12 +128,18 @@ export class BannersComponent implements OnInit {
         this.load();
         this.closeModal();
       },
-      error: () => this.saving.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.saving.set(false);
+        this.notifications.error(formatApiError(err, 'Could not save the banner. Please try again.'));
+      }
     });
   }
 
   delete(id: number) {
     if (!confirm('Delete this banner?')) return;
-    this.bannerService.adminDelete(id).subscribe({ next: () => this.load() });
+    this.bannerService.adminDelete(id).subscribe({
+      next: () => this.load(),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the banner. Please try again.'))
+    });
   }
 }

@@ -15,7 +15,7 @@
           @for (item of cartService.cart()!.items; track item.id) {
             <div class="cart-item">
               <a [routerLink]="['/product', item.product.slug]" class="item-image">
-                <img [src]="imageUrl(item.product.images[0]?.url)" [alt]="item.product.name" loading="lazy" />
+                <img [src]="imageUrl(item.product.images[0]?.url)" [alt]="item.product.name" loading="lazy" appImgFallback />
               </a>
               <div class="item-info">
                 <a [routerLink]="['/product', item.product.slug]" class="item-name">{{ item.product.name }}</a>

@@ -1,10 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ContactService } from '../../services/contact.service';
 import { SettingsService } from '../../services/settings.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { SeoService } from '../../core/services/seo.service';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 @Component({
   selector: 'app-contact',
@@ -65,7 +67,10 @@ export class ContactComponent implements OnInit {
           this.submitted.set(true);
           this.form = { name: '', email: '', phone: '', message: '' };
         },
-        error: () => this.submitting.set(false)
+        error: (err: HttpErrorResponse) => {
+          this.submitting.set(false);
+          this.notifications.error(formatApiError(err, 'Could not send your message. Please try again.'));
+        }
       });
   }
 }

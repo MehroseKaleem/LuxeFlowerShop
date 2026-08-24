@@ -1,11 +1,13 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { OrderService } from '../../services/order.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { User } from '../../models/user.model';
 import { Order } from '../../models/order.model';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 @Component({
   selector: 'app-admin-customers',
@@ -75,7 +77,8 @@ export class CustomersComponent implements OnInit {
         this.selectedCustomer.set(updated);
         this.customers.update(list => list.map(c => (c.id === updated.id ? updated : c)));
         this.notifications.success(updated.isActive ? 'Account activated' : 'Account deactivated');
-      }
+      },
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update the customer status. Please try again.'))
     });
   }
 }

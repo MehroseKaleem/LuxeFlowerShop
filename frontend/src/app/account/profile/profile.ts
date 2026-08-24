@@ -1,9 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 const PHONE_PATTERN = /^\+?[0-9]{7,15}$/;
 const PASSWORD_PATTERN = /^(?=.*\d).{8,}$/;
@@ -47,7 +49,10 @@ export class ProfileComponent {
         this.savingProfile.set(false);
         this.notifications.success('Profile updated');
       },
-      error: () => this.savingProfile.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.savingProfile.set(false);
+        this.notifications.error(formatApiError(err, 'Could not update your profile. Please try again.'));
+      }
     });
   }
 
@@ -65,7 +70,10 @@ export class ProfileComponent {
         this.passwordForm.reset();
         this.notifications.success('Password changed');
       },
-      error: () => this.savingPassword.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.savingPassword.set(false);
+        this.notifications.error(formatApiError(err, 'Could not change your password. Please check your current password and try again.'));
+      }
     });
   }
 }

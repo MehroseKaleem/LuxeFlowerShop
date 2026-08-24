@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { CartService } from '../../services/cart.service';
@@ -14,6 +15,7 @@ import { SeoService } from '../../core/services/seo.service';
 import { Address } from '../../models/user.model';
 import { CreateOrderPayload, Order, PaymentMethod } from '../../models/order.model';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 const EMIRATES = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain'];
 
@@ -147,7 +149,10 @@ export class CheckoutComponent implements OnInit {
           this.router.navigate(['/order-confirmation', order.orderNumber], { state: { order } });
         }
       },
-      error: () => this.submitting.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.submitting.set(false);
+        this.notifications.error(formatApiError(err, 'Could not place your order. Please check your details and try again.'));
+      }
     });
   }
 

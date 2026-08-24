@@ -1,7 +1,7 @@
 <a [routerLink]="['/product', product.slug]" class="product-card" appTilt3d [tiltMax]="6" [tiltLift]="6">
   <div class="product-image-box">
     <div class="image-clip">
-      <img [src]="primaryImage" [alt]="product.name" class="product-img" loading="lazy" />
+      <img [src]="primaryImage" [alt]="product.name" class="product-img" loading="lazy" appImgFallback />
       <div class="image-veil"></div>
 
       @if (isOnSale) {

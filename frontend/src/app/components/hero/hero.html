@@ -58,10 +58,10 @@
             <div class="slider-slide" [class.active]="i === activeIndex()">
               @if (slide.link) {
                 <a [routerLink]="slide.link" tabindex="-1">
-                  <img [src]="slide.image" [alt]="slide.label" />
+                  <img [src]="slide.image" [alt]="slide.label" appImgFallback />
                 </a>
               } @else {
-                <img [src]="slide.image" [alt]="slide.label" />
+                <img [src]="slide.image" [alt]="slide.label" appImgFallback />
               }
             </div>
           }

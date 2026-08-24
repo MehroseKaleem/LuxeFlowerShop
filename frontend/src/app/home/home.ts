@@ -17,6 +17,7 @@ import { Review } from '../models/review.model';
 import { mediaUrl } from '../shared/utils/media.util';
 import { ScrollRevealDirective } from '../shared/directives/scroll-reveal.directive';
 import { Tilt3dDirective } from '../shared/directives/tilt-3d.directive';
+import { ImgFallbackDirective } from '../shared/directives/img-fallback.directive';
 
 interface CollectionCard {
   title: string;
@@ -60,7 +61,8 @@ const VALUE_PROPS: ValueProp[] = [
     ProductCardComponent,
     FeaturedCoverflowComponent,
     ScrollRevealDirective,
-    Tilt3dDirective
+    Tilt3dDirective,
+    ImgFallbackDirective
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss'

@@ -2,24 +2,29 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { Product } from '../../models/product.model';
 import { Category } from '../../models/category.model';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
 import { mediaUrl } from '../../shared/utils/media.util';
+import { formatApiError } from '../../shared/utils/api-error.util';
+import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, AedCurrencyPipe],
+  imports: [CommonModule, FormsModule, AedCurrencyPipe, ImgFallbackDirective],
   templateUrl: './products.html',
   styleUrl: './products.scss'
 })
 export class ProductsComponent implements OnInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
+  private notifications = inject(NotificationService);
   private router = inject(Router);
 
   products = signal<Product[]>([]);
@@ -87,7 +92,8 @@ export class ProductsComponent implements OnInit {
         const current = new Set(this.selectedProducts());
         current.delete(id);
         this.selectedProducts.set(current);
-      }
+      },
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the product. Please try again.'))
     });
   }
 
@@ -99,7 +105,8 @@ export class ProductsComponent implements OnInit {
       next: () => {
         this.loadData();
         this.selectedProducts.set(new Set<number>());
-      }
+      },
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the selected products. Please try again.'))
     });
   }
 

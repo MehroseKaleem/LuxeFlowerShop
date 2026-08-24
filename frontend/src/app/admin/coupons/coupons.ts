@@ -1,9 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CouponService } from '../../services/coupon.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Coupon } from '../../models/coupon.model';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 @Component({
   selector: 'app-admin-coupons',
@@ -115,12 +117,18 @@ export class CouponsComponent implements OnInit {
         this.load();
         this.closeModal();
       },
-      error: () => this.saving.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.saving.set(false);
+        this.notifications.error(formatApiError(err, 'Could not save the coupon. Please try again.'));
+      }
     });
   }
 
   toggle(coupon: Coupon) {
-    this.couponService.adminToggle(coupon.id).subscribe({ next: () => this.load() });
+    this.couponService.adminToggle(coupon.id).subscribe({
+      next: () => this.load(),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update the coupon. Please try again.'))
+    });
   }
 
   delete(coupon: Coupon) {
@@ -129,7 +137,10 @@ export class CouponsComponent implements OnInit {
       return;
     }
     if (!confirm('Delete this coupon?')) return;
-    this.couponService.adminDelete(coupon.id).subscribe({ next: () => this.load() });
+    this.couponService.adminDelete(coupon.id).subscribe({
+      next: () => this.load(),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the coupon. Please try again.'))
+    });
   }
 
   isExpired(coupon: Coupon): boolean {

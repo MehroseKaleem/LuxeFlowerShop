@@ -14,11 +14,21 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
   padding: 2rem;
   color: $admin-text;
 
+  @media (max-width: 600px) {
+    padding: 1rem;
+  }
+
   .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
 
     h1 {
       font-family: 'Playfair Display', serif;
@@ -30,6 +40,11 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
       display: flex;
       gap: 1rem;
 
+      @media (max-width: 768px) {
+        width: 100%;
+        flex-direction: column;
+      }
+
       .search-input {
         background: $admin-input-bg;
         border: 1px solid $admin-border;
@@ -37,6 +52,10 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
         padding: 0.75rem 1rem;
         border-radius: 8px;
         outline: none;
+
+        @media (max-width: 768px) {
+          width: 100%;
+        }
 
         &:focus {
           border-color: $admin-primary;
@@ -118,9 +137,17 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     overflow: hidden;
 
+    @media (max-width: 900px) {
+      overflow-x: auto;
+    }
+
     .admin-table {
       width: 100%;
       border-collapse: collapse;
+
+      @media (max-width: 900px) {
+        min-width: 700px;
+      }
 
       th, td {
         padding: 1rem 1.5rem;

@@ -61,10 +61,11 @@
     transition: none;
   }
 
-  /* Fewer items than fit in one row — center them instead of leaving a
-     trailing gap where the missing slides would have been. */
+  /* Fewer items than fit in one row — start-align them like a normal row
+     rather than centering, so the layout doesn't shift once more items fill
+     the row. */
   &.static-row {
-    justify-content: center;
+    justify-content: flex-start;
   }
 }
 

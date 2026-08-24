@@ -1,9 +1,11 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ContactService } from '../../services/contact.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ContactMessage } from '../../models/contact.model';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 type StatusFilter = 'all' | 'unread' | 'read' | 'replied';
 
@@ -75,13 +77,17 @@ export class ContactsComponent implements OnInit {
 
   markAsRead(id: number) {
     this.contactService.adminMarkRead(id).subscribe({
-      next: updated => this.messages.update(list => list.map(m => (m.id === id ? updated : m)))
+      next: updated => this.messages.update(list => list.map(m => (m.id === id ? updated : m))),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not mark the message as read. Please try again.'))
     });
   }
 
   deleteMessage(id: number) {
     if (!confirm('Delete this message?')) return;
-    this.contactService.adminDelete(id).subscribe({ next: () => this.loadMessages() });
+    this.contactService.adminDelete(id).subscribe({
+      next: () => this.loadMessages(),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the message. Please try again.'))
+    });
   }
 
   openReplyModal(msg: ContactMessage, event: Event) {
@@ -109,7 +115,10 @@ export class ContactsComponent implements OnInit {
         this.notifications.success('Reply sent');
         this.closeReplyModal();
       },
-      error: () => this.sendingReply.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.sendingReply.set(false);
+        this.notifications.error(formatApiError(err, 'Could not send the reply. Please try again.'));
+      }
     });
   }
 }

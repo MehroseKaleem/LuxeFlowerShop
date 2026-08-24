@@ -19,13 +19,13 @@
         <!-- Gallery -->
         <div class="gallery" appReveal="left">
           <div class="gallery-main" appTilt3d [tiltMax]="4" [tiltLift]="0">
-            <img [src]="primaryImageUrl" [alt]="product()!.name" />
+            <img [src]="primaryImageUrl" [alt]="product()!.name" appImgFallback />
           </div>
           @if (product()!.images.length > 1) {
             <div class="gallery-thumbs">
               @for (image of product()!.images; track image.id; let i = $index) {
                 <button type="button" class="thumb" [class.active]="selectedImageIndex() === i" (click)="selectedImageIndex.set(i)">
-                  <img [src]="imageUrl(image.url)" [alt]="image.altText || product()!.name" loading="lazy" />
+                  <img [src]="imageUrl(image.url)" [alt]="image.altText || product()!.name" loading="lazy" appImgFallback />
                 </button>
               }
             </div>

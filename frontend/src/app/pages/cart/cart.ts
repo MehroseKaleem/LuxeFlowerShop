@@ -2,16 +2,19 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CartService } from '../../services/cart.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { SeoService } from '../../core/services/seo.service';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
 import { mediaUrl } from '../../shared/utils/media.util';
+import { formatApiError } from '../../shared/utils/api-error.util';
+import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AedCurrencyPipe],
+  imports: [CommonModule, FormsModule, RouterLink, AedCurrencyPipe, ImgFallbackDirective],
   templateUrl: './cart.html',
   styleUrl: './cart.scss'
 })
@@ -43,7 +46,10 @@ export class CartComponent implements OnInit {
     this.updatingItemId.set(itemId);
     this.cartService.updateItemQuantity(itemId, quantity).subscribe({
       next: () => this.updatingItemId.set(null),
-      error: () => this.updatingItemId.set(null)
+      error: (err: HttpErrorResponse) => {
+        this.updatingItemId.set(null);
+        this.notifications.error(formatApiError(err, 'Could not update the item quantity. Please try again.'));
+      }
     });
   }
 
@@ -51,7 +57,10 @@ export class CartComponent implements OnInit {
     this.updatingItemId.set(itemId);
     this.cartService.removeItem(itemId).subscribe({
       next: () => this.updatingItemId.set(null),
-      error: () => this.updatingItemId.set(null)
+      error: (err: HttpErrorResponse) => {
+        this.updatingItemId.set(null);
+        this.notifications.error(formatApiError(err, 'Could not remove the item. Please try again.'));
+      }
     });
   }
 
@@ -66,11 +75,16 @@ export class CartComponent implements OnInit {
         this.couponCode.set('');
         this.notifications.success('Coupon applied!');
       },
-      error: () => this.applyingCoupon.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.applyingCoupon.set(false);
+        this.notifications.error(formatApiError(err, 'Could not apply this coupon. Please check the code and try again.'));
+      }
     });
   }
 
   removeCoupon(): void {
-    this.cartService.removeCoupon().subscribe();
+    this.cartService.removeCoupon().subscribe({
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not remove the coupon. Please try again.'))
+    });
   }
 }

@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { BannerService } from '../../services/banner.service';
 import { Tilt3dDirective } from '../../shared/directives/tilt-3d.directive';
 import { mediaUrl } from '../../shared/utils/media.util';
+import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 interface HeroSlide {
   image: string;
@@ -25,7 +26,7 @@ const PETAL_COUNT = 30;
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [CommonModule, RouterLink, Tilt3dDirective],
+  imports: [CommonModule, RouterLink, Tilt3dDirective, ImgFallbackDirective],
   templateUrl: './hero.html',
   styleUrl: './hero.scss'
 })

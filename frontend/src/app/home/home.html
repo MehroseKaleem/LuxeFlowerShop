@@ -20,7 +20,7 @@
       <ng-template let-card>
         <a [routerLink]="card.link" class="collection-card" appTilt3d [tiltMax]="5" [tiltLift]="4">
           <div class="card-image-wrap">
-            <img [src]="card.image" [alt]="card.title" class="card-image" loading="lazy" />
+            <img [src]="card.image" [alt]="card.title" class="card-image" loading="lazy" appImgFallback />
             <div class="card-shine"></div>
           </div>
           <div class="card-footer">
@@ -115,7 +115,8 @@
             alt="Luxeflower arrangement"
             class="about-slide"
             [class.active]="i === aboutIndex()"
-            loading="lazy" />
+            loading="lazy"
+            appImgFallback />
         }
         <div class="slide-veil"></div>
         <div class="card-shine"></div>

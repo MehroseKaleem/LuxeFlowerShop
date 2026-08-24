@@ -4,7 +4,7 @@ Customer storefront + admin panel for Luxeflower, a UAE flower delivery shop. Bu
 
 ## Prerequisites
 
-This is the frontend only — it needs the [backend API](../floral%20website%20backend/README.md) running first (MariaDB via XAMPP + `npm run dev` in that project, listening on `http://localhost:5000` by default).
+This is the frontend only — it needs the [backend API](../backend/README.md) running first (MariaDB via XAMPP + `npm run dev` in that project, listening on `http://localhost:5000` by default).
 
 ## Getting started
 

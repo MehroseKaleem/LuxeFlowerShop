@@ -1,9 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Address } from '../../models/user.model';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 const PHONE_PATTERN = /^\+?[0-9]{7,15}$/;
 const EMIRATES = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain'];
@@ -96,7 +98,10 @@ export class AddressesComponent implements OnInit {
         this.notifications.success(editingId ? 'Address updated' : 'Address added');
         this.load();
       },
-      error: () => this.saving.set(false)
+      error: (err: HttpErrorResponse) => {
+        this.saving.set(false);
+        this.notifications.error(formatApiError(err, 'Could not save the address. Please try again.'));
+      }
     });
   }
 
@@ -105,11 +110,15 @@ export class AddressesComponent implements OnInit {
       next: () => {
         this.notifications.success('Address removed');
         this.load();
-      }
+      },
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not remove the address. Please try again.'))
     });
   }
 
   setDefault(id: number): void {
-    this.userService.setDefaultAddress(id).subscribe({ next: () => this.load() });
+    this.userService.setDefaultAddress(id).subscribe({
+      next: () => this.load(),
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update the default address. Please try again.'))
+    });
   }
 }

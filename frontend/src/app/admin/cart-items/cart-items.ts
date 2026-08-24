@@ -1,9 +1,11 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AdminCartService } from '../../services/admin-cart.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AdminCartSummary } from '../../models/admin-cart.model';
+import { formatApiError } from '../../shared/utils/api-error.util';
 
 @Component({
   selector: 'app-admin-cart-items',
@@ -67,7 +69,8 @@ export class CartItemsComponent implements OnInit {
       next: () => {
         this.notifications.success('Cart cleared');
         this.loadCarts();
-      }
+      },
+      error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not clear the cart. Please try again.'))
     });
   }
 }
