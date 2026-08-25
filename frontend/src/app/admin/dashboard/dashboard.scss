@@ -172,7 +172,12 @@ $admin-border: rgba(255, 255, 255, 0.12);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    
+    /* Grid/flex items don't shrink below their content's natural width by
+       default (min-width:auto). Without this, a wide table inside forces
+       this whole card — and the grid track — wider than the viewport
+       instead of the inner .table-responsive ever getting to scroll. */
+    min-width: 0;
+
     &.wide {
       grid-column: span 2;
     }
@@ -206,6 +211,11 @@ $admin-border: rgba(255, 255, 255, 0.12);
 /* Data Tables */
 .table-responsive {
   overflow-x: auto;
+  /* Same flex-child shrink issue as .dashboard-card above — without this,
+     the table pushes this element (and its parent) wider instead of
+     scrolling within the space it's actually given. */
+  min-width: 0;
+  width: 100%;
 }
 
 .data-table {
@@ -344,6 +354,7 @@ $admin-border: rgba(255, 255, 255, 0.12);
 /* CSS Bar Chart */
 .chart-container {
   flex-grow: 1;
+  min-width: 0;
   display: flex;
   align-items: flex-end;
   padding-top: 2rem;
