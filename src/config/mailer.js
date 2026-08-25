@@ -2,9 +2,20 @@ const nodemailer = require('nodemailer');
 const env = require('./env');
 const logger = require('./logger');
 
-let transporter = null;
+// Many PaaS hosts (Railway included) block outbound SMTP ports (25/465/587)
+// by default to curb spam abuse, which makes nodemailer's raw SMTP transport
+// hang indefinitely against SendGrid. SendGrid's HTTP API travels over
+// normal HTTPS (443), which is never blocked, so use that instead whenever
+// SendGrid is the configured provider.
+const isSendGrid = env.smtp.host === 'smtp.sendgrid.net';
 
-if (env.smtp.host && env.smtp.user && env.smtp.password) {
+let transporter = null;
+let sgMail = null;
+
+if (isSendGrid && env.smtp.password) {
+  sgMail = require('@sendgrid/mail');
+  sgMail.setApiKey(env.smtp.password);
+} else if (env.smtp.host && env.smtp.user && env.smtp.password) {
   transporter = nodemailer.createTransport({
     host: env.smtp.host,
     port: env.smtp.port,
@@ -34,6 +45,21 @@ const layout = (title, bodyHtml) => `
 `;
 
 async function sendMail({ to, subject, html }) {
+  if (sgMail) {
+    try {
+      await sgMail.send({
+        to,
+        from: { email: env.smtp.fromAddress, name: env.smtp.fromName },
+        subject,
+        html,
+      });
+    } catch (err) {
+      const detail = err.response?.body?.errors?.map((e) => e.message).join('; ') || err.message;
+      logger.error(`[mailer] Failed to send email to ${to}: ${detail}`);
+    }
+    return;
+  }
+
   if (!transporter) {
     logger.info(`[mailer] (dry-run) To: ${to} | Subject: ${subject}`);
     return;
