@@ -211,11 +211,16 @@ $admin-border: rgba(255, 255, 255, 0.12);
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  
+
+  @media (max-width: 700px) {
+    min-width: 650px;
+  }
+
   th, td {
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid $admin-border;
+    white-space: nowrap;
   }
   
   th {

@@ -113,6 +113,14 @@
   }
 
   .muted { color: var(--admin-text-muted, #9ca3af); font-size: 12px; }
+
+  /* Without a floor width, browsers just cram nowrap columns into whatever
+     space is available instead of triggering .table-container's horizontal
+     scroll — so on narrow screens the table becomes unreadable rather than
+     scrollable. Force a sensible minimum so scrolling actually kicks in. */
+  @media (max-width: 700px) {
+    min-width: 650px;
+  }
 }
 
 .actions-cell {

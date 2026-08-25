@@ -168,11 +168,16 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
   .admin-table {
     width: 100%;
     border-collapse: collapse;
-    
+
+    @media (max-width: 900px) {
+      min-width: 900px;
+    }
+
     th, td {
       padding: 1rem 1.5rem;
       text-align: left;
       border-bottom: 1px solid $admin-border;
+      white-space: nowrap;
     }
 
     th {
