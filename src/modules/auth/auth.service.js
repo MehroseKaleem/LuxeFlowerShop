@@ -131,7 +131,7 @@ async function forgotPassword(email) {
   await sendMail({
     to: user.email,
     subject: 'Reset your password',
-    html: templates.passwordReset(user.name, `${env.clientUrl}/reset-password/${rawToken}`),
+    html: templates.passwordReset(user.name, `${env.clientUrl}/account/reset-password/${rawToken}`),
   });
 }
 
