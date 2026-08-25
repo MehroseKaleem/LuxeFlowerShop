@@ -1,0 +1,29 @@
+<div class="blog-page">
+  <header class="blog-header">
+    <div class="container">
+      <h1 class="page-title">Luxeflower {{ blogCategory }}</h1>
+      <p class="page-description">
+        Read the latest floral design trends, flower care guides, news and inspiration from Luxeflower.
+      </p>
+    </div>
+  </header>
+
+  <main class="container blog-content">
+    <div class="blog-grid">
+      @for (post of posts; track post.id) {
+        <article class="post-card">
+          <div class="post-image-wrap">
+            <img [src]="post.image" [alt]="post.title" class="post-image" loading="lazy" />
+            <span class="post-tag">{{ post.category }}</span>
+          </div>
+          <div class="post-body">
+            <span class="post-date">{{ post.date }}</span>
+            <h2 class="post-title">{{ post.title }}</h2>
+            <p class="post-excerpt">{{ post.excerpt }}</p>
+            <a routerLink="/blog" class="read-more">Read Article →</a>
+          </div>
+        </article>
+      }
+    </div>
+  </main>
+</div>

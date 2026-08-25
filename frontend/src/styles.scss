@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+:root {
+  /* ---- Luxury storefront palette: grey / black / white / pink ---- */
+  --lux-black: #0c0c0e;
+  --lux-charcoal: #19181c;
+  --lux-grey-900: #2b292f;
+  --lux-grey-700: #524e57;
+  --lux-grey-500: #837e89;
+  --lux-grey-300: #c3bfc5;
+  --lux-grey-150: #e6e3e7;
+  --lux-grey-100: #f4f2f4;
+  --lux-white: #ffffff;
+
+  --lux-pink: #9c2748;
+  --lux-pink-dark: #7a1d38;
+  --lux-pink-mid: #c76a86;
+  --lux-pink-soft: #e7b7c4;
+  --lux-pink-blush: #faf1f3;
+  --lux-pink-blush-2: #f5e5e9;
+
+  --lux-font-display: 'Playfair Display', Georgia, serif;
+  --lux-font-accent: 'Cormorant Garamond', Georgia, serif;
+  --lux-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --lux-shadow-sm: 0 4px 16px rgba(12, 12, 14, 0.08);
+  --lux-shadow-md: 0 12px 32px rgba(12, 12, 14, 0.12);
+  --lux-shadow-lg: 0 24px 64px rgba(12, 12, 14, 0.18);
+  --lux-shadow-pink: 0 16px 40px rgba(156, 39, 72, 0.22);
+
+  --lux-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lux-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --admin-bg: #0f0f1a;
+  --admin-surface: #161626;
+  --admin-card: rgba(255, 255, 255, 0.05);
+  --admin-card-hover: rgba(255, 255, 255, 0.08);
+  --admin-primary: #b8003c;
+  --admin-accent: #d4a853;
+  --admin-success: #10b981;
+  --admin-warning: #f59e0b;
+  --admin-danger: #ef4444;
+  --admin-text: #f3f4f6;
+  --admin-text-muted: #9ca3af;
+  --admin-border: rgba(255, 255, 255, 0.1);
+  --admin-input-bg: rgba(255, 255, 255, 0.06);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--lux-font-body);
+  color: var(--lux-charcoal);
+  background: var(--lux-white);
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ---- Storefront scroll-reveal primitives (see scroll-reveal.directive.ts) ---- */
+[data-reveal] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---- Storefront custom scrollbar ---- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--lux-grey-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--lux-grey-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--lux-pink);
+}
+
+/* ---- Admin theme (unchanged, separate visual language) ---- */
+.admin-wrapper, [class*="app-admin"], app-admin-layout {
+  background-color: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+.admin-wrapper ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.admin-wrapper ::-webkit-scrollbar-track {
+  background: #0f0f1a;
+}
+
+.admin-wrapper ::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 83, 0.3);
+  border-radius: 4px;
+}
+
+.admin-wrapper ::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-accent);
+}

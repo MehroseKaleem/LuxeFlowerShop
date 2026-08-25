@@ -1,0 +1,155 @@
+<div class="page-header">
+  <div class="page-header-left">
+    <a routerLink="/admin/products" class="back-link">← Back to Products</a>
+    <h2>{{ isEditMode() ? 'Edit Product' : 'Add New Product' }}</h2>
+  </div>
+</div>
+
+@if (productForm) {
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+  <div class="form-grid">
+    <!-- Left Column: Main Fields -->
+    <div class="form-left">
+      <div class="form-card">
+        <h3 class="card-title">Product Information</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name *</label>
+            <input type="text" formControlName="name" placeholder="Enter product name" />
+            @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
+              <div class="error-msg">Name is required</div>
+            }
+          </div>
+          <div class="form-group">
+            <label>SKU *</label>
+            <input type="text" formControlName="sku" placeholder="e.g. KF-RED-ROSE-B" />
+            @if (productForm.get('sku')?.invalid && productForm.get('sku')?.touched) {
+              <div class="error-msg">SKU is required</div>
+            }
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Short Description</label>
+          <input type="text" formControlName="shortDescription" placeholder="One-line summary shown in listings" />
+        </div>
+
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea formControlName="description" rows="5" placeholder="Enter product description"></textarea>
+          @if (productForm.get('description')?.invalid && productForm.get('description')?.touched) {
+            <div class="error-msg">Description is required</div>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Base Price (AED) *</label>
+            <input type="number" formControlName="basePrice" placeholder="0.00" step="0.01" />
+            @if (productForm.get('basePrice')?.invalid && productForm.get('basePrice')?.touched) {
+              <div class="error-msg">Valid price is required</div>
+            }
+          </div>
+          <div class="form-group">
+            <label>Discount Price (optional)</label>
+            <input type="number" formControlName="discountPrice" placeholder="0.00" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Stock *</label>
+            <input type="number" formControlName="stock" placeholder="0" />
+            @if (productForm.get('stock')?.invalid && productForm.get('stock')?.touched) {
+              <div class="error-msg">Valid stock is required</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Upload Card -->
+      <div class="form-card">
+        <h3 class="card-title">Product Images</h3>
+        <div class="image-upload-zone" (click)="fileInput.click()"
+             (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <p>{{ uploadingImages() ? 'Uploading...' : 'Drag & drop images or click to browse' }}</p>
+          <span>PNG, JPG, WEBP up to 5MB each</span>
+        </div>
+        <input #fileInput type="file" accept="image/*" multiple (change)="onImageSelected($event)" hidden />
+
+        @if (newImagePreviews().length) {
+          <div class="image-gallery">
+            @for (preview of newImagePreviews(); track $index) {
+              <div class="gallery-thumb">
+                <img [src]="preview" alt="New image preview" />
+                <button type="button" class="thumb-remove" (click)="removeNewImage($index)">&times;</button>
+              </div>
+            }
+          </div>
+        }
+
+        @if (existingImages().length) {
+          <div class="image-gallery">
+            @for (image of existingImages(); track image.id) {
+              <div class="gallery-thumb" [class.primary]="image.isPrimary">
+                <img [src]="imageUrl(image.url)" [alt]="image.altText || 'Product image'" loading="lazy" appImgFallback />
+                @if (image.isPrimary) { <span class="primary-badge">Primary</span> }
+                <div class="thumb-actions">
+                  @if (!image.isPrimary) {
+                    <button type="button" (click)="setPrimaryImage(image.id)">Set primary</button>
+                  }
+                  <button type="button" class="thumb-remove" (click)="deleteExistingImage(image.id)">&times;</button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right Column: Category & Status -->
+    <div class="form-right">
+      <div class="form-card">
+        <h3 class="card-title">Categories *</h3>
+        <div class="category-checkboxes">
+          @for (cat of categories; track cat.id; let i = $index) {
+            <label class="checkbox-label">
+              <input type="checkbox" [formControl]="categoryControls[i]" />
+              <span class="checkbox-custom"></span>
+              {{ cat.name }}
+            </label>
+          }
+        </div>
+        @if (categoryError()) {
+          <div class="error-msg">Select at least one category</div>
+        }
+      </div>
+
+      <div class="form-card">
+        <h3 class="card-title">Status</h3>
+        <div class="status-toggle">
+          <label class="radio-label" [class.selected]="productForm.get('status')?.value === 'active'">
+            <input type="radio" formControlName="status" value="active" />
+            <span class="status-dot active"></span>
+            Active
+          </label>
+          <label class="radio-label" [class.selected]="productForm.get('status')?.value === 'draft'">
+            <input type="radio" formControlName="status" value="draft" />
+            <span class="status-dot draft"></span>
+            Draft
+          </label>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Saving...' : isEditMode() ? 'Update Product' : 'Create Product' }}
+        </button>
+        <button type="button" class="btn-secondary" routerLink="/admin/products">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+}

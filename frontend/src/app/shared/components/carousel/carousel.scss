@@ -1,0 +1,194 @@
+.carousel-section {
+  padding: 56px 0;
+  width: 100%;
+  position: relative;
+
+  &.tint-blush {
+    background: linear-gradient(180deg, rgba(250, 241, 243, 0) 0%, var(--lux-pink-blush) 50%, rgba(250, 241, 243, 0) 100%);
+  }
+
+  &.tint-grey {
+    background: linear-gradient(180deg, rgba(244, 242, 244, 0) 0%, var(--lux-grey-100) 50%, rgba(244, 242, 244, 0) 100%);
+  }
+}
+
+.carousel-heading {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section-title {
+  font-size: 34px;
+  font-weight: 600;
+  color: var(--lux-black);
+  margin: 0 0 32px 0;
+  font-family: var(--lux-font-display);
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -12px;
+    width: 56px;
+    height: 2px;
+    background: var(--lux-pink);
+  }
+}
+
+.carousel-viewport {
+  position: relative;
+  width: 100%;
+  padding: 0 24px;
+}
+
+.carousel-track-wrapper {
+  overflow: hidden;
+  width: 100%;
+  perspective: 1800px;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  transform-style: preserve-3d;
+
+  &.no-transition {
+    transition: none;
+  }
+
+  /* Fewer items than fit in one row — start-align them like a normal row
+     rather than centering, so the layout doesn't shift once more items fill
+     the row. */
+  &.static-row {
+    justify-content: flex-start;
+  }
+}
+
+.carousel-slide {
+  flex: 0 0 calc((100% - 80px) / 5);
+  min-width: 0;
+  transform: perspective(1400px) rotateY(-3deg);
+  transition: transform 0.4s ease;
+
+  &:nth-child(even) {
+    transform: perspective(1400px) rotateY(3deg);
+  }
+
+  &:hover {
+    transform: perspective(1400px) rotateY(0deg) translateZ(14px);
+    z-index: 2;
+  }
+}
+
+/* Arrows float over the full-width track rather than sharing its row */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 4px;
+  border: 1px solid var(--lux-grey-150);
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--lux-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  box-shadow: var(--lux-shadow-md);
+  backdrop-filter: blur(6px);
+  transition: all 0.3s var(--lux-ease);
+
+  &:hover:not(:disabled) {
+    background: var(--lux-pink);
+    color: var(--lux-white);
+    border-color: var(--lux-pink);
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  &.prev { left: 4px; }
+  &.next { right: 4px; }
+}
+
+.view-all-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.view-all-btn {
+  display: inline-block;
+  background: var(--lux-black);
+  color: var(--lux-white);
+  padding: 13px 40px;
+  border-radius: 2px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--lux-shadow-sm);
+
+  &:hover {
+    background: var(--lux-pink);
+    transform: translateY(-2px);
+    box-shadow: var(--lux-shadow-pink);
+  }
+}
+
+@media (max-width: 1200px) {
+  .carousel-slide {
+    flex: 0 0 calc((100% - 40px) / 3);
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-heading { padding: 0 20px; }
+  .carousel-viewport { padding: 0 8px; }
+
+  .section-title {
+    font-size: 26px;
+  }
+
+  .carousel-arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* iOS/mobile WebKit can fail to composite a preserve-3d element inside an
+     overflow:hidden + perspective ancestor, rendering the whole track
+     invisible. The 3D tilt is a desktop-only decorative flourish anyway, so
+     drop the 3D rendering context entirely below this breakpoint. */
+  .carousel-track-wrapper {
+    perspective: none;
+  }
+
+  .carousel-track {
+    transform-style: flat;
+  }
+
+  .carousel-slide {
+    flex: 0 0 calc((100% - 20px) / 2);
+    transform: none;
+
+    &:hover { transform: none; }
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-slide {
+    flex: 0 0 100%;
+  }
+}

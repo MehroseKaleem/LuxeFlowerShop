@@ -1,0 +1,94 @@
+<div class="page-header">
+  <div class="page-header-left">
+    <h2>Banners</h2>
+    <span class="count-badge">{{ banners().length }} banners</span>
+  </div>
+  <button class="btn-primary" (click)="openAddModal()">+ Add Banner</button>
+</div>
+
+@if (loading()) {
+  <p class="empty-state">Loading banners...</p>
+} @else if (!banners().length) {
+  <p class="empty-state">No banners yet. Add one to feature it on the storefront.</p>
+} @else {
+  <div class="banners-grid">
+    @for (banner of banners(); track banner.id) {
+      <div class="banner-card">
+        <div class="card-image">
+          <img [src]="imageUrl(banner.imageUrl)" [alt]="banner.title" loading="lazy" appImgFallback />
+          <span class="status-badge" [class]="banner.isActive ? 'active' : 'inactive'">{{ banner.isActive ? 'active' : 'inactive' }}</span>
+        </div>
+        <div class="card-body">
+          <h3>{{ banner.title }}</h3>
+          <span class="position-tag">{{ banner.position }}</span>
+          @if (banner.startsAt || banner.endsAt) {
+            <span class="schedule">{{ banner.startsAt | date:'mediumDate' }} — {{ banner.endsAt | date:'mediumDate' }}</span>
+          }
+        </div>
+        <div class="card-actions">
+          <button (click)="openEditModal(banner)">Edit</button>
+          <button class="delete" (click)="delete(banner.id)">Delete</button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+@if (showModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editingBanner() ? 'Edit Banner' : 'Add Banner' }}</h3>
+        <button class="close-btn" (click)="closeModal()">&times;</button>
+      </div>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-group">
+          <label>Title *</label>
+          <input formControlName="title" placeholder="e.g. Valentine's Day Sale" />
+        </div>
+        <div class="form-group">
+          <label>Link (optional)</label>
+          <input formControlName="link" placeholder="https://..." />
+        </div>
+        <div class="form-group">
+          <label>Image {{ editingBanner() ? '' : '*' }}</label>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+          @if (imagePreview()) {
+            <img [src]="imagePreview()" class="image-preview" alt="Preview" />
+          }
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Position</label>
+            <select formControlName="position">
+              @for (pos of positions; track pos) { <option [value]="pos">{{ pos }}</option> }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Sort Order</label>
+            <input type="number" formControlName="sortOrder" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Starts (optional)</label>
+            <input type="date" formControlName="startsAt" />
+          </div>
+          <div class="form-group">
+            <label>Ends (optional)</label>
+            <input type="date" formControlName="endsAt" />
+          </div>
+        </div>
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="isActive" /> Active
+        </label>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary" [disabled]="form.invalid || saving()">
+            {{ saving() ? 'Saving...' : editingBanner() ? 'Update Banner' : 'Create Banner' }}
+          </button>
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

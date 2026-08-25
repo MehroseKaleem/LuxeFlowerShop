@@ -1,0 +1,3 @@
+@for (img of images; track img; let i = $index) {
+  <img [src]="img" [alt]="alt" class="slider-img" [class.active]="i === activeIndex()" loading="lazy" appImgFallback />
+}

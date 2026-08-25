@@ -1,0 +1,23 @@
+<div class="coverflow-wrap" appReveal="scale">
+  <div class="coverflow-stage">
+    @for (product of products; track product.id; let i = $index) {
+      <div class="coverflow-item" [style]="cardStyle(i)">
+        <app-product-card [product]="product" />
+      </div>
+    }
+  </div>
+
+  <button type="button" class="coverflow-arrow prev" (click)="prev()" [disabled]="!canPrev()" aria-label="Previous">&lsaquo;</button>
+  <button type="button" class="coverflow-arrow next" (click)="next()" [disabled]="!canNext()" aria-label="Next">&rsaquo;</button>
+
+  <div class="coverflow-dots">
+    @for (product of products; track product.id; let i = $index) {
+      <button
+        type="button"
+        class="dot"
+        [class.active]="i === activeIndex()"
+        (click)="goTo(i)"
+        [attr.aria-label]="'Go to slide ' + (i + 1)"></button>
+    }
+  </div>
+</div>

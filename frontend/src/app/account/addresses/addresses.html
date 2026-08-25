@@ -1,0 +1,74 @@
+<div class="addresses-page">
+  <div class="panel-header">
+    <h2>My Addresses</h2>
+    @if (!showForm()) {
+      <button type="button" class="save-btn" (click)="openAddForm()">+ Add Address</button>
+    }
+  </div>
+
+  @if (showForm()) {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="address-form">
+      <div class="form-field">
+        <label>Label</label>
+        <input type="text" formControlName="label" placeholder="Home, Office, ..." />
+      </div>
+      <div class="form-field">
+        <label>Full name</label>
+        <input type="text" formControlName="fullName" />
+      </div>
+      <div class="form-field">
+        <label>Phone</label>
+        <input type="tel" formControlName="phone" />
+      </div>
+      <div class="form-field">
+        <label>Address line 1</label>
+        <input type="text" formControlName="addressLine1" />
+      </div>
+      <div class="form-field">
+        <label>Address line 2 (optional)</label>
+        <input type="text" formControlName="addressLine2" />
+      </div>
+      <div class="form-field">
+        <label>City</label>
+        <input type="text" formControlName="city" />
+      </div>
+      <div class="form-field">
+        <label>Emirate</label>
+        <select formControlName="emirate">
+          @for (e of emirates; track e) { <option [value]="e">{{ e }}</option> }
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Postal code (optional)</label>
+        <input type="text" formControlName="postalCode" />
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="save-btn" [disabled]="saving()">{{ saving() ? 'Saving...' : 'Save Address' }}</button>
+        <button type="button" class="cancel-btn" (click)="cancelForm()">Cancel</button>
+      </div>
+    </form>
+  } @else if (loading()) {
+    <p class="state-message">Loading addresses...</p>
+  } @else if (!addresses().length) {
+    <p class="empty-state">You haven't saved any addresses yet.</p>
+  } @else {
+    <div class="addresses-grid">
+      @for (address of addresses(); track address.id) {
+        <div class="address-card" [class.default]="address.isDefault">
+          @if (address.isDefault) { <span class="default-badge">Default</span> }
+          <strong>{{ address.label }}</strong>
+          <p>{{ address.fullName }} — {{ address.phone }}</p>
+          <p>{{ address.addressLine1 }}@if (address.addressLine2) {, {{ address.addressLine2 }} }</p>
+          <p>{{ address.city }}, {{ address.emirate }}</p>
+          <div class="card-actions">
+            <button type="button" (click)="openEditForm(address)">Edit</button>
+            @if (!address.isDefault) {
+              <button type="button" (click)="setDefault(address.id)">Set default</button>
+            }
+            <button type="button" class="delete-btn" (click)="deleteAddress(address.id)">Delete</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

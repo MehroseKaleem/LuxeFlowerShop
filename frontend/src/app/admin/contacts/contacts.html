@@ -1,0 +1,95 @@
+<div class="contacts-container">
+  <div class="page-header">
+    <h1>Contact Messages ({{ total() }})</h1>
+    <div class="filters">
+      <input
+        type="text"
+        placeholder="Search messages..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        class="search-input"
+      >
+      <select [ngModel]="statusFilter()" (ngModelChange)="setFilter($event)" class="filter-select">
+        <option value="all">All Messages</option>
+        <option value="unread">Unread</option>
+        <option value="read">Read</option>
+        <option value="replied">Replied</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="messages-list">
+    @if (loading()) {
+      <div class="empty-state"><p>Loading messages...</p></div>
+    } @else {
+      @for (msg of messages(); track msg.id) {
+        @if (matchesFilters(msg)) {
+          <div class="message-card" [class.unread]="statusOf(msg) === 'unread'" (click)="toggleMessage(msg.id)">
+            <div class="message-header">
+              <div class="user-info">
+                <div class="avatar">{{ msg.name.charAt(0) }}</div>
+                <div class="details">
+                  <h4>{{ msg.name }}</h4>
+                  <span>{{ msg.email }} @if (msg.phone) { &bull; {{ msg.phone }} }</span>
+                </div>
+              </div>
+              <div class="meta-info">
+                <span class="status badge-{{ statusOf(msg) }}">{{ statusOf(msg) }}</span>
+                <span class="date">{{ msg.createdAt | date:'short' }}</span>
+              </div>
+            </div>
+
+            @if (msg.subject) {
+              <div class="message-subject">
+                <strong>Subject:</strong> {{ msg.subject }}
+              </div>
+            }
+
+            @if (expandedMessageId() === msg.id) {
+              <div class="message-body">
+                <p>{{ msg.message }}</p>
+                <div class="actions">
+                  <button class="btn btn-primary" (click)="openReplyModal(msg, $event)">
+                    Reply
+                  </button>
+                  <button class="btn btn-danger" (click)="deleteMessage(msg.id); $event.stopPropagation()">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+
+      @if (!messages().length) {
+        <div class="empty-state">
+          <p>No messages found.</p>
+        </div>
+      }
+    }
+  </div>
+
+  @if (showReplyModal()) {
+    <div class="modal-overlay" (click)="closeReplyModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>Reply to {{ selectedMessage()?.name }}</h2>
+        <div class="form-group">
+          <label>To: {{ selectedMessage()?.email }}</label>
+          <textarea
+            [(ngModel)]="replyText"
+            rows="5"
+            placeholder="Type your reply here..."
+            class="form-control"
+          ></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="closeReplyModal()">Cancel</button>
+          <button class="btn btn-primary" (click)="sendReply()" [disabled]="!replyText().trim() || sendingReply()">
+            {{ sendingReply() ? 'Sending...' : 'Send Reply' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

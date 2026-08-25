@@ -1,0 +1,58 @@
+<a [routerLink]="['/product', product.slug]" class="product-card" appTilt3d [tiltMax]="6" [tiltLift]="6">
+  <div class="product-image-box">
+    <div class="image-clip">
+      <img [src]="primaryImage" [alt]="product.name" class="product-img" loading="lazy" appImgFallback />
+      <div class="image-veil"></div>
+
+      @if (isOnSale) {
+        <span class="sale-badge">Sale</span>
+      }
+      @if (product.stock <= 0) {
+        <span class="stock-badge">Out of stock</span>
+      }
+
+      <button type="button" class="wishlist-btn" [class.active]="isWishlisted" (click)="toggleWishlist($event)" aria-label="Toggle wishlist">
+        <svg width="17" height="17" viewBox="0 0 24 24" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+        </svg>
+      </button>
+
+      <button type="button" class="add-to-cart-overlay-btn" (click)="addToCart($event)" [disabled]="adding() || product.stock <= 0">
+        {{ product.stock <= 0 ? 'Out of stock' : adding() ? 'Adding...' : 'Add to Cart' }}
+      </button>
+    </div>
+
+    <!-- Flower pop-up hover effect: blooms above the card as if being handed to you -->
+    <div class="flower-pop" aria-hidden="true">
+      <svg viewBox="0 0 100 100" class="flower-svg">
+        <g class="flower-petals">
+          <ellipse cx="50" cy="28" rx="12" ry="20" class="petal petal-1" />
+          <ellipse cx="50" cy="28" rx="12" ry="20" class="petal petal-2" transform="rotate(72 50 50)" />
+          <ellipse cx="50" cy="28" rx="12" ry="20" class="petal petal-3" transform="rotate(144 50 50)" />
+          <ellipse cx="50" cy="28" rx="12" ry="20" class="petal petal-4" transform="rotate(216 50 50)" />
+          <ellipse cx="50" cy="28" rx="12" ry="20" class="petal petal-5" transform="rotate(288 50 50)" />
+        </g>
+        <circle cx="50" cy="50" r="9" class="flower-center" />
+      </svg>
+    </div>
+  </div>
+
+  <div class="product-details">
+    <h3 class="product-name">{{ product.name }}</h3>
+
+    <div class="rating-stars" [class.is-empty]="+product.avgRating === 0">
+      @for (s of filledStars; track $index) { <span>★</span> }
+      @for (s of emptyStars; track $index) { <span class="empty">★</span> }
+      <span class="review-count">{{ +product.avgRating > 0 ? '(' + product.reviewCount + ')' : 'No reviews yet' }}</span>
+    </div>
+
+    <div class="price-box">
+      @if (product.discountPrice) {
+        <span class="original-price">{{ product.basePrice | aedCurrency }}</span>
+        <span class="current-price">{{ product.discountPrice | aedCurrency }}</span>
+      } @else {
+        <span class="current-price">{{ product.basePrice | aedCurrency }}</span>
+      }
+    </div>
+  </div>
+</a>

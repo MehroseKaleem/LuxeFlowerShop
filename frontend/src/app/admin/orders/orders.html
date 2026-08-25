@@ -1,0 +1,148 @@
+<div class="page-header">
+  <h2>Orders</h2>
+  <span class="count-badge">{{ total() }} orders</span>
+</div>
+
+<!-- Status Filter Tabs -->
+<div class="status-tabs">
+  <button [class.active]="statusFilter() === 'all'" (click)="statusFilter.set('all'); applyFilters()">All</button>
+  @for (status of statuses; track status) {
+    <button [class.active]="statusFilter() === status" (click)="statusFilter.set(status); applyFilters()">{{ status | titlecase }}</button>
+  }
+</div>
+
+<div class="search-bar">
+  <input type="text" placeholder="Search by order # or email..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" (keyup.enter)="applyFilters()" />
+  <button class="btn-secondary" (click)="applyFilters()">Search</button>
+</div>
+
+<!-- Orders Table -->
+<div class="table-container">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Order #</th>
+        <th>Customer</th>
+        <th>Items</th>
+        <th>Total (AED)</th>
+        <th>Payment</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (loading()) {
+        <tr><td colspan="8" class="empty-state">Loading orders...</td></tr>
+      } @else {
+        @for (order of orders(); track order.id) {
+          <tr class="order-row" (click)="toggleOrderDetails(order.id)" [class.expanded]="expandedOrderId() === order.id">
+            <td class="order-number"><strong>{{ order.orderNumber }}</strong></td>
+            <td>
+              <div class="customer-info">
+                <span class="customer-name">{{ order.user?.name || 'Guest' }}</span>
+                <span class="customer-email">{{ order.customerEmail }}</span>
+              </div>
+            </td>
+            <td>{{ getTotalItems(order) }}</td>
+            <td class="order-total">Dhs. {{ order.total }}</td>
+            <td>
+              <span class="status-badge" [class]="order.paymentStatus.toLowerCase()">{{ order.paymentStatus }}</span>
+            </td>
+            <td><span class="status-badge" [class]="order.status.toLowerCase()">{{ order.status }}</span></td>
+            <td>{{ formatDate(order.createdAt) }}</td>
+            <td class="actions-cell" (click)="$event.stopPropagation()">
+              <button class="action-btn" (click)="openStatusModal(order)">Status</button>
+              @if (order.paymentMethod === 'COD' && order.paymentStatus === 'PENDING') {
+                <button class="action-btn" (click)="markPaid(order)">Mark Paid</button>
+              }
+            </td>
+          </tr>
+
+          @if (expandedOrderId() === order.id) {
+            <tr class="detail-row">
+              <td colspan="8">
+                <div class="order-details">
+                  <div class="detail-section">
+                    <h4>Order Items</h4>
+                    <table class="items-table">
+                      <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+                      @for (item of order.items; track item.id) {
+                        <tr>
+                          <td>{{ item.productName }} @if (item.variantName) { ({{ item.variantName }}) }</td>
+                          <td>{{ item.quantity }}</td>
+                          <td>Dhs. {{ item.price }}</td>
+                          <td>Dhs. {{ item.subtotal }}</td>
+                        </tr>
+                      }
+                    </table>
+                  </div>
+                  <div class="detail-section contact-section">
+                    <div class="shipping">
+                      <h4>Shipping Address</h4>
+                      <p>{{ formatAddress(order) }}</p>
+                      @if (order.deliveryDate) {
+                        <p><strong>Delivery date:</strong> {{ order.deliveryDate | date: 'mediumDate' }}</p>
+                      }
+                      @if (order.deliveryTimeSlot) {
+                        <p><strong>Time slot:</strong> {{ order.deliveryTimeSlot }}</p>
+                      }
+                    </div>
+                    <div class="contact">
+                      <h4>Contact Info</h4>
+                      <p><strong>Phone:</strong> {{ order.customerPhone }}</p>
+                      <p><strong>Email:</strong> {{ order.customerEmail }}</p>
+                      @if (order.notes) { <p><strong>Notes:</strong> {{ order.notes }}</p> }
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+
+        @if (!orders().length) {
+          <tr>
+            <td colspan="8" class="empty-state">No orders found matching your criteria.</td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <button (click)="goToPage(page() - 1)" [disabled]="page() <= 1">&lsaquo; Prev</button>
+      <span>Page {{ page() }} of {{ totalPages() }}</span>
+      <button (click)="goToPage(page() + 1)" [disabled]="page() >= totalPages()">Next &rsaquo;</button>
+    </div>
+  }
+</div>
+
+<!-- Status Update Modal -->
+@if (showStatusModal() && selectedOrder()) {
+  <div class="modal-overlay" (click)="closeStatusModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Update Order Status</h3>
+      <p class="modal-subtitle">Order: <strong>{{ selectedOrder()!.orderNumber }}</strong> — currently <strong>{{ selectedOrder()!.status }}</strong></p>
+
+      @if (validNextStatuses(selectedOrder()!).length) {
+        <input type="text" class="note-input" placeholder="Optional note" [ngModel]="statusNote()" (ngModelChange)="statusNote.set($event)" />
+        <div class="status-options">
+          @for (status of validNextStatuses(selectedOrder()!); track status) {
+            <button class="status-option" [class]="status.toLowerCase()" [disabled]="updatingStatus()" (click)="updateStatus(selectedOrder()!.id, status)">
+              <span class="dot"></span>
+              {{ status | titlecase }}
+            </button>
+          }
+        </div>
+      } @else {
+        <p class="modal-subtitle">This order is in a final state and cannot be updated further.</p>
+      }
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeStatusModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+}

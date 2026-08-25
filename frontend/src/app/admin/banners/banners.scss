@@ -1,0 +1,77 @@
+@use '../admin-shared';
+
+.banners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.banner-card {
+  background: var(--admin-card, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-image {
+  position: relative;
+  aspect-ratio: 16 / 7;
+  background: rgba(0, 0, 0, 0.2);
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+
+  .status-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+}
+
+.card-body {
+  padding: 14px;
+
+  h3 { margin: 0 0 6px 0; font-size: 15px; color: var(--admin-text, #e5e7eb); }
+}
+
+.position-tag {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--admin-text-muted, #9ca3af);
+  background: var(--admin-input-bg, rgba(255, 255, 255, 0.06));
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.schedule {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--admin-text-muted, #9ca3af);
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 0 14px 14px;
+
+  button {
+    flex: 1;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
+    background: var(--admin-input-bg, rgba(255, 255, 255, 0.06));
+    color: var(--admin-text, #e5e7eb);
+    cursor: pointer;
+    font-size: 12.5px;
+
+    &.delete { color: var(--admin-danger, #ef4444); }
+  }
+}
+
+.image-preview {
+  margin-top: 10px;
+  max-width: 100%;
+  max-height: 140px;
+  border-radius: 6px;
+  object-fit: cover;
+}

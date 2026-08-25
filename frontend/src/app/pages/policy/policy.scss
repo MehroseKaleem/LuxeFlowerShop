@@ -1,0 +1,107 @@
+.policy-page {
+  padding: 70px 24px 110px;
+  /* Intentionally no blanket background so the fixed ambient sparkle/orb
+     layer behind the page (see AmbientBackgroundComponent) shows through. */
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+}
+
+.policy-container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--lux-white);
+  padding: 56px 52px;
+  border-radius: 6px;
+  box-shadow: var(--lux-shadow-md);
+
+  @media (max-width: 600px) {
+    padding: 34px 22px;
+  }
+}
+
+.policy-content {
+  text-align: center;
+}
+
+.policy-title {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--lux-black);
+  margin-bottom: 8px;
+  font-family: var(--lux-font-display);
+}
+
+.policy-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 2px;
+  background: var(--lux-pink);
+  margin: 18px auto 0;
+}
+
+.intro-text,
+.policy-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--lux-grey-700);
+  margin-bottom: 32px;
+  margin-top: 24px;
+  text-align: center;
+}
+
+.policy-section {
+  margin-top: 36px;
+  text-align: left;
+
+  h2 {
+    font-family: var(--lux-font-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--lux-black);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--lux-grey-700);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+    display: inline-block;
+    text-align: left;
+    max-width: 100%;
+
+    li {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--lux-grey-700);
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 24px;
+
+      &::before {
+        content: '•';
+        color: var(--lux-pink);
+        font-weight: bold;
+        font-size: 18px;
+        position: absolute;
+        left: 8px;
+        top: -1px;
+      }
+
+      strong {
+        color: var(--lux-black);
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+@if (!isAdminRoute()) {
+  <app-ambient-background />
+  <app-header />
+}
+<router-outlet />
+@if (!isAdminRoute()) {
+  <app-footer />
+  <app-floating-actions />
+}
+<app-toast-container />

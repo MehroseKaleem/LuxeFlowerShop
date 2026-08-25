@@ -1,0 +1,142 @@
+<header class="site-header" id="site-header" [class.scrolled]="scrolled()">
+  <div class="header-container">
+    <!-- Logo -->
+    <a class="logo-link" routerLink="/" id="header-logo">
+      <img src="logo.png" alt="Luxeflower" class="logo-img" />
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="main-nav" id="main-nav">
+      <ul class="nav-list">
+        @for (item of navItems(); track item.id) {
+          <li class="nav-item" [class.has-children]="item.hasDropdown">
+            <a
+              [routerLink]="item.link"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: item.link === '/' }"
+              class="nav-link">
+              <span>{{ item.label }}</span>
+              @if (item.hasDropdown) {
+                <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              }
+            </a>
+
+            @if (item.hasDropdown && item.dropdownOptions?.length) {
+              <div class="dropdown-menu">
+                <ul class="dropdown-list">
+                  @for (opt of item.dropdownOptions; track opt.link) {
+                    <li class="dropdown-item">
+                      <a
+                        [routerLink]="opt.link"
+                        routerLinkActive="active-sub"
+                        class="dropdown-link">
+                        {{ opt.label }}
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <!-- Right Icons -->
+    <div class="header-icons" id="header-icons">
+      <div class="search-wrap" [class.open]="searchOpen()">
+        @if (searchOpen()) {
+          <input
+            #searchInputRef
+            type="search"
+            class="search-input"
+            placeholder="Search flowers..."
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
+            (keyup.enter)="submitSearch()"
+            aria-label="Search products" />
+        }
+        <button class="icon-btn" id="search-btn" aria-label="Search" (click)="searchOpen() ? submitSearch() : toggleSearch()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </button>
+      </div>
+      <a class="icon-btn" id="account-btn" [routerLink]="accountLink" aria-label="Account">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+      <a class="icon-btn cart-btn" id="cart-btn" routerLink="/cart" aria-label="Cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+          <path d="M16 7V5a4 4 0 0 0-8 0v2"/>
+        </svg>
+        @if (cart.itemCount() > 0) {
+          <span class="cart-badge">{{ cart.itemCount() }}</span>
+        }
+      </a>
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <button class="hamburger-btn" id="hamburger-btn" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+      <span class="hamburger-line" [class.open]="mobileMenuOpen()"></span>
+      <span class="hamburger-line" [class.open]="mobileMenuOpen()"></span>
+      <span class="hamburger-line" [class.open]="mobileMenuOpen()"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  @if (mobileMenuOpen()) {
+    <div class="mobile-menu" id="mobile-menu">
+      <ul class="mobile-nav-list">
+        @for (item of navItems(); track item.id) {
+          <li class="mobile-nav-item">
+            <div class="mobile-nav-row">
+              <a
+                [routerLink]="item.link"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: item.link === '/' }"
+                (click)="closeMobileMenu()"
+                class="mobile-nav-link">
+                {{ item.label }}
+              </a>
+              @if (item.hasDropdown) {
+                <button
+                  class="mobile-toggle-btn"
+                  (click)="toggleMobileSubmenu(item.id, $event)"
+                  [attr.aria-expanded]="expandedMobileItem() === item.id">
+                  <svg
+                    class="dropdown-arrow"
+                    [class.rotated]="expandedMobileItem() === item.id"
+                    width="12" height="8" viewBox="0 0 10 6" fill="none">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              }
+            </div>
+
+            @if (item.hasDropdown && expandedMobileItem() === item.id) {
+              <ul class="mobile-submenu">
+                @for (opt of item.dropdownOptions; track opt.link) {
+                  <li>
+                    <a
+                      [routerLink]="opt.link"
+                      (click)="closeMobileMenu()"
+                      class="mobile-sublink">
+                      {{ opt.label }}
+                    </a>
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</header>
