@@ -348,6 +348,7 @@ $admin-border: rgba(255, 255, 255, 0.12);
   align-items: flex-end;
   padding-top: 2rem;
   min-height: 200px;
+  overflow-x: auto;
 }
 
 .empty-hint {
@@ -363,12 +364,20 @@ $admin-border: rgba(255, 255, 255, 0.12);
   width: 100%;
   height: 100%;
   gap: 1rem;
-  
+
+  /* flex:1 alone lets 14 daily bars shrink to nothing on narrow screens —
+     give each a floor width so the row overflows into chart-container's
+     scroll instead of squashing into unreadable slivers. */
+  @media (max-width: 700px) {
+    min-width: 650px;
+  }
+
   .bar-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     flex: 1;
+    min-width: 36px;
     height: 100%;
     justify-content: flex-end;
     group: hover;
