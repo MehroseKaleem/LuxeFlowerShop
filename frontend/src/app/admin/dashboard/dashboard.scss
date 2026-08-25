@@ -346,7 +346,7 @@ $admin-border: rgba(255, 255, 255, 0.12);
 }
 
 .empty-hint {
-  color: var(--admin-text-muted);
+  color: var(--admin-text-muted, #9ca3af);
   font-size: 13px;
   padding: 20px 0;
 }
