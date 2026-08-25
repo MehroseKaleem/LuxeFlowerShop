@@ -2,16 +2,19 @@
   <!-- Sidebar -->
   <aside class="admin-sidebar">
     <div class="sidebar-header">
-      <!-- Minimal CSS Logo instead of image for layout if logo.png is missing -->
       <div class="sidebar-logo-container">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sidebar-logo">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        </svg>
+        <img src="favicon.png" alt="Luxeflower" class="sidebar-logo-img" />
       </div>
       <span class="sidebar-brand">Luxeflower</span>
       <button class="collapse-btn" (click)="toggleSidebar()">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="mobile-close-btn" (click)="toggleMobileSidebar()" aria-label="Close menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
     </div>

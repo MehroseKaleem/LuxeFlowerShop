@@ -62,9 +62,11 @@
   flex-shrink: 0;
 }
 
-.sidebar-logo {
+.sidebar-logo-img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
 .sidebar-brand {
@@ -413,14 +415,30 @@
   border-radius: 6px;
 }
 
-/* Mobile Overlay */
+/* Mobile Overlay — rendered via @if in the template (sibling of .admin-wrapper,
+   not a descendant), so its visibility is controlled entirely by that @if,
+   not by a CSS selector scoped under .admin-wrapper.mobile-open. */
 .mobile-overlay {
-  display: none;
+  display: block;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   z-index: 90;
+}
+
+.mobile-close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--admin-text-muted, #9ca3af);
+  cursor: pointer;
+  padding: 4px;
+  margin-left: auto;
+
+  &:hover {
+    color: var(--admin-text, #e5e7eb);
+  }
 }
 
 /* Responsive Styles */
@@ -457,6 +475,12 @@
 
   .collapse-btn {
     display: none;
+  }
+
+  .mobile-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .topbar-right {
