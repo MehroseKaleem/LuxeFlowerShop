@@ -223,7 +223,7 @@ const collection = {
 
     folder('Admin', [
       req('Admin login', 'POST', '/auth/login', {
-        body: { identifier: 'admin@luxeflower.ae', password: 'ChangeMe@12345' },
+        body: { identifier: 'admin@luxefloweruae.com', password: 'ChangeMe@12345' },
         description: 'Uses the same /auth/login endpoint — role comes back on the user object. Automatically saves the token into {{adminAccessToken}}, used by every request below.',
         saveTokenAs: 'adminAccessToken',
       }),

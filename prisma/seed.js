@@ -65,7 +65,7 @@ async function seedSettings() {
   console.log('Default settings ensured.');
 }
 
-// Exact category list requested by the client for luxeflower.ae. Order
+// Exact category list requested by the client for luxefloweruae.com. Order
 // here also drives display sortOrder. "Our Collection" and "Flowers" are
 // broad umbrella categories that most products also belong to, alongside
 // their more specific category/categories (a product can sit in many).

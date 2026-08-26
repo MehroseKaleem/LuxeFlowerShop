@@ -57,7 +57,7 @@ async function register({ name, email, phone, password }, meta) {
   sendMail({
     to: user.email,
     subject: 'Verify your email',
-    html: templates.verifyEmail(user.name, `${env.clientUrl}/verify-email/${rawToken}`),
+    html: templates.verifyEmail(user.name, `${env.clientUrl}/account/verify-email/${rawToken}`),
   });
 
   const tokens = await issueTokens(user, meta);
@@ -186,7 +186,7 @@ async function resendVerification(userId) {
   await sendMail({
     to: user.email,
     subject: 'Verify your email',
-    html: templates.verifyEmail(user.name, `${env.clientUrl}/verify-email/${rawToken}`),
+    html: templates.verifyEmail(user.name, `${env.clientUrl}/account/verify-email/${rawToken}`),
   });
 }
 

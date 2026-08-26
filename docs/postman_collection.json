@@ -1449,7 +1449,7 @@
             "description": "Uses the same /auth/login endpoint — role comes back on the user object. Automatically saves the token into {{adminAccessToken}}, used by every request below.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"identifier\": \"admin@luxeflower.ae\",\n  \"password\": \"ChangeMe@12345\"\n}",
+              "raw": "{\n  \"identifier\": \"admin@luxefloweruae.com\",\n  \"password\": \"ChangeMe@12345\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

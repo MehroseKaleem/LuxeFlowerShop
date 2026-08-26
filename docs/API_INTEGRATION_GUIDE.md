@@ -8,7 +8,7 @@ The database is pre-populated with sample data (run via `npm run seed`) so the f
 
 | Account | Email | Password | Has |
 |---|---|---|---|
-| Admin | `admin@luxeflower.ae` | `ChangeMe@12345` | Full admin panel access |
+| Admin | `admin@luxefloweruae.com` | `ChangeMe@12345` | Full admin panel access |
 | Demo customer | `sara.customer@example.com` | `Customer@123` | 4 orders (pending, shipped, cancelled, delivered), 2 wishlist items, 1 review written |
 | Demo customer | `omar.customer@example.com` | `Customer@123` | 2 orders (confirmed, delivered), 1 wishlist item, 1 review written |
 
@@ -183,7 +183,7 @@ List items are intentionally lean (for fast grid rendering): `id, name, slug, sh
 ### Settings
 `GET /settings` (none) → store-wide config the frontend needs for checkout math:
 ```json
-{ "SHIPPING_FEE": "25", "FREE_SHIPPING_THRESHOLD": "200", "TAX_RATE_PERCENT": "5", "CURRENCY": "AED", "STORE_PHONE": "+971500000000", "STORE_EMAIL": "support@luxeflower.ae" }
+{ "SHIPPING_FEE": "25", "FREE_SHIPPING_THRESHOLD": "200", "TAX_RATE_PERCENT": "5", "CURRENCY": "AED", "STORE_PHONE": "+971500000000", "STORE_EMAIL": "support@luxefloweruae.com" }
 ```
 Fetch this once and cache it (e.g. at app load) — don't recompute shipping/tax client-side beyond display purposes, the backend recalculates authoritatively at checkout regardless.
 

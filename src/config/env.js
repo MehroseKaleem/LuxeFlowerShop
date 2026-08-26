@@ -68,7 +68,7 @@ module.exports = {
     user: process.env.SMTP_USER,
     password: process.env.SMTP_PASSWORD,
     fromName: process.env.EMAIL_FROM_NAME || 'Luxeflower',
-    fromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@luxeflower.ae',
+    fromAddress: process.env.EMAIL_FROM_ADDRESS || 'no-reply@luxefloweruae.com',
   },
 
   rateLimit: {
@@ -80,7 +80,7 @@ module.exports = {
 
   seed: {
     superAdminName: process.env.SEED_SUPER_ADMIN_NAME || 'Luxeflower Admin',
-    superAdminEmail: process.env.SEED_SUPER_ADMIN_EMAIL || 'admin@luxeflower.ae',
+    superAdminEmail: process.env.SEED_SUPER_ADMIN_EMAIL || 'admin@luxefloweruae.com',
     superAdminPhone: process.env.SEED_SUPER_ADMIN_PHONE || '+971500000000',
     superAdminPassword: process.env.SEED_SUPER_ADMIN_PASSWORD || 'ChangeMe@12345',
   },
