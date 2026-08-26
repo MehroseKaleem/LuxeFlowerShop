@@ -231,6 +231,7 @@
 }
 
 .search-wrap {
+  position: relative;
   display: flex;
   align-items: center;
 
@@ -249,6 +250,95 @@
   padding: 6px 4px;
   width: 160px;
   color: var(--lux-charcoal);
+}
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  max-width: 90vw;
+  max-height: 380px;
+  overflow-y: auto;
+  background: var(--lux-white, #fff);
+  border: 1px solid var(--lux-grey-150, #e8e8e8);
+  border-radius: 12px;
+  box-shadow: var(--lux-shadow-md, 0 12px 32px rgba(0, 0, 0, 0.12));
+  z-index: 500;
+  padding: 6px;
+}
+
+.suggestion-state {
+  padding: 14px 12px;
+  font-size: 13px;
+  color: var(--lux-grey-500, #8a8a8a);
+  text-align: center;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: var(--lux-grey-100, #f5f5f5);
+  }
+
+  img {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+}
+
+.suggestion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.suggestion-name {
+  font-size: 13px;
+  color: var(--lux-charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-price {
+  font-size: 12px;
+  color: var(--lux-pink);
+  font-weight: 600;
+}
+
+.suggestion-viewall {
+  display: block;
+  width: 100%;
+  padding: 10px 8px;
+  margin-top: 4px;
+  border: none;
+  border-top: 1px solid var(--lux-grey-150, #e8e8e8);
+  background: transparent;
+  color: var(--lux-pink);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 /* Hamburger */

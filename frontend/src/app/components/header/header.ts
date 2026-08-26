@@ -2,9 +2,15 @@ import { Component, ElementRef, HostListener, OnInit, PLATFORM_ID, ViewChild, in
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 import { CategoryService } from '../../services/category.service';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
+import { ProductService } from '../../services/product.service';
+import { ProductListItem } from '../../models/product.model';
+import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
+import { mediaUrl } from '../../shared/utils/media.util';
 
 export interface DropdownOption {
   label: string;
@@ -22,12 +28,13 @@ export interface NavItem {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, AedCurrencyPipe],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
 export class HeaderComponent implements OnInit {
   private categoryService = inject(CategoryService);
+  private productService = inject(ProductService);
   protected cart = inject(CartService);
   protected auth = inject(AuthService);
   private router = inject(Router);
@@ -37,6 +44,9 @@ export class HeaderComponent implements OnInit {
   protected readonly expandedMobileItem = signal<string | null>(null);
   protected readonly searchOpen = signal(false);
   protected readonly searchTerm = signal('');
+  protected readonly suggestions = signal<ProductListItem[]>([]);
+  protected readonly suggestionsLoading = signal(false);
+  private readonly searchInput$ = new Subject<string>();
   @ViewChild('searchInputRef') private searchInputRef?: ElementRef<HTMLInputElement>;
   protected readonly scrolled = signal(false);
 
@@ -80,6 +90,45 @@ export class HeaderComponent implements OnInit {
     });
 
     this.cart.loadCart().subscribe({ error: () => undefined });
+
+    this.searchInput$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(term => {
+          const q = term.trim();
+          if (q.length < 2) return of<ProductListItem[]>([]);
+          this.suggestionsLoading.set(true);
+          return this.productService.list({ search: q, limit: 6 }).pipe(
+            switchMap(res => of(res.items)),
+            catchError(() => of<ProductListItem[]>([]))
+          );
+        })
+      )
+      .subscribe(items => {
+        this.suggestionsLoading.set(false);
+        this.suggestions.set(items);
+      });
+  }
+
+  onSearchInputChange(value: string): void {
+    this.searchTerm.set(value);
+    this.searchInput$.next(value);
+  }
+
+  selectSuggestion(product: ProductListItem): void {
+    this.closeSearch();
+    this.router.navigate(['/product', product.slug]);
+  }
+
+  suggestionImage(product: ProductListItem): string {
+    return mediaUrl(product.images?.[0]?.url);
+  }
+
+  closeSearch(): void {
+    this.searchOpen.set(false);
+    this.searchTerm.set('');
+    this.suggestions.set([]);
   }
 
   toggleMobileMenu(): void {
@@ -100,15 +149,16 @@ export class HeaderComponent implements OnInit {
     this.searchOpen.update(v => !v);
     if (this.searchOpen() && isPlatformBrowser(this.platformId)) {
       setTimeout(() => this.searchInputRef?.nativeElement.focus());
+    } else {
+      this.suggestions.set([]);
     }
   }
 
   submitSearch(): void {
     const term = this.searchTerm().trim();
     if (!term) return;
-    this.searchOpen.set(false);
     this.router.navigate(['/search'], { queryParams: { q: term } });
-    this.searchTerm.set('');
+    this.closeSearch();
   }
 
   get accountLink(): string {

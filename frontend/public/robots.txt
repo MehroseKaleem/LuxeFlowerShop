@@ -1,9 +1,15 @@
+# Site not finalized yet - blocking all crawling until launch.
+# Restore the rules below (and flip SITE_LIVE in seo.service.ts + the
+# robots meta tag in index.html) when ready to go live.
 User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /account
-Disallow: /cart
-Disallow: /checkout
-Disallow: /search
+Disallow: /
 
-Sitemap: https://luxefloweruae.com/sitemap.xml
+# User-agent: *
+# Allow: /
+# Disallow: /admin
+# Disallow: /account
+# Disallow: /cart
+# Disallow: /checkout
+# Disallow: /search
+#
+# Sitemap: https://luxefloweruae.com/sitemap.xml

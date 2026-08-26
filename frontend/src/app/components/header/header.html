@@ -54,9 +54,32 @@
             class="search-input"
             placeholder="Search flowers..."
             [ngModel]="searchTerm()"
-            (ngModelChange)="searchTerm.set($event)"
+            (ngModelChange)="onSearchInputChange($event)"
             (keyup.enter)="submitSearch()"
             aria-label="Search products" />
+
+          @if (searchTerm().trim().length >= 2) {
+            <div class="search-suggestions">
+              @if (suggestionsLoading()) {
+                <div class="suggestion-state">Searching...</div>
+              } @else if (suggestions().length) {
+                @for (product of suggestions(); track product.id) {
+                  <button type="button" class="suggestion-item" (click)="selectSuggestion(product)">
+                    <img [src]="suggestionImage(product)" [alt]="product.name" />
+                    <span class="suggestion-info">
+                      <span class="suggestion-name">{{ product.name }}</span>
+                      <span class="suggestion-price">{{ (product.discountPrice || product.basePrice) | aedCurrency }}</span>
+                    </span>
+                  </button>
+                }
+                <button type="button" class="suggestion-viewall" (click)="submitSearch()">
+                  View all results for "{{ searchTerm() }}"
+                </button>
+              } @else {
+                <div class="suggestion-state">No products found.</div>
+              }
+            </div>
+          }
         }
         <button class="icon-btn" id="search-btn" aria-label="Search" (click)="searchOpen() ? submitSearch() : toggleSearch()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -15,6 +15,13 @@ const SITE_URL = 'https://luxefloweruae.com';
 const DEFAULT_IMAGE = `${SITE_URL}/logo.png`;
 
 /**
+ * Site-wide kill switch for search engine indexing while the site is still
+ * being finalized. When true, every page is forced to noindex regardless of
+ * what it passes to `set()`. Flip to false when ready to go fully live.
+ */
+const SITE_LIVE = false;
+
+/**
  * Central place every page calls to set its title + description + Open
  * Graph/Twitter Card tags + canonical URL, so search engines and link
  * previews (WhatsApp, social shares) get consistent, complete metadata
@@ -33,7 +40,8 @@ export class SeoService {
 
     this.titleService.setTitle(fullTitle);
     this.meta.updateTag({ name: 'description', content: config.description });
-    this.meta.updateTag({ name: 'robots', content: config.noindex ? 'noindex, nofollow' : 'index, follow' });
+    const noindex = !SITE_LIVE || config.noindex;
+    this.meta.updateTag({ name: 'robots', content: noindex ? 'noindex, nofollow' : 'index, follow' });
 
     this.meta.updateTag({ property: 'og:site_name', content: SITE_NAME });
     this.meta.updateTag({ property: 'og:title', content: fullTitle });

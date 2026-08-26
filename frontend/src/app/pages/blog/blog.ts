@@ -28,10 +28,10 @@ export class BlogComponent implements OnInit {
   posts: BlogPost[] = [
     {
       id: 1,
-      title: 'Top 10 Long-Lasting Flowers for Summer in Dubai',
+      title: 'Why Red Roses Remain the Ultimate Symbol of Love',
       category: 'Bloom',
       date: 'August 5, 2026',
-      excerpt: 'Discover which flower varieties thrive in warm climates and how to care for your luxury bouquets to keep them fresh.',
+      excerpt: 'From grand anniversaries to quiet everyday gestures, discover why a hand-tied red rose bouquet still says "I love you" better than anything else — and how to keep one fresh for longer.',
       image: 'https://res.cloudinary.com/etywezeq/image/upload/v1787589221/luxeflower/products/pvnfairvnobfaslglocp.jpg'
     },
     {
@@ -39,15 +39,15 @@ export class BlogComponent implements OnInit {
       title: 'The Meaning Behind Rose Colors: Express Your Sentiments',
       category: 'News',
       date: 'July 28, 2026',
-      excerpt: 'From passionate red to pure white and rare blue roses, learn the symbolic language of flowers before ordering.',
+      excerpt: 'Pink roses speak of gratitude and admiration, while deep red carries passion and pure white marks new beginnings — learn the symbolic language of roses before you order your next bouquet.',
       image: 'https://res.cloudinary.com/etywezeq/image/upload/v1787589173/luxeflower/products/o8e5h1wpucz90wkvvcpg.jpg'
     },
     {
       id: 3,
-      title: 'Luxeflower Launches Same-Day Luxury Hamper Delivery',
+      title: 'White Roses: Timeless Elegance for Weddings & New Beginnings',
       category: 'News',
       date: 'July 15, 2026',
-      excerpt: 'We are excited to expand our express delivery services across all seven Emirates with custom artisan hampers.',
+      excerpt: 'Nothing captures purity and grace quite like a pristine white rose arrangement. See why they remain the top choice for weddings, engagements, and life\'s most meaningful milestones.',
       image: 'https://res.cloudinary.com/etywezeq/image/upload/v1787589211/luxeflower/products/w7ixnj1t1adicei6hdmn.jpg'
     }
   ];
