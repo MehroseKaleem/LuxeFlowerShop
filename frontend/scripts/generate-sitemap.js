@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 const API_URL = process.env.SITEMAP_API_URL || 'http://localhost:5000/api/v1';
-const SITE_URL = process.env.SITEMAP_SITE_URL || 'https://luxeflower.ae';
+const SITE_URL = process.env.SITEMAP_SITE_URL || 'https://luxefloweruae.com';
 
 const STATIC_PAGES = [
   { path: '/', changefreq: 'daily', priority: '1.0' },

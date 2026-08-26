@@ -6,4 +6,4 @@ Disallow: /cart
 Disallow: /checkout
 Disallow: /search
 
-Sitemap: https://luxeflower.ae/sitemap.xml
+Sitemap: https://luxefloweruae.com/sitemap.xml

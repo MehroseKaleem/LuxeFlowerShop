@@ -22,6 +22,10 @@ export const accountRoutes: Routes = [
     loadComponent: () => import('./reset-password/reset-password').then(m => m.ResetPasswordComponent)
   },
   {
+    path: 'verify-email/:token',
+    loadComponent: () => import('./verify-email/verify-email').then(m => m.VerifyEmailComponent)
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadComponent: () => import('./account-layout/account-layout').then(m => m.AccountLayoutComponent),

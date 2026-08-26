@@ -39,9 +39,8 @@
             },
             "security": {
               "allowedHosts": [
-                "luxeflower.ae",
-                "www.luxeflower.ae",
-                "admin.luxeflower.ae",
+                "luxefloweruae.com",
+                "www.luxefloweruae.com",
                 "localhost",
                 "127.0.0.1"
               ]

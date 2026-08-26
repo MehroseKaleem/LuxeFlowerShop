@@ -11,7 +11,7 @@ export interface SeoConfig {
 }
 
 const SITE_NAME = 'Luxeflower';
-const SITE_URL = 'https://luxeflower.ae';
+const SITE_URL = 'https://luxefloweruae.com';
 const DEFAULT_IMAGE = `${SITE_URL}/logo.png`;
 
 /**

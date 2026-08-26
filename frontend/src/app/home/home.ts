@@ -100,8 +100,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       '@context': 'https://schema.org',
       '@type': 'FloristShop',
       name: 'Luxeflower',
-      url: 'https://luxeflower.ae',
-      image: 'https://luxeflower.ae/logo.png',
+      url: 'https://luxefloweruae.com',
+      image: 'https://luxefloweruae.com/logo.png',
       description: 'Premium flower delivery across the UAE — fresh, handcrafted bouquets for every occasion.',
       areaServed: 'AE',
       priceRange: 'AED'

@@ -22,7 +22,7 @@ export class ContactComponent implements OnInit {
   private seo = inject(SeoService);
 
   protected readonly storePhone = signal('+971500000000');
-  protected readonly storeEmail = signal('support@luxeflower.ae');
+  protected readonly storeEmail = signal('support@luxefloweruae.com');
   protected readonly submitting = signal(false);
   protected readonly submitted = signal(false);
 

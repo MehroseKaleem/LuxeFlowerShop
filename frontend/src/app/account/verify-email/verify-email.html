@@ -1,0 +1,17 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <h1 class="auth-title">Verify Email</h1>
+
+    @if (verifying()) {
+      <p class="auth-status">Verifying your email address...</p>
+    } @else if (success()) {
+      <div class="auth-success">Your email has been verified. You're all set!</div>
+    } @else {
+      <div class="auth-error">This verification link is invalid or has expired.</div>
+    }
+
+    <div class="auth-links">
+      <a routerLink="/account/login">&larr; Back to login</a>
+    </div>
+  </div>
+</div>
