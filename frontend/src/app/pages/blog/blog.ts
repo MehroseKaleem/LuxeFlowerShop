@@ -32,7 +32,7 @@ export class BlogComponent implements OnInit {
       category: 'Bloom',
       date: 'August 5, 2026',
       excerpt: 'Discover which flower varieties thrive in warm climates and how to care for your luxury bouquets to keep them fresh.',
-      image: '/hero-slide-1.png'
+      image: 'https://res.cloudinary.com/etywezeq/image/upload/v1787589221/luxeflower/products/pvnfairvnobfaslglocp.jpg'
     },
     {
       id: 2,
@@ -40,7 +40,7 @@ export class BlogComponent implements OnInit {
       category: 'News',
       date: 'July 28, 2026',
       excerpt: 'From passionate red to pure white and rare blue roses, learn the symbolic language of flowers before ordering.',
-      image: '/hero-slide-2.png'
+      image: 'https://res.cloudinary.com/etywezeq/image/upload/v1787589173/luxeflower/products/o8e5h1wpucz90wkvvcpg.jpg'
     },
     {
       id: 3,
@@ -48,7 +48,7 @@ export class BlogComponent implements OnInit {
       category: 'News',
       date: 'July 15, 2026',
       excerpt: 'We are excited to expand our express delivery services across all seven Emirates with custom artisan hampers.',
-      image: '/hero-slide-1.png'
+      image: 'https://res.cloudinary.com/etywezeq/image/upload/v1787589211/luxeflower/products/w7ixnj1t1adicei6hdmn.jpg'
     }
   ];
 

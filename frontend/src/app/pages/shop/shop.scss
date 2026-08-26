@@ -316,5 +316,9 @@
   .search-box {
     max-width: none;
     order: -1;
+    /* The fixed "custom bouquet" tab pins itself to the right edge of the
+       viewport regardless of scroll position — reserve space so it never
+       sits on top of the search input on short mobile screens. */
+    margin-right: 56px;
   }
 }
