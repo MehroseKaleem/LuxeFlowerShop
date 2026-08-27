@@ -5,8 +5,8 @@ const DEFAULTS = {
   FREE_SHIPPING_THRESHOLD: '200',
   TAX_RATE_PERCENT: '5',
   CURRENCY: 'AED',
-  STORE_PHONE: '+971500000000',
-  STORE_EMAIL: 'support@luxefloweruae.com',
+  STORE_PHONE: '+971 56 389 8820',
+  STORE_EMAIL: 'luxeflower072@gmail.com',
 };
 
 async function getAllPublic() {

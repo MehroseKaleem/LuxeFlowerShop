@@ -32,6 +32,29 @@ const LIST_SELECT = {
   categories: { include: { category: { select: CATEGORY_SELECT } } },
 };
 
+// Uses the MySQL FULLTEXT index on (name, shortDescription) instead of a
+// LIKE '%term%' scan, which can't use any index and gets slower as the
+// catalog grows. BOOLEAN MODE with a trailing wildcard per word gives
+// prefix matching ("ros" matches "roses") and treats multiple words as
+// "any of these" rather than requiring the exact phrase, which is closer
+// to what shoppers expect from a search box.
+async function fullTextSearchProductIds(rawSearch) {
+  const words = rawSearch
+    .replace(/[+\-<>()~*"@]/g, ' ')
+    .split(/\s+/)
+    .map((w) => w.trim())
+    .filter((w) => w.length >= 2);
+
+  if (!words.length) return null;
+
+  const booleanQuery = words.map((w) => `${w}*`).join(' ');
+  const rows = await prisma.$queryRaw`
+    SELECT id FROM products
+    WHERE MATCH(name, shortDescription) AGAINST(${booleanQuery} IN BOOLEAN MODE)
+  `;
+  return rows.map((r) => r.id);
+}
+
 function serializeProduct(product) {
   if (!product) return product;
   return {
@@ -109,10 +132,18 @@ async function listPublic(query) {
     where.tags = { some: { tag: { slug: query.tag } } };
   }
   if (query.search) {
-    where.OR = [
-      { name: { contains: query.search } },
-      { shortDescription: { contains: query.search } },
-    ];
+    const matchingIds = await fullTextSearchProductIds(query.search);
+    // No matching words (e.g. search was only punctuation/stopwords) -
+    // fall back to the plain substring match rather than returning zero
+    // results for a query the fulltext index couldn't parse.
+    if (matchingIds) {
+      where.id = { in: matchingIds };
+    } else {
+      where.OR = [
+        { name: { contains: query.search } },
+        { shortDescription: { contains: query.search } },
+      ];
+    }
   }
 
   const { items, meta } = await paginate(prisma.product, {

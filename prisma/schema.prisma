@@ -3,8 +3,9 @@
 // ==========================================================================
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
+  previewFeatures = ["fullTextIndex"]
 }
 
 datasource db {
@@ -218,6 +219,7 @@ model Product {
   @@index([isActive, isFeatured])
   @@index([name])
   @@index([sku])
+  @@fulltext([name, shortDescription])
   @@map("products")
 }
 
