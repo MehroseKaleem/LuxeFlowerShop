@@ -126,7 +126,7 @@ export class CouponsComponent implements OnInit {
 
   toggle(coupon: Coupon) {
     this.couponService.adminToggle(coupon.id).subscribe({
-      next: () => this.load(),
+      next: updated => this.coupons.update(list => list.map(c => (c.id === updated.id ? updated : c))),
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update the coupon. Please try again.'))
     });
   }
@@ -138,7 +138,7 @@ export class CouponsComponent implements OnInit {
     }
     if (!confirm('Delete this coupon?')) return;
     this.couponService.adminDelete(coupon.id).subscribe({
-      next: () => this.load(),
+      next: () => this.coupons.update(list => list.filter(c => c.id !== coupon.id)),
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the coupon. Please try again.'))
     });
   }

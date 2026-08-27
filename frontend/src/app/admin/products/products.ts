@@ -44,8 +44,8 @@ export class ProductsComponent implements OnInit {
     this.loadData();
   }
 
-  loadData() {
-    this.loading.set(true);
+  loadData(opts: { silent?: boolean } = {}) {
+    if (!opts.silent) this.loading.set(true);
     this.productService
       .adminList({
         page: this.page(),
@@ -88,7 +88,11 @@ export class ProductsComponent implements OnInit {
     if (!confirm('Are you sure you want to delete this product?')) return;
     this.productService.adminDelete(id).subscribe({
       next: () => {
-        this.loadData();
+        // Remove it instantly, then silently reconcile pagination/totals
+        // in the background rather than flashing the whole table to a
+        // loading state for a single-row delete.
+        this.products.update(list => list.filter(p => p.id !== id));
+        this.loadData({ silent: true });
         const current = new Set(this.selectedProducts());
         current.delete(id);
         this.selectedProducts.set(current);
@@ -103,7 +107,8 @@ export class ProductsComponent implements OnInit {
 
     forkJoin(ids.map(id => this.productService.adminDelete(id))).subscribe({
       next: () => {
-        this.loadData();
+        this.products.update(list => list.filter(p => !ids.includes(p.id)));
+        this.loadData({ silent: true });
         this.selectedProducts.set(new Set<number>());
       },
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the selected products. Please try again.'))

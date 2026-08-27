@@ -138,7 +138,7 @@ export class BannersComponent implements OnInit {
   delete(id: number) {
     if (!confirm('Delete this banner?')) return;
     this.bannerService.adminDelete(id).subscribe({
-      next: () => this.load(),
+      next: () => this.banners.update(list => list.filter(b => b.id !== id)),
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the banner. Please try again.'))
     });
   }

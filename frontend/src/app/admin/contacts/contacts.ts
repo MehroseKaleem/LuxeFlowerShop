@@ -98,7 +98,10 @@ export class ContactsComponent implements OnInit {
   deleteMessage(id: number) {
     if (!confirm('Delete this message?')) return;
     this.contactService.adminDelete(id).subscribe({
-      next: () => this.loadMessages(),
+      next: () => {
+        this.messages.update(list => list.filter(m => m.id !== id));
+        this.total.update(t => t - 1);
+      },
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the message. Please try again.'))
     });
   }

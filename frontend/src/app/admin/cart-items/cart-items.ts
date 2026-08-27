@@ -68,7 +68,7 @@ export class CartItemsComponent implements OnInit {
     this.adminCartService.delete(id).subscribe({
       next: () => {
         this.notifications.success('Cart cleared');
-        this.loadCarts();
+        this.carts.update(list => list.filter(c => c.id !== id));
       },
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not clear the cart. Please try again.'))
     });

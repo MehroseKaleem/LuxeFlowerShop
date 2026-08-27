@@ -63,10 +63,19 @@ export class ReviewsComponent implements OnInit {
 
   approveReview(id: number) {
     this.reviewService.adminApprove(id).subscribe({
-      next: () => {
+      next: updatedReview => {
         this.notifications.success('Review approved');
-        this.refreshReviews();
-        this.refreshCounts();
+        // Patch in place - unless we're viewing the "pending" filter, in
+        // which case a now-approved review no longer belongs in this list
+        // and should just drop out of it.
+        if (this.statusFilter() === 'pending') {
+          this.reviews.update(list => list.filter(r => r.id !== id));
+          this.total.update(t => t - 1);
+        } else {
+          this.reviews.update(list => list.map(r => (r.id === id ? updatedReview : r)));
+        }
+        this.pendingCount.update(c => Math.max(c - 1, 0));
+        this.approvedCount.update(c => c + 1);
       },
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not approve the review. Please try again.'))
     });
@@ -74,10 +83,13 @@ export class ReviewsComponent implements OnInit {
 
   deleteReview(id: number) {
     if (!confirm('Are you sure you want to delete this review?')) return;
+    const wasApproved = this.reviews().find(r => r.id === id)?.isApproved;
     this.reviewService.adminDelete(id).subscribe({
       next: () => {
-        this.refreshReviews();
-        this.refreshCounts();
+        this.reviews.update(list => list.filter(r => r.id !== id));
+        this.total.update(t => t - 1);
+        if (wasApproved) this.approvedCount.update(c => Math.max(c - 1, 0));
+        else this.pendingCount.update(c => Math.max(c - 1, 0));
       },
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not delete the review. Please try again.'))
     });

@@ -114,13 +114,20 @@ export class OrdersComponent implements OnInit {
     return ORDER_STATUS_TRANSITIONS[order.status] || [];
   }
 
+  private patchOrder(updated: Order): void {
+    this.orders.update(list => list.map(o => (o.id === updated.id ? updated : o)));
+  }
+
   updateStatus(orderId: number, newStatus: OrderStatus) {
     this.updatingStatus.set(true);
     this.orderService.adminUpdateStatus(orderId, newStatus, this.statusNote() || undefined).subscribe({
-      next: () => {
+      next: updatedOrder => {
         this.updatingStatus.set(false);
         this.notifications.success('Order status updated');
-        this.refreshOrders();
+        // Patch the row in place instead of a full silent refetch - the
+        // API already gave us the updated order, so there's no reason to
+        // wait on another round-trip for the UI to reflect it.
+        this.patchOrder(updatedOrder);
         this.closeStatusModal();
       },
       error: (err: HttpErrorResponse) => {
@@ -132,9 +139,9 @@ export class OrdersComponent implements OnInit {
 
   markPaid(order: Order): void {
     this.orderService.adminUpdatePaymentStatus(order.id, 'PAID').subscribe({
-      next: () => {
+      next: updatedOrder => {
         this.notifications.success('Marked as paid');
-        this.refreshOrders();
+        this.patchOrder(updatedOrder);
       },
       error: (err: HttpErrorResponse) => this.notifications.error(formatApiError(err, 'Could not update the payment status. Please try again.'))
     });
