@@ -185,11 +185,20 @@ async function createOrder(context, body) {
     return createdOrder;
   });
 
-  sendMail({
-    to: finalEmail,
-    subject: `Order Confirmed — #${order.orderNumber}`,
-    html: templates.orderConfirmation(shippingAddress.fullName, order),
-  });
+  // For card payments, no money has actually moved yet at this point - the
+  // order only exists so Stripe has something to attach a PaymentIntent to.
+  // Sending "Order Confirmed" now would be misleading (and wrong if the
+  // card is declined). That email fires from the Stripe webhook instead,
+  // once payment_intent.succeeded actually confirms the charge went
+  // through. Cash on Delivery has no payment step to wait for, so it's
+  // confirmed immediately as before.
+  if (order.paymentMethod !== 'STRIPE') {
+    sendMail({
+      to: finalEmail,
+      subject: `Order Confirmed — #${order.orderNumber}`,
+      html: templates.orderConfirmation(shippingAddress.fullName, order),
+    });
+  }
 
   return order;
 }
