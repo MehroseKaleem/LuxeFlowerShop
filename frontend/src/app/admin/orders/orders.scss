@@ -84,7 +84,12 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
 
 .search-bar {
   margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
   input {
+    flex: 1 1 260px;
     width: 100%;
     max-width: 500px;
     background: $admin-input-bg;
@@ -95,6 +100,22 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
     font-size: 1rem;
     outline: none;
     &:focus { border-color: $admin-primary; }
+  }
+
+  /* This button had no styling scoped to it at all before - it fell back
+     to the browser's raw default <button> appearance, which stands out as
+     an unstyled box against the dark theme. */
+  button {
+    background: $admin-input-bg;
+    border: 1px solid $admin-border;
+    color: $admin-text;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { background: rgba(255, 255, 255, 0.1); border-color: $admin-accent; }
   }
 }
 
@@ -178,6 +199,7 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
       text-align: left;
       border-bottom: 1px solid $admin-border;
       white-space: nowrap;
+      vertical-align: middle;
     }
 
     th {
@@ -208,6 +230,12 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
 
     .actions-cell {
       display: flex;
+      /* vertical-align on the <td> above has no effect once it becomes a
+         flex container - some rows have one button, others two ("Mark
+         Paid" only shows for pending COD orders), so without this the
+         buttons drift to different vertical positions row to row. */
+      align-items: center;
+      flex-wrap: wrap;
       gap: 0.5rem;
 
       .action-btn {

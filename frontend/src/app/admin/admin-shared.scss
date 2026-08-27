@@ -102,6 +102,7 @@
     font-size: 13.5px;
     border-bottom: 1px solid var(--admin-border, rgba(255, 255, 255, 0.08));
     white-space: nowrap;
+    vertical-align: middle;
   }
 
   th {
@@ -125,6 +126,8 @@
 
 .actions-cell {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 
   button {
