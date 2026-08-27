@@ -32,6 +32,11 @@ async function createPaymentIntent(orderNumber, accessContext) {
   const intent = await stripe.paymentIntents.create({
     amount: amountInFils,
     currency: env.stripe.currency,
+    // The frontend only integrates Stripe's Card Element, which can't
+    // handle redirect-based payment methods (iDEAL, etc.) - restricting to
+    // card avoids Stripe defaulting to "automatic payment methods" and
+    // then rejecting confirmation for want of a redirect return_url.
+    payment_method_types: ['card'],
     metadata: { orderId: String(order.id), orderNumber: order.orderNumber },
     receipt_email: order.customerEmail,
   });
