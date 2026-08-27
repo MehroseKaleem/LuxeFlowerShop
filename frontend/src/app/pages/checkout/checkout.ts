@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { StripeLoaderService } from '../../core/services/stripe-loader.service';
 import { SeoService } from '../../core/services/seo.service';
-import { Address } from '../../models/user.model';
+import { Address, AddressInput } from '../../models/user.model';
 import { CreateOrderPayload, Order, PaymentMethod } from '../../models/order.model';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
 import { formatApiError } from '../../shared/utils/api-error.util';
@@ -42,7 +42,7 @@ export class CheckoutComponent implements OnInit {
   protected readonly submitting = signal(false);
   protected readonly savedAddresses = signal<Address[]>([]);
   protected readonly selectedAddressId = signal<number | null>(null);
-  protected readonly useNewAddress = signal(false);
+  protected readonly saveNewAddress = signal(false);
   protected readonly stripeEnabled = !!environment.stripePublishableKey;
 
   protected readonly awaitingCardPayment = signal(false);
@@ -78,20 +78,49 @@ export class CheckoutComponent implements OnInit {
       error: () => this.loading.set(false)
     });
 
-    if (this.auth.isLoggedIn()) {
+    const user = this.auth.user();
+    if (user) {
+      // Pre-fill with the account's name/phone so a logged-in customer
+      // never has to retype what we already have.
+      this.form.fullName = user.name;
+      this.form.phone = user.phone;
+
       this.userService.myAddresses().subscribe({
         next: addresses => {
           this.savedAddresses.set(addresses);
           const defaultAddress = addresses.find(a => a.isDefault) ?? addresses[0];
           if (defaultAddress) {
-            this.selectedAddressId.set(defaultAddress.id);
+            // Pre-fill the actual editable fields with their saved address,
+            // not just a read-only card - they can tweak anything before
+            // placing the order.
+            this.applySavedAddress(defaultAddress);
           } else {
-            this.useNewAddress.set(true);
+            // First order - default to saving whatever they enter.
+            this.saveNewAddress.set(true);
           }
         },
-        error: () => this.useNewAddress.set(true)
+        error: () => undefined
       });
     }
+  }
+
+  applySavedAddress(address: Address): void {
+    this.selectedAddressId.set(address.id);
+    this.form.fullName = address.fullName;
+    this.form.phone = address.phone;
+    this.form.addressLine1 = address.addressLine1;
+    this.form.addressLine2 = address.addressLine2 || '';
+    this.form.city = address.city;
+    this.form.emirate = address.emirate;
+    this.form.postalCode = address.postalCode || '';
+    // Already saved under this account - no need to save it again unless
+    // they change something.
+    this.saveNewAddress.set(false);
+  }
+
+  onSavedAddressChange(addressId: string): void {
+    const address = this.savedAddresses().find(a => a.id === Number(addressId));
+    if (address) this.applySavedAddress(address);
   }
 
   get cartIsEmpty(): boolean {
@@ -108,22 +137,29 @@ export class CheckoutComponent implements OnInit {
       notes: this.form.notes || undefined
     };
 
-    if (this.auth.isLoggedIn() && !this.useNewAddress() && this.selectedAddressId()) {
-      payload.shippingAddressId = this.selectedAddressId()!;
-    } else {
-      if (!this.form.fullName || !this.form.phone || !this.form.addressLine1 || !this.form.city || !this.form.emirate) {
-        this.notifications.error('Please fill in all required address fields.');
-        return;
-      }
-      payload.shippingAddress = {
-        fullName: this.form.fullName,
-        phone: this.form.phone,
-        addressLine1: this.form.addressLine1,
-        addressLine2: this.form.addressLine2 || undefined,
-        city: this.form.city,
-        emirate: this.form.emirate,
-        postalCode: this.form.postalCode || undefined,
-        country: 'AE'
+    if (!this.form.fullName || !this.form.phone || !this.form.addressLine1 || !this.form.city || !this.form.emirate) {
+      this.notifications.error('Please fill in all required address fields.');
+      return;
+    }
+    const addressFields = {
+      fullName: this.form.fullName,
+      phone: this.form.phone,
+      addressLine1: this.form.addressLine1,
+      addressLine2: this.form.addressLine2 || undefined,
+      city: this.form.city,
+      emirate: this.form.emirate,
+      postalCode: this.form.postalCode || undefined,
+      country: 'AE'
+    };
+    payload.shippingAddress = addressFields;
+
+    let newAddressToSave: AddressInput | null = null;
+    if (this.auth.isLoggedIn() && this.saveNewAddress()) {
+      newAddressToSave = {
+        label: 'Home',
+        ...addressFields,
+        addressLine2: addressFields.addressLine2 ?? null,
+        postalCode: addressFields.postalCode ?? null
       };
     }
 
@@ -140,6 +176,11 @@ export class CheckoutComponent implements OnInit {
     this.orderService.create(payload).subscribe({
       next: order => {
         this.cartService.reset();
+        if (newAddressToSave) {
+          // Fire-and-forget - don't let an address-book failure block an
+          // order that already succeeded.
+          this.userService.addAddress(newAddressToSave).subscribe({ error: () => undefined });
+        }
         if (order.paymentMethod === 'STRIPE' && this.stripeEnabled) {
           this.pendingOrderNumber = order.orderNumber;
           this.pendingOrder = order;

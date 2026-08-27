@@ -122,7 +122,7 @@ export class HeaderComponent implements OnInit {
   }
 
   suggestionImage(product: ProductListItem): string {
-    return mediaUrl(product.images?.[0]?.url);
+    return mediaUrl(product.images?.[0]?.url, undefined, 100);
   }
 
   closeSearch(): void {

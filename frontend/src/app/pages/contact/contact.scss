@@ -15,7 +15,7 @@
   font-size: 42px;
   font-weight: 600;
   color: var(--lux-black);
-  margin-bottom: 50px;
+  margin-bottom: 18px;
   font-family: var(--lux-font-display);
   position: relative;
 
@@ -27,6 +27,15 @@
     background: var(--lux-pink);
     margin: 18px auto 0;
   }
+}
+
+.page-description {
+  max-width: 620px;
+  margin: 0 auto 50px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--lux-grey-600, #6b6b6b);
 }
 
 /* 3 Cards Grid */

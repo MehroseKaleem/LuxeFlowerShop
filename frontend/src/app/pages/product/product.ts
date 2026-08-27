@@ -128,11 +128,11 @@ export class ProductComponent implements OnInit {
     const product = this.product();
     if (!product || !product.images.length) return '/flowers.jpeg';
     const index = Math.min(this.selectedImageIndex(), product.images.length - 1);
-    return mediaUrl(product.images[index]?.url);
+    return mediaUrl(product.images[index]?.url, undefined, 900);
   }
 
   imageUrl(url: string): string {
-    return mediaUrl(url);
+    return mediaUrl(url, undefined, 150);
   }
 
   get selectedVariant() {

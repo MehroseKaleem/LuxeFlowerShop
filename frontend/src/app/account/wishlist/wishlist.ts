@@ -32,7 +32,7 @@ export class AccountWishlistComponent implements OnInit {
   }
 
   imageUrl(url: string | undefined): string {
-    return mediaUrl(url);
+    return mediaUrl(url, undefined, 500);
   }
 
   remove(productId: number): void {

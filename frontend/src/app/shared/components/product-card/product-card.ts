@@ -32,7 +32,7 @@ export class ProductCardComponent {
   protected readonly adding = signal(false);
 
   get primaryImage(): string {
-    return mediaUrl(this.product.images?.[0]?.url);
+    return mediaUrl(this.product.images?.[0]?.url, undefined, 500);
   }
 
   get isOnSale(): boolean {

@@ -38,7 +38,7 @@ export class CartComponent implements OnInit {
   }
 
   imageUrl(url: string | null | undefined): string {
-    return mediaUrl(url);
+    return mediaUrl(url, undefined, 200);
   }
 
   updateQuantity(itemId: number, quantity: number): void {

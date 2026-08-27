@@ -168,49 +168,6 @@
   border-bottom: 1px solid var(--lux-grey-150);
 }
 
-.search-box {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--lux-grey-150);
-  border-radius: 999px;
-  padding: 4px 4px 4px 16px;
-  background: var(--lux-white);
-  flex: 1 1 220px;
-  max-width: 320px;
-
-  input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 13.5px;
-    color: var(--lux-charcoal);
-
-    &::placeholder {
-      color: var(--lux-grey-500);
-    }
-  }
-
-  button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border: none;
-    border-radius: 50%;
-    background: transparent;
-    color: var(--lux-charcoal);
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-
-    &:hover {
-      background: var(--lux-pink-blush);
-      color: var(--lux-pink);
-    }
-  }
-}
-
 .results-count {
   font-size: 13.5px;
   color: var(--lux-grey-500);
@@ -311,14 +268,5 @@
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .search-box {
-    max-width: none;
-    order: -1;
-    /* The fixed "custom bouquet" tab pins itself to the right edge of the
-       viewport regardless of scroll position — reserve space so it never
-       sits on top of the search input on short mobile screens. */
-    margin-right: 56px;
   }
 }

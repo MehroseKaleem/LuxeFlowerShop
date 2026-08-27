@@ -32,7 +32,6 @@ export class ShopComponent implements OnInit {
   protected readonly categories = signal<Category[]>([]);
   protected readonly activeCategory = signal<Category | null>(null);
   protected readonly searchTerm = signal<string | null>(null);
-  protected readonly searchInput = signal('');
   protected readonly sort = signal<SortOption>('newest');
   protected readonly page = signal(1);
   protected readonly totalPages = signal(1);
@@ -49,7 +48,6 @@ export class ShopComponent implements OnInit {
       const page = Number(query.get('page')) || 1;
 
       this.searchTerm.set(q);
-      this.searchInput.set(q || '');
       this.sort.set(sort);
       this.page.set(page);
 
@@ -123,11 +121,6 @@ export class ShopComponent implements OnInit {
 
   onSortChange(sort: SortOption): void {
     this.updateQueryParams({ sort, page: 1 });
-  }
-
-  onSearchSubmit(): void {
-    const term = this.searchInput().trim();
-    this.router.navigate(['/search'], { queryParams: { q: term || null, sort: this.sort() } });
   }
 
   goToCategory(slug: string | null): void {

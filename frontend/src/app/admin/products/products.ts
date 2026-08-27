@@ -77,7 +77,7 @@ export class ProductsComponent implements OnInit {
   }
 
   imageUrl(product: Product): string {
-    return mediaUrl(product.images?.[0]?.url);
+    return mediaUrl(product.images?.[0]?.url, undefined, 200);
   }
 
   getCategoryNames(product: Product): string {

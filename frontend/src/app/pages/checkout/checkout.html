@@ -24,41 +24,39 @@
     } @else {
       <div class="checkout-layout">
         <form class="checkout-form" (submit)="$event.preventDefault(); submitOrder()">
-          @if (auth.isLoggedIn() && savedAddresses().length && !useNewAddress()) {
-            <section class="form-section">
-              <h2>Delivery Address</h2>
-              <div class="address-list">
-                @for (address of savedAddresses(); track address.id) {
-                  <label class="address-option" [class.selected]="selectedAddressId() === address.id">
-                    <input type="radio" name="address" [value]="address.id" [checked]="selectedAddressId() === address.id" (change)="selectedAddressId.set(address.id)" />
-                    <div>
-                      <strong>{{ address.fullName }}</strong> — {{ address.phone }}<br />
-                      {{ address.addressLine1 }}, {{ address.city }}, {{ address.emirate }}
-                    </div>
-                  </label>
-                }
-              </div>
-              <button type="button" class="link-btn" (click)="useNewAddress.set(true)">+ Use a different address</button>
-            </section>
-          } @else {
-            <section class="form-section">
-              <h2>Delivery Address</h2>
-              @if (auth.isLoggedIn() && savedAddresses().length) {
-                <button type="button" class="link-btn" (click)="useNewAddress.set(false)">&larr; Use a saved address</button>
-              }
-              <div class="form-grid">
-                <input type="text" placeholder="Full name *" [(ngModel)]="form.fullName" name="fullName" required />
-                <input type="tel" placeholder="Phone *" [(ngModel)]="form.phone" name="phone" required />
-                <input type="text" placeholder="Address line 1 *" [(ngModel)]="form.addressLine1" name="addressLine1" class="full-width" required />
-                <input type="text" placeholder="Address line 2 (optional)" [(ngModel)]="form.addressLine2" name="addressLine2" class="full-width" />
-                <input type="text" placeholder="City *" [(ngModel)]="form.city" name="city" required />
-                <select [(ngModel)]="form.emirate" name="emirate" required>
-                  @for (e of emirates; track e) { <option [value]="e">{{ e }}</option> }
+          <section class="form-section">
+            <h2>Delivery Address</h2>
+
+            @if (savedAddresses().length > 1) {
+              <div class="saved-address-picker">
+                <label for="savedAddress">Use a saved address</label>
+                <select id="savedAddress" [ngModel]="selectedAddressId()" (ngModelChange)="onSavedAddressChange($event)" name="savedAddress">
+                  @for (address of savedAddresses(); track address.id) {
+                    <option [value]="address.id">{{ address.label }} — {{ address.addressLine1 }}, {{ address.city }}</option>
+                  }
                 </select>
-                <input type="text" placeholder="Postal code (optional)" [(ngModel)]="form.postalCode" name="postalCode" />
               </div>
-            </section>
-          }
+            }
+
+            <p class="hint">Fields below are pre-filled from your account — change anything you need for this order.</p>
+            <div class="form-grid">
+              <input type="text" placeholder="Full name *" [(ngModel)]="form.fullName" name="fullName" required />
+              <input type="tel" placeholder="Phone *" [(ngModel)]="form.phone" name="phone" required />
+              <input type="text" placeholder="Address line 1 *" [(ngModel)]="form.addressLine1" name="addressLine1" class="full-width" required />
+              <input type="text" placeholder="Address line 2 (optional)" [(ngModel)]="form.addressLine2" name="addressLine2" class="full-width" />
+              <input type="text" placeholder="City *" [(ngModel)]="form.city" name="city" required />
+              <select [(ngModel)]="form.emirate" name="emirate" required>
+                @for (e of emirates; track e) { <option [value]="e">{{ e }}</option> }
+              </select>
+              <input type="text" placeholder="Postal code (optional)" [(ngModel)]="form.postalCode" name="postalCode" />
+            </div>
+            @if (auth.isLoggedIn()) {
+              <label class="save-address-toggle">
+                <input type="checkbox" [(ngModel)]="saveNewAddress" name="saveNewAddress" />
+                Save this address for next time
+              </label>
+            }
+          </section>
 
           @if (!auth.isLoggedIn()) {
             <section class="form-section">

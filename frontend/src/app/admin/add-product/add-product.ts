@@ -163,7 +163,7 @@ export class AddProductComponent implements OnInit {
   }
 
   imageUrl(url: string): string {
-    return mediaUrl(url);
+    return mediaUrl(url, undefined, 300);
   }
 
   deleteExistingImage(imageId: number): void {

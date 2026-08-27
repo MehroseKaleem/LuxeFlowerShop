@@ -183,7 +183,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             .map((category, i) => ({
               title: category.name,
               images: results[i].items
-                .map(p => mediaUrl(p.images[0]?.url, ''))
+                .map(p => mediaUrl(p.images[0]?.url, '', 300))
                 .filter(Boolean),
               link: `/category/${category.slug}`
             }))

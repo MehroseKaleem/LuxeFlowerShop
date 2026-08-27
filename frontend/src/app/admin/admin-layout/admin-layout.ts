@@ -1,12 +1,17 @@
-import { Component, signal, computed, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, signal, computed, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { filter } from 'rxjs/operators';
+import { interval, startWith, switchMap } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { ReviewService } from '../../services/review.service';
 import { ContactService } from '../../services/contact.service';
+import { OrderService } from '../../services/order.service';
 import { SeoService } from '../../core/services/seo.service';
+
+const POLL_INTERVAL_MS = 15000;
 
 @Component({
   selector: 'app-admin-layout',
@@ -22,13 +27,16 @@ export class AdminLayoutComponent implements OnInit {
   protected authService = inject(AuthService);
   private reviewService = inject(ReviewService);
   private contactService = inject(ContactService);
+  private orderService = inject(OrderService);
   private seo = inject(SeoService);
+  private destroyRef = inject(DestroyRef);
 
   sidebarCollapsed = signal(false);
   mobileSidebarOpen = signal(false);
 
   pendingReviewsCount = signal(0);
   unreadMessagesCount = signal(0);
+  newOrdersCount = signal(0);
 
   pageTitle = signal('Dashboard');
 
@@ -61,7 +69,8 @@ export class AdminLayoutComponent implements OnInit {
     {
       label: 'Orders',
       icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>',
-      route: '/admin/orders'
+      route: '/admin/orders',
+      badge: this.newOrdersCount
     },
     {
       label: 'Cart Activity',
@@ -115,14 +124,24 @@ export class AdminLayoutComponent implements OnInit {
   ngOnInit() {
     this.seo.set({ title: 'Admin', description: 'Luxeflower admin panel.', noindex: true });
 
-    this.reviewService.adminList({ isApproved: 'false', limit: 1 }).subscribe({
-      next: ({ meta }) => this.pendingReviewsCount.set(meta.total),
-      error: () => undefined
-    });
-    this.contactService.adminList({ isRead: 'false', limit: 1 }).subscribe({
-      next: ({ meta }) => this.unreadMessagesCount.set(meta.total),
-      error: () => undefined
-    });
+    // Poll every 15s so new orders/messages/reviews show up in the sidebar
+    // badges without the admin needing to manually reload the page.
+    interval(POLL_INTERVAL_MS)
+      .pipe(startWith(0), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.reviewService.adminList({ isApproved: 'false', limit: 1 }).subscribe({
+          next: ({ meta }) => this.pendingReviewsCount.set(meta.total),
+          error: () => undefined
+        });
+        this.contactService.adminList({ isRead: 'false', limit: 1 }).subscribe({
+          next: ({ meta }) => this.unreadMessagesCount.set(meta.total),
+          error: () => undefined
+        });
+        this.orderService.adminList({ status: 'PENDING', limit: 1 }).subscribe({
+          next: ({ meta }) => this.newOrdersCount.set(meta.total),
+          error: () => undefined
+        });
+      });
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: any) => {
       this.updatePageTitle(event.urlAfterRedirects);

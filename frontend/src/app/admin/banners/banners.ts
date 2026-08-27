@@ -59,7 +59,7 @@ export class BannersComponent implements OnInit {
   }
 
   imageUrl(url: string): string {
-    return mediaUrl(url);
+    return mediaUrl(url, undefined, 300);
   }
 
   openAddModal() {
@@ -72,7 +72,7 @@ export class BannersComponent implements OnInit {
 
   openEditModal(banner: Banner) {
     this.editingBanner.set(banner);
-    this.imagePreview.set(mediaUrl(banner.imageUrl));
+    this.imagePreview.set(mediaUrl(banner.imageUrl, undefined, 600));
     this.selectedFile = null;
     this.form.patchValue({
       title: banner.title,

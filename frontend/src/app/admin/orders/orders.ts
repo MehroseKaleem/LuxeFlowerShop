@@ -1,11 +1,15 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { interval, startWith } from 'rxjs';
 import { OrderService } from '../../services/order.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Order, OrderStatus, ORDER_STATUS_TRANSITIONS } from '../../models/order.model';
 import { formatApiError } from '../../shared/utils/api-error.util';
+
+const POLL_INTERVAL_MS = 15000;
 
 const ALL_STATUSES: OrderStatus[] = [
   'PENDING',
@@ -28,6 +32,7 @@ const ALL_STATUSES: OrderStatus[] = [
 export class OrdersComponent implements OnInit {
   private orderService = inject(OrderService);
   private notifications = inject(NotificationService);
+  private destroyRef = inject(DestroyRef);
 
   readonly statuses = ALL_STATUSES;
 
@@ -48,10 +53,19 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit() {
     this.refreshOrders();
+
+    // Auto-refresh so newly placed orders appear without a manual reload.
+    // Skipped while the status modal is open so we don't yank the list out
+    // from under an admin mid-edit.
+    interval(POLL_INTERVAL_MS)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (!this.showStatusModal()) this.refreshOrders({ silent: true });
+      });
   }
 
-  refreshOrders() {
-    this.loading.set(true);
+  refreshOrders(opts: { silent?: boolean } = {}) {
+    if (!opts.silent) this.loading.set(true);
     this.orderService
       .adminList({
         page: this.page(),

@@ -1,11 +1,15 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { interval } from 'rxjs';
 import { ContactService } from '../../services/contact.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ContactMessage } from '../../models/contact.model';
 import { formatApiError } from '../../shared/utils/api-error.util';
+
+const POLL_INTERVAL_MS = 15000;
 
 type StatusFilter = 'all' | 'unread' | 'read' | 'replied';
 
@@ -19,6 +23,7 @@ type StatusFilter = 'all' | 'unread' | 'read' | 'replied';
 export class ContactsComponent implements OnInit {
   private contactService = inject(ContactService);
   private notifications = inject(NotificationService);
+  private destroyRef = inject(DestroyRef);
 
   messages = signal<ContactMessage[]>([]);
   total = signal(0);
@@ -34,10 +39,18 @@ export class ContactsComponent implements OnInit {
 
   ngOnInit() {
     this.loadMessages();
+
+    // Auto-refresh so newly submitted contact messages show up without a
+    // manual reload. Skipped while the reply modal is open.
+    interval(POLL_INTERVAL_MS)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (!this.showReplyModal()) this.loadMessages({ silent: true });
+      });
   }
 
-  loadMessages() {
-    this.loading.set(true);
+  loadMessages(opts: { silent?: boolean } = {}) {
+    if (!opts.silent) this.loading.set(true);
     this.contactService.adminList({ limit: 100 }).subscribe({
       next: ({ items, meta }) => {
         this.messages.set(items);

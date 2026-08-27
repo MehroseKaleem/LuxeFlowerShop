@@ -52,7 +52,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   imageUrl(url: string | null): string {
-    return mediaUrl(url);
+    return mediaUrl(url, undefined, 300);
   }
 
   getProductCount(category: Category): number {
@@ -69,7 +69,7 @@ export class CategoriesComponent implements OnInit {
 
   openEditModal(category: Category) {
     this.editingCategory.set(category);
-    this.imagePreview.set(category.image ? mediaUrl(category.image) : null);
+    this.imagePreview.set(category.image ? mediaUrl(category.image, undefined, 600) : null);
     this.selectedFile = null;
     this.categoryForm.patchValue({
       name: category.name,
