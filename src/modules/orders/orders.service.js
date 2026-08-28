@@ -1,4 +1,5 @@
 const prisma = require('../../config/prisma');
+const stripe = require('../../config/stripe');
 const ApiError = require('../../utils/ApiError');
 const { parsePagination, paginate } = require('../../utils/pagination');
 const generateOrderNumber = require('../../utils/orderNumber');
@@ -277,6 +278,22 @@ async function adminUpdateStatus(id, { status, note }, adminId) {
     throw ApiError.badRequest(`Cannot transition order from ${order.status} to ${status}`);
   }
 
+  // For a Stripe-paid order, "Refunded" needs to actually move money back to
+  // the customer's card, not just relabel the order - call Stripe's refund
+  // API first and only touch our own records if that succeeds, so we never
+  // show "Refunded" without a real refund behind it. COD has no charge to
+  // reverse through Stripe, so it stays a plain status change there.
+  if (status === 'REFUNDED' && order.paymentMethod === 'STRIPE' && order.paymentStatus === 'PAID') {
+    if (!stripe || !order.stripePaymentIntentId) {
+      throw ApiError.badRequest('This order has no associated Stripe payment to refund.');
+    }
+    try {
+      await stripe.refunds.create({ payment_intent: order.stripePaymentIntentId });
+    } catch (err) {
+      throw ApiError.badRequest(`Stripe refund failed: ${err.message}`);
+    }
+  }
+
   const updated = await prisma.$transaction(async (tx) => {
     if (status === 'CANCELLED' && order.status !== 'CANCELLED') {
       for (const item of order.items) {
@@ -297,6 +314,7 @@ async function adminUpdateStatus(id, { status, note }, adminId) {
     const paymentStatusUpdate =
       status === 'DELIVERED' && order.paymentMethod === 'COD' ? { paymentStatus: 'PAID' } : {};
     const cancelPaymentUpdate = status === 'CANCELLED' && order.paymentStatus === 'PENDING' ? { paymentStatus: 'FAILED' } : {};
+    const refundPaymentUpdate = status === 'REFUNDED' ? { paymentStatus: 'REFUNDED' } : {};
 
     const result = await tx.order.update({
       where: { id },
@@ -304,6 +322,7 @@ async function adminUpdateStatus(id, { status, note }, adminId) {
         status,
         ...paymentStatusUpdate,
         ...cancelPaymentUpdate,
+        ...refundPaymentUpdate,
         statusHistory: { create: { status, note: note || null, changedById: adminId } },
       },
       include: ORDER_INCLUDE,
