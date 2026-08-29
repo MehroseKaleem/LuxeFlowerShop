@@ -540,7 +540,7 @@
 .testimonial-track-wrap {
   overflow: hidden;
   width: 100%;
-  max-width: 680px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
@@ -551,9 +551,9 @@
 }
 
 .testimonial-slide {
-  flex: 0 0 100%;
+  flex: 0 0 33.3333%;
   min-width: 0;
-  padding: 4px;
+  padding: 4px 12px;
 }
 
 .testimonial-arrow {
@@ -738,6 +738,20 @@
 }
 
 /* Responsive Breakpoints */
+/* Kept in sync with the JS breakpoints in home.ts (updateTestimonialVisible)
+   so the slide width always matches how many cards the track math assumes. */
+@media (max-width: 1024px) {
+  .testimonial-slide {
+    flex: 0 0 50%;
+  }
+}
+
+@media (max-width: 640px) {
+  .testimonial-slide {
+    flex: 0 0 100%;
+  }
+}
+
 @media (max-width: 900px) {
   .why-grid {
     grid-template-columns: repeat(2, 1fr);

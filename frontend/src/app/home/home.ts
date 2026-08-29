@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -88,8 +88,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   protected readonly aboutSlides = signal<string[]>(FALLBACK_ABOUT_SLIDES);
   protected readonly aboutIndex = signal(0);
   protected readonly testimonialIndex = signal(0);
+  protected readonly testimonialVisible = signal(3);
+  protected readonly testimonialMaxIndex = computed(() => Math.max(0, this.testimonials().length - this.testimonialVisible()));
+  protected readonly testimonialPages = computed(() => Array.from({ length: Math.max(1, Math.ceil(this.testimonials().length / this.testimonialVisible())) }));
+  protected readonly testimonialActivePage = computed(() => Math.round(this.testimonialIndex() / this.testimonialVisible()));
   private aboutTimer: ReturnType<typeof setInterval> | null = null;
   private testimonialTimer: ReturnType<typeof setInterval> | null = null;
+  private readonly testimonialResizeListener = (): void => this.updateTestimonialVisible();
 
   ngOnInit(): void {
     this.seo.set({
@@ -121,12 +126,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.aboutTimer = setInterval(() => {
         this.aboutIndex.update(i => (i + 1) % this.aboutSlides().length);
       }, ABOUT_SLIDE_MS);
+
+      this.updateTestimonialVisible();
+      window.addEventListener('resize', this.testimonialResizeListener);
     }
 
     this.reviewService.featured(6).subscribe({
       next: reviews => {
         this.testimonials.set(reviews);
-        if (isPlatformBrowser(this.platformId) && reviews.length > 1) {
+        if (isPlatformBrowser(this.platformId) && reviews.length > this.testimonialVisible()) {
           this.testimonialTimer = setInterval(() => this.nextTestimonial(), TESTIMONIAL_SLIDE_MS);
         }
       },
@@ -204,23 +212,35 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   protected nextTestimonial(): void {
-    const n = this.testimonials().length;
-    if (!n) return;
-    this.testimonialIndex.update(i => (i + 1) % n);
+    const max = this.testimonialMaxIndex();
+    if (max <= 0) return;
+    const step = this.testimonialVisible();
+    this.testimonialIndex.update(i => (i >= max ? 0 : Math.min(i + step, max)));
   }
 
   protected prevTestimonial(): void {
-    const n = this.testimonials().length;
-    if (!n) return;
-    this.testimonialIndex.update(i => (i - 1 + n) % n);
+    const max = this.testimonialMaxIndex();
+    if (max <= 0) return;
+    const step = this.testimonialVisible();
+    this.testimonialIndex.update(i => (i <= 0 ? max : Math.max(i - step, 0)));
   }
 
-  protected goToTestimonial(index: number): void {
-    this.testimonialIndex.set(index);
+  protected goToTestimonial(page: number): void {
+    this.testimonialIndex.set(Math.min(page * this.testimonialVisible(), this.testimonialMaxIndex()));
+  }
+
+  private updateTestimonialVisible(): void {
+    const width = window.innerWidth;
+    this.testimonialVisible.set(width < 640 ? 1 : width < 1024 ? 2 : 3);
+    const max = this.testimonialMaxIndex();
+    if (this.testimonialIndex() > max) this.testimonialIndex.set(max);
   }
 
   ngOnDestroy(): void {
     if (this.aboutTimer) clearInterval(this.aboutTimer);
     if (this.testimonialTimer) clearInterval(this.testimonialTimer);
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('resize', this.testimonialResizeListener);
+    }
   }
 }

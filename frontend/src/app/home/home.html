@@ -169,14 +169,14 @@
         <h2 class="section-title center" appReveal="up">What Our Customers Say</h2>
 
         <div class="testimonial-slider" appReveal="fade" [revealDelay]="100">
-          @if (testimonials().length > 1) {
+          @if (testimonials().length > testimonialVisible()) {
             <button type="button" class="testimonial-arrow prev" (click)="prevTestimonial()" aria-label="Previous review">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
           }
 
           <div class="testimonial-track-wrap">
-            <div class="testimonial-track" [style.transform]="'translateX(-' + (testimonialIndex() * 100) + '%)'">
+            <div class="testimonial-track" [style.transform]="'translateX(-' + (testimonialIndex() * (100 / testimonialVisible())) + '%)'">
               @for (review of testimonials(); track review.id) {
                 <div class="testimonial-slide">
                   <div class="testimonial-card" appTilt3d [tiltMax]="3" [tiltLift]="4">
@@ -213,22 +213,22 @@
             </div>
           </div>
 
-          @if (testimonials().length > 1) {
+          @if (testimonials().length > testimonialVisible()) {
             <button type="button" class="testimonial-arrow next" (click)="nextTestimonial()" aria-label="Next review">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
             </button>
           }
         </div>
 
-        @if (testimonials().length > 1) {
+        @if (testimonials().length > testimonialVisible()) {
           <div class="testimonial-dots">
-            @for (review of testimonials(); track review.id; let i = $index) {
+            @for (page of testimonialPages(); track $index; let i = $index) {
               <button
                 type="button"
                 class="dot"
-                [class.active]="i === testimonialIndex()"
+                [class.active]="i === testimonialActivePage()"
                 (click)="goToTestimonial(i)"
-                [attr.aria-label]="'Go to review ' + (i + 1)"></button>
+                [attr.aria-label]="'Go to review page ' + (i + 1)"></button>
             }
           </div>
         }
