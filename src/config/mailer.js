@@ -84,6 +84,12 @@ const templates = {
       `<p>Thank you for creating an account with ${env.appName}. Explore our fresh flower collections curated for every occasion.</p>`,
     ),
 
+  newsletterWelcome: () =>
+    layout(
+      "You're on the list!",
+      `<p>Thanks for subscribing to ${env.appName}. You'll be the first to hear about new arrivals, seasonal collections, and exclusive offers.</p>`,
+    ),
+
   verifyEmail: (name, link) =>
     layout(
       'Verify your email',

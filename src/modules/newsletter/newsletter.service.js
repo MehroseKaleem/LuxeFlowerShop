@@ -1,17 +1,25 @@
 const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const { parsePagination, paginate } = require('../../utils/pagination');
+const { sendMail, templates } = require('../../config/mailer');
 
 async function subscribe(email) {
   const normalizedEmail = email.toLowerCase();
   const existing = await prisma.newsletter.findUnique({ where: { email: normalizedEmail } });
 
+  let subscriber;
   if (existing) {
     if (existing.isActive) throw ApiError.conflict('This email is already subscribed');
-    return prisma.newsletter.update({ where: { email: normalizedEmail }, data: { isActive: true } });
+    subscriber = await prisma.newsletter.update({ where: { email: normalizedEmail }, data: { isActive: true } });
+  } else {
+    subscriber = await prisma.newsletter.create({ data: { email: normalizedEmail } });
   }
 
-  return prisma.newsletter.create({ data: { email: normalizedEmail } });
+  // The frontend tells the customer to "watch your inbox" right after
+  // subscribing - actually send something, or that's a broken promise.
+  sendMail({ to: normalizedEmail, subject: "You're on the list!", html: templates.newsletterWelcome() });
+
+  return subscriber;
 }
 
 async function unsubscribe(email) {
