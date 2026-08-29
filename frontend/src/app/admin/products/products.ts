@@ -1,9 +1,11 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, signal, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -26,6 +28,7 @@ export class ProductsComponent implements OnInit {
   private categoryService = inject(CategoryService);
   private notifications = inject(NotificationService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -38,10 +41,20 @@ export class ProductsComponent implements OnInit {
   selectedCategory = signal<number | null>(null);
   selectedStatus = signal<'all' | 'active' | 'draft'>('all');
   selectedProducts = signal<Set<number>>(new Set<number>());
+  private searchInput$ = new Subject<string>();
 
   ngOnInit() {
     this.categoryService.list().subscribe({ next: cats => this.categories.set(cats) });
     this.loadData();
+
+    this.searchInput$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.applyFilters());
+  }
+
+  onSearchInput(value: string): void {
+    this.searchQuery.set(value);
+    this.searchInput$.next(value);
   }
 
   loadData(opts: { silent?: boolean } = {}) {

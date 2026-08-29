@@ -1,7 +1,10 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { UserService } from '../../services/user.service';
 import { OrderService } from '../../services/order.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -20,11 +23,13 @@ export class CustomersComponent implements OnInit {
   private userService = inject(UserService);
   private orderService = inject(OrderService);
   private notifications = inject(NotificationService);
+  private destroyRef = inject(DestroyRef);
 
   customers = signal<User[]>([]);
   total = signal(0);
   loading = signal(true);
   searchQuery = signal<string>('');
+  private searchInput$ = new Subject<string>();
 
   selectedCustomer = signal<User | null>(null);
   customerOrders = signal<Order[]>([]);
@@ -32,6 +37,15 @@ export class CustomersComponent implements OnInit {
 
   ngOnInit() {
     this.loadCustomers();
+
+    this.searchInput$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadCustomers());
+  }
+
+  onSearchInput(value: string): void {
+    this.searchQuery.set(value);
+    this.searchInput$.next(value);
   }
 
   loadCustomers() {

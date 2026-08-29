@@ -199,15 +199,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     return Array.from({ length: 5 }, (_, i) => i < Math.round(rating));
   }
 
-  protected initials(name: string): string {
-    return name
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(part => part[0]?.toUpperCase() ?? '')
-      .join('');
-  }
-
   protected goToAbout(index: number): void {
     this.aboutIndex.set(index);
   }

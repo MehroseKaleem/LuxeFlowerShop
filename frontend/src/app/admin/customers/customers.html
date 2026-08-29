@@ -6,7 +6,7 @@
         type="text"
         placeholder="Search by name, email or phone..."
         [ngModel]="searchQuery()"
-        (ngModelChange)="searchQuery.set($event)"
+        (ngModelChange)="onSearchInput($event)"
         (keyup.enter)="search()"
         class="search-input"
       >

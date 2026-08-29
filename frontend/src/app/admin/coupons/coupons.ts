@@ -1,7 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CouponService } from '../../services/coupon.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Coupon } from '../../models/coupon.model';
@@ -18,11 +21,13 @@ export class CouponsComponent implements OnInit {
   private couponService = inject(CouponService);
   private notifications = inject(NotificationService);
   private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
 
   coupons = signal<Coupon[]>([]);
   total = signal(0);
   loading = signal(true);
   searchQuery = signal('');
+  private searchInput$ = new Subject<string>();
 
   showModal = signal(false);
   editingCoupon = signal<Coupon | null>(null);
@@ -43,6 +48,15 @@ export class CouponsComponent implements OnInit {
 
   ngOnInit() {
     this.load();
+
+    this.searchInput$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.load());
+  }
+
+  onSearchInput(value: string): void {
+    this.searchQuery.set(value);
+    this.searchInput$.next(value);
   }
 
   load() {

@@ -17,7 +17,6 @@ export class FooterComponent {
   private notifications = inject(NotificationService);
 
   protected readonly customerServices = [
-    { label: 'Search', link: '/search' },
     { label: 'About Us', link: '/about' },
     { label: 'Contact Us', link: '/contact' },
     { label: 'Blog', link: '/blog' }

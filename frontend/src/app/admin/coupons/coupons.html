@@ -7,7 +7,7 @@
 </div>
 
 <div class="filters-row">
-  <input type="text" placeholder="Search by code..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" (keyup.enter)="search()" />
+  <input type="text" placeholder="Search by code..." [ngModel]="searchQuery()" (ngModelChange)="onSearchInput($event)" (keyup.enter)="search()" />
   <button class="btn-secondary" (click)="search()">Search</button>
 </div>
 

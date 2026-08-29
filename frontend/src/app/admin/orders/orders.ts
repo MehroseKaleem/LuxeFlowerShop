@@ -3,7 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { interval, startWith } from 'rxjs';
+import { Subject, interval } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { OrderService } from '../../services/order.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Order, OrderStatus, ORDER_STATUS_TRANSITIONS } from '../../models/order.model';
@@ -44,6 +45,7 @@ export class OrdersComponent implements OnInit {
 
   searchQuery = signal<string>('');
   statusFilter = signal<OrderStatus | 'all'>('all');
+  private searchInput$ = new Subject<string>();
 
   expandedOrderId = signal<number | null>(null);
   showStatusModal = signal<boolean>(false);
@@ -62,6 +64,17 @@ export class OrdersComponent implements OnInit {
       .subscribe(() => {
         if (!this.showStatusModal()) this.refreshOrders({ silent: true });
       });
+
+    // Search as you type instead of requiring Enter/the Search button -
+    // debounced so it doesn't fire a request on every keystroke.
+    this.searchInput$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.applyFilters());
+  }
+
+  onSearchInput(value: string): void {
+    this.searchQuery.set(value);
+    this.searchInput$.next(value);
   }
 
   refreshOrders(opts: { silent?: boolean } = {}) {
