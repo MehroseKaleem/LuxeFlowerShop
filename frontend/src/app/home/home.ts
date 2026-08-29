@@ -131,7 +131,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       window.addEventListener('resize', this.testimonialResizeListener);
     }
 
-    this.reviewService.featured(6).subscribe({
+    this.reviewService.featured(20).subscribe({
       next: reviews => {
         this.testimonials.set(reviews);
         if (isPlatformBrowser(this.platformId) && reviews.length > this.testimonialVisible()) {
