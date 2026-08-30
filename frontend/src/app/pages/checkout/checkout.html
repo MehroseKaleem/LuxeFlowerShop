@@ -12,7 +12,11 @@
     } @else if (awaitingCardPayment()) {
       <div class="payment-panel">
         <h2>Complete your payment</h2>
-        <p class="payment-hint">Enter your card details to complete order #{{ pendingOrderNumber }}.</p>
+        <p class="payment-hint">Complete order #{{ pendingOrderNumber }}.</p>
+        <div id="payment-request-button" class="payment-request-button" [class.visible]="walletPaymentAvailable()"></div>
+        @if (walletPaymentAvailable()) {
+          <div class="payment-divider"><span>or pay with card</span></div>
+        }
         <div id="card-element" class="card-element"></div>
         @if (cardError()) {
           <p class="card-error">{{ cardError() }}</p>

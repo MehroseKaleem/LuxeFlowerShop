@@ -244,6 +244,29 @@ input, select, textarea {
   margin-bottom: 22px;
 }
 
+.payment-request-button {
+  display: none;
+  margin-bottom: 18px;
+
+  &.visible { display: block; }
+}
+
+.payment-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  color: var(--lux-grey-500);
+  font-size: 12px;
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--lux-grey-150);
+  }
+}
+
 .card-element {
   padding: 13px;
   border: 1px solid var(--lux-grey-150);

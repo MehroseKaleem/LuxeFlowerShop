@@ -48,11 +48,13 @@ export class CheckoutComponent implements OnInit {
   protected readonly awaitingCardPayment = signal(false);
   protected readonly payingWithCard = signal(false);
   protected readonly cardError = signal<string | null>(null);
+  protected readonly walletPaymentAvailable = signal(false);
   protected pendingOrderNumber: string | null = null;
   private pendingOrder: Order | null = null;
   private pendingClientSecret: string | null = null;
   private stripe: any = null;
   private cardElement: any = null;
+  private paymentRequest: any = null;
 
   protected form = {
     fullName: '',
@@ -218,9 +220,66 @@ export class CheckoutComponent implements OnInit {
       this.cardElement = elements.create('card');
       this.cardElement.mount('#card-element');
       this.pendingClientSecret = clientSecret;
+      this.mountWalletButton(clientSecret);
     } catch {
       this.cardError.set('Could not load the card payment form. Please try again.');
     }
+  }
+
+  /**
+   * Apple Pay / Google Pay via Stripe's Payment Request Button — both
+   * resolve to a regular card PaymentMethod once confirmed, so they reuse
+   * the exact same PaymentIntent/clientSecret as the manual card form,
+   * no separate backend integration needed. The button only mounts itself
+   * if the browser/device actually has a wallet available (canMakePayment);
+   * otherwise it silently stays hidden and the card form below is the only
+   * option, so nothing changes for visitors without Apple Pay or Google Pay.
+   */
+  private mountWalletButton(clientSecret: string): void {
+    const order = this.pendingOrder;
+    if (!order) return;
+
+    const elements = this.stripe.elements();
+    this.paymentRequest = this.stripe.paymentRequest({
+      country: 'AE',
+      currency: 'aed',
+      total: { label: 'Luxeflower Order', amount: Math.round(Number(order.total) * 100) },
+      requestPayerName: true,
+      requestPayerEmail: true
+    });
+
+    const prButton = elements.create('paymentRequestButton', { paymentRequest: this.paymentRequest });
+
+    this.paymentRequest.canMakePayment().then((result: unknown) => {
+      if (result) {
+        prButton.mount('#payment-request-button');
+        this.walletPaymentAvailable.set(true);
+      }
+    });
+
+    this.paymentRequest.on('paymentmethod', async (ev: any) => {
+      const { error, paymentIntent } = await this.stripe.confirmCardPayment(
+        clientSecret,
+        { payment_method: ev.paymentMethod.id },
+        { handleActions: false }
+      );
+
+      if (error) {
+        ev.complete('fail');
+        this.cardError.set(error.message || 'Payment failed. Please try again.');
+        return;
+      }
+      ev.complete('success');
+
+      if (paymentIntent.status === 'requires_action') {
+        const { error: actionError } = await this.stripe.confirmCardPayment(clientSecret);
+        if (actionError) {
+          this.cardError.set(actionError.message || 'Payment failed. Please try again.');
+          return;
+        }
+      }
+      this.onPaymentSucceeded();
+    });
   }
 
   confirmCardPayment(): void {
@@ -237,14 +296,18 @@ export class CheckoutComponent implements OnInit {
         if (result.error) {
           this.cardError.set(result.error.message || 'Payment failed. Please try again.');
         } else {
-          this.router.navigate(['/order-confirmation', this.pendingOrderNumber], {
-            state: { order: { ...this.pendingOrder, paymentStatus: 'PAID' } }
-          });
+          this.onPaymentSucceeded();
         }
       })
       .catch(() => {
         this.payingWithCard.set(false);
         this.cardError.set('Payment failed. Please try again.');
       });
+  }
+
+  private onPaymentSucceeded(): void {
+    this.router.navigate(['/order-confirmation', this.pendingOrderNumber], {
+      state: { order: { ...this.pendingOrder, paymentStatus: 'PAID' } }
+    });
   }
 }
