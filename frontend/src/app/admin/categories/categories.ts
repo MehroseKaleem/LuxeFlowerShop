@@ -51,8 +51,8 @@ export class CategoriesComponent implements OnInit {
     this.categoryService.adminList({ limit: 100 }).subscribe({ next: ({ items }) => this.categories.set(items) });
   }
 
-  imageUrl(url: string | null): string {
-    return mediaUrl(url, undefined, 300);
+  imageUrl(category: Category): string {
+    return mediaUrl(category.image || category.fallbackImage, undefined, 300);
   }
 
   getProductCount(category: Category): number {

@@ -4,6 +4,7 @@ export interface Category {
   slug: string;
   description?: string | null;
   image: string | null;
+  fallbackImage?: string | null;
   parentId: number | null;
   isActive?: boolean;
   sortOrder?: number;
