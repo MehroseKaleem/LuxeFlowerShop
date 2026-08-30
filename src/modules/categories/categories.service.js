@@ -46,11 +46,34 @@ async function adminList(query) {
   if (query.isActive !== undefined) where.isActive = query.isActive === 'true';
   if (query.search) where.name = { contains: query.search };
 
-  return paginate(prisma.category, {
+  const result = await paginate(prisma.category, {
     where,
     pagination,
-    include: { _count: { select: { products: true, children: true } } },
+    include: {
+      _count: { select: { products: true, children: true } },
+      // No dedicated category cover photo has been uploaded for most
+      // categories yet, so give the admin UI a real product photo to
+      // fall back to instead of a generic stock placeholder.
+      products: {
+        take: 1,
+        where: { product: { isActive: true } },
+        include: {
+          product: {
+            select: {
+              images: { orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }], take: 1, select: { url: true } },
+            },
+          },
+        },
+      },
+    },
   });
+
+  result.items = result.items.map(({ products, ...category }) => ({
+    ...category,
+    fallbackImage: products[0]?.product?.images[0]?.url ?? null,
+  }));
+
+  return result;
 }
 
 async function adminGet(id) {
