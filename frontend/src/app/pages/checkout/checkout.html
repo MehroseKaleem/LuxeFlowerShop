@@ -91,7 +91,7 @@
               </label>
               <label class="payment-option" [class.selected]="form.paymentMethod === 'STRIPE'" [class.disabled]="!stripeEnabled">
                 <input type="radio" name="paymentMethod" value="STRIPE" [(ngModel)]="form.paymentMethod" [disabled]="!stripeEnabled" />
-                Credit / Debit Card
+                <span>Credit / Debit Card <span class="wallet-hint">(also accepts Apple Pay &amp; Google Pay)</span></span>
                 @if (!stripeEnabled) { <span class="soon-badge">Coming soon</span> }
               </label>
             </div>
