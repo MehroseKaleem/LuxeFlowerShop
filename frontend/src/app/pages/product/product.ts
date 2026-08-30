@@ -14,7 +14,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
 import { CarouselComponent } from '../../shared/components/carousel/carousel';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card';
-import { mediaUrl } from '../../shared/utils/media.util';
+import { mediaUrl, IMAGE_FALLBACK } from '../../shared/utils/media.util';
 import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 import { Tilt3dDirective } from '../../shared/directives/tilt-3d.directive';
 import { SeoService } from '../../core/services/seo.service';
@@ -126,7 +126,7 @@ export class ProductComponent implements OnInit {
 
   get primaryImageUrl(): string {
     const product = this.product();
-    if (!product || !product.images.length) return '/flowers.jpeg';
+    if (!product || !product.images.length) return IMAGE_FALLBACK;
     const index = Math.min(this.selectedImageIndex(), product.images.length - 1);
     return mediaUrl(product.images[index]?.url, undefined, 900);
   }

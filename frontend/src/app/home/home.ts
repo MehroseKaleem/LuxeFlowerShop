@@ -15,7 +15,7 @@ import { SeoService } from '../core/services/seo.service';
 import { Category } from '../models/category.model';
 import { ProductListItem } from '../models/product.model';
 import { Review } from '../models/review.model';
-import { mediaUrl } from '../shared/utils/media.util';
+import { mediaUrl, IMAGE_FALLBACK } from '../shared/utils/media.util';
 import { ScrollRevealDirective } from '../shared/directives/scroll-reveal.directive';
 import { Tilt3dDirective } from '../shared/directives/tilt-3d.directive';
 import { ImgFallbackDirective } from '../shared/directives/img-fallback.directive';
@@ -43,7 +43,7 @@ const ABOUT_SLIDE_MS = 4200;
 const TESTIMONIAL_SLIDE_MS = 5000;
 
 // Last-resort placeholder shown only if HOME_SECONDARY banners are empty/unreachable.
-const FALLBACK_ABOUT_SLIDES = ['/flowers.jpeg'];
+const FALLBACK_ABOUT_SLIDES = [IMAGE_FALLBACK];
 
 const VALUE_PROPS: ValueProp[] = [
   { icon: 'flower', title: 'Hand-Arranged Freshness', text: 'Every bouquet is hand-selected and arranged by experienced florists using fresh blooms.' },

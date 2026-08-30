@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { BannerService } from '../../services/banner.service';
 import { Tilt3dDirective } from '../../shared/directives/tilt-3d.directive';
-import { mediaUrl } from '../../shared/utils/media.util';
+import { mediaUrl, IMAGE_FALLBACK } from '../../shared/utils/media.util';
 import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 interface HeroSlide {
@@ -15,7 +15,7 @@ interface HeroSlide {
 // Last-resort placeholder shown only if the banners API is empty/unreachable
 // (before real HOME_HERO banners load, or if none are configured) — no fake
 // category links, just the generic brand placeholder.
-const FALLBACK_SLIDES: HeroSlide[] = [{ image: '/flowers.jpeg', label: 'Luxeflower', link: null }];
+const FALLBACK_SLIDES: HeroSlide[] = [{ image: IMAGE_FALLBACK, label: 'Luxeflower', link: null }];
 
 const AUTOPLAY_MS = 4500;
 const PETAL_COUNT = 30;

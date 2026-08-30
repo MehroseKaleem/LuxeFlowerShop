@@ -1,4 +1,5 @@
 import { Directive, ElementRef, HostListener, Input, inject } from '@angular/core';
+import { IMAGE_FALLBACK } from '../utils/media.util';
 
 /**
  * Swaps a broken `<img>` (backend-hosted product/category/banner photo that
@@ -10,7 +11,7 @@ import { Directive, ElementRef, HostListener, Input, inject } from '@angular/cor
   standalone: true
 })
 export class ImgFallbackDirective {
-  @Input('appImgFallback') fallback = '/flowers.jpeg';
+  @Input('appImgFallback') fallback = IMAGE_FALLBACK;
 
   private readonly el = inject(ElementRef<HTMLImageElement>);
   private swapped = false;
