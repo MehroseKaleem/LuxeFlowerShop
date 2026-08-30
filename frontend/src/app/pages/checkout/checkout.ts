@@ -251,6 +251,12 @@ export class CheckoutComponent implements OnInit {
     const prButton = elements.create('paymentRequestButton', { paymentRequest: this.paymentRequest });
 
     this.paymentRequest.canMakePayment().then((result: unknown) => {
+      // Diagnostic only - lets us confirm the wallet integration itself is
+      // wired correctly from the browser console, independent of whether
+      // this particular device/browser actually has a wallet configured
+      // (Apple Pay needs Safari on Mac/iPhone; Google Pay needs a card
+      // saved to Chrome - neither is a code issue if this logs null/false).
+      console.info('[Luxeflower] Stripe canMakePayment() result:', result);
       if (result) {
         prButton.mount('#payment-request-button');
         this.walletPaymentAvailable.set(true);
