@@ -437,7 +437,7 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
   .form-group {
     margin-bottom: 1.25rem;
     label { display: block; margin-bottom: 0.5rem; color: $admin-text-muted; font-size: 0.875rem; }
-    input, select {
+    input, select, textarea {
       width: 100%;
       background: $admin-input-bg;
       border: 1px solid $admin-border;
@@ -446,8 +446,11 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
       border-radius: 8px;
       font-size: 1rem;
       outline: none;
+      font-family: inherit;
       &:focus { border-color: $admin-accent; }
     }
+
+    textarea { resize: vertical; }
 
     // The <select> box itself sits on the dark modal so a translucent
     // background reads fine, but its dropdown popup is a separate
