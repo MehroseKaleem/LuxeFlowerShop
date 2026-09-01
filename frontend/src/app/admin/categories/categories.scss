@@ -448,6 +448,16 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
       outline: none;
       &:focus { border-color: $admin-accent; }
     }
+
+    // The <select> box itself sits on the dark modal so a translucent
+    // background reads fine, but its dropdown popup is a separate
+    // OS-rendered layer that won't honor a translucent color - it needs
+    // an explicit solid dark background or options render as white text
+    // on the browser's default white, invisible until hovered.
+    select option {
+      background: $admin-card;
+      color: #ffffff;
+    }
   }
 
   .modal-actions {

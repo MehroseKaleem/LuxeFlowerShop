@@ -129,6 +129,14 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
             }
           }
 
+          // The <select> box itself sits on the dark page so a translucent
+          // background reads fine, but its dropdown popup is a separate
+          // OS-rendered layer that won't honor a translucent color.
+          select.form-control option {
+            background: $admin-bg;
+            color: white;
+          }
+
           .field-hint {
             display: block;
             margin-top: 0.5rem;
