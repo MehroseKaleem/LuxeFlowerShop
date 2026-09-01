@@ -4,7 +4,6 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   DashboardOverview,
-  LowStockProduct,
   OrderStatusBreakdown,
   SalesPoint,
   TopProduct
@@ -32,12 +31,6 @@ export class DashboardService {
   topProducts(limit = 10): Observable<TopProduct[]> {
     return this.http
       .get<{ data: { products: TopProduct[] } }>(`${this.baseUrl}/top-products`, { params: { limit } })
-      .pipe(map(res => res.data.products));
-  }
-
-  lowStock(limit = 50): Observable<LowStockProduct[]> {
-    return this.http
-      .get<{ data: { products: LowStockProduct[] } }>(`${this.baseUrl}/low-stock`, { params: { limit } })
       .pipe(map(res => res.data.products));
   }
 

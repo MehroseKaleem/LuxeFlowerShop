@@ -55,11 +55,6 @@ export class ProductCardComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    if (this.product.stock <= 0) {
-      this.notifications.error('This product is currently out of stock.');
-      return;
-    }
-
     this.adding.set(true);
     this.cart.addItem(this.product.id, 1).subscribe({
       next: () => {

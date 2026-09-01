@@ -91,10 +91,4 @@ export class ProductService {
   adminDeleteVariant(id: number, variantId: number): Observable<void> {
     return this.http.delete<void>(`${this.adminUrl}/${id}/variants/${variantId}`);
   }
-
-  adminAdjustStock(id: number, mode: 'SET' | 'INCREMENT' | 'DECREMENT', quantity: number): Observable<Product> {
-    return this.http
-      .patch<{ data: { product: Product } }>(`${this.adminUrl}/${id}/stock`, { mode, quantity })
-      .pipe(map(res => res.data.product));
-  }
 }

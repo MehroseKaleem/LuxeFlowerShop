@@ -63,7 +63,6 @@
                     type="button"
                     class="variant-btn"
                     [class.active]="selectedVariantId() === variant.id"
-                    [disabled]="variant.stock <= 0"
                     (click)="selectedVariantId.set(variant.id)">
                     {{ variant.name }}
                   </button>
@@ -72,21 +71,13 @@
             </div>
           }
 
-          <div class="stock-row">
-            @if (availableStock > 0) {
-              <span class="in-stock">In stock ({{ availableStock }} available)</span>
-            } @else {
-              <span class="out-of-stock">Out of stock</span>
-            }
-          </div>
-
           <div class="purchase-row">
             <div class="qty-selector">
               <button type="button" (click)="decrementQty()" [disabled]="quantity() <= 1">&minus;</button>
               <span>{{ quantity() }}</span>
-              <button type="button" (click)="incrementQty()" [disabled]="quantity() >= availableStock">&plus;</button>
+              <button type="button" (click)="incrementQty()">&plus;</button>
             </div>
-            <button type="button" class="add-to-cart-btn" [disabled]="availableStock <= 0 || addingToCart()" (click)="addToCart()">
+            <button type="button" class="add-to-cart-btn" [disabled]="addingToCart()" (click)="addToCart()">
               {{ addingToCart() ? 'Adding...' : 'Add to Cart' }}
             </button>
             <button type="button" class="wishlist-toggle" [class.active]="isWishlisted" (click)="toggleWishlist()" aria-label="Toggle wishlist">

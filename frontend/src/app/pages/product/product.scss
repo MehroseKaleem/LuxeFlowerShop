@@ -143,15 +143,6 @@
   &:disabled { opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
 }
 
-.stock-row {
-  margin-bottom: 24px;
-  font-size: 13px;
-  letter-spacing: 0.3px;
-
-  .in-stock { color: #1f9d55; }
-  .out-of-stock { color: var(--lux-pink); }
-}
-
 .purchase-row {
   display: flex;
   align-items: center;

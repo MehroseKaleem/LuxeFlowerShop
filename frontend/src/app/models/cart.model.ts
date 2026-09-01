@@ -5,7 +5,6 @@ export interface CartLineProduct {
   sku: string;
   basePrice: string;
   discountPrice: string | null;
-  stock: number;
   isActive: boolean;
   images: { url: string }[];
 }
@@ -14,7 +13,6 @@ export interface CartLineVariant {
   id: number;
   name: string;
   priceAdjustment: string;
-  stock: number;
 }
 
 export interface CartLineItem {
@@ -26,7 +24,6 @@ export interface CartLineItem {
   lineTotal: number;
   product: CartLineProduct;
   variant: CartLineVariant | null;
-  inStock: boolean;
 }
 
 export interface CartCoupon {

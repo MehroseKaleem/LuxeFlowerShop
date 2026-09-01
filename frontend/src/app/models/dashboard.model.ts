@@ -24,14 +24,6 @@ export interface TopProduct {
   revenue: number;
 }
 
-export interface LowStockProduct {
-  id: number;
-  name: string;
-  sku: string;
-  stock: number;
-  lowStockThreshold: number;
-}
-
 export interface OrderStatusBreakdown {
   status: OrderStatus;
   count: number;

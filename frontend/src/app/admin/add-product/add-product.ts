@@ -71,7 +71,6 @@ export class AddProductComponent implements OnInit {
       description: ['', AddProductComponent.notBlank as ValidatorFn],
       basePrice: [0, [Validators.required, Validators.min(0.01)]],
       discountPrice: [null],
-      stock: [0, [Validators.required, Validators.min(0)]],
       categoryIds: this.fb.array(this.categories.map(() => new FormControl(false))),
       status: ['active']
     });
@@ -91,7 +90,6 @@ export class AddProductComponent implements OnInit {
           description: product.description,
           basePrice: Number(product.basePrice),
           discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
-          stock: product.stock,
           status: product.isActive ? 'active' : 'draft'
         });
 
@@ -207,7 +205,6 @@ export class AddProductComponent implements OnInit {
           description: value.description,
           basePrice: value.basePrice,
           discountPrice: value.discountPrice || null,
-          stock: value.stock,
           isActive: value.status === 'active',
           categoryIds
         })
@@ -230,7 +227,6 @@ export class AddProductComponent implements OnInit {
       formData.append('description', value.description);
       formData.append('basePrice', String(value.basePrice));
       if (value.discountPrice) formData.append('discountPrice', String(value.discountPrice));
-      formData.append('stock', String(value.stock));
       formData.append('isActive', String(value.status === 'active'));
       categoryIds.forEach(id => formData.append('categoryIds', String(id)));
       this.newImageFiles.forEach(file => formData.append('images', file));

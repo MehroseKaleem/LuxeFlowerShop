@@ -44,14 +44,13 @@
         <th>Title</th>
         <th>Category</th>
         <th>Price (AED)</th>
-        <th>Stock</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       @if (loading()) {
-        <tr><td colspan="8" class="text-center py-4">Loading products...</td></tr>
+        <tr><td colspan="7" class="text-center py-4">Loading products...</td></tr>
       } @else {
         @for (product of products(); track product.id) {
           <tr>
@@ -60,7 +59,6 @@
             <td>{{ product.name }}</td>
             <td>{{ getCategoryNames(product) }}</td>
             <td>{{ (product.discountPrice || product.basePrice) | aedCurrency }}</td>
-            <td>{{ product.stock }}</td>
             <td><span class="status-badge" [class]="product.isActive ? 'active' : 'draft'">{{ product.isActive ? 'active' : 'inactive' }}</span></td>
             <td>
               <button class="action-btn edit" (click)="navigateToEdit(product.id)">Edit</button>
@@ -70,7 +68,7 @@
         }
         @if (!products().length) {
           <tr>
-            <td colspan="8" class="text-center py-4">No products found.</td>
+            <td colspan="7" class="text-center py-4">No products found.</td>
           </tr>
         }
       }

@@ -11,7 +11,6 @@ export interface ProductVariant {
   name: string;
   sku: string;
   priceAdjustment: string;
-  stock: number;
   isDefault: boolean;
   isActive: boolean;
 }
@@ -36,7 +35,6 @@ export interface ProductListItem {
   shortDescription: string | null;
   basePrice: string;
   discountPrice: string | null;
-  stock: number;
   isFeatured: boolean;
   avgRating: string;
   reviewCount: number;
@@ -49,7 +47,6 @@ export interface Product extends ProductListItem {
   sku: string;
   description: string | null;
   costPrice?: string | null;
-  lowStockThreshold: number;
   weightGrams: number | null;
   isActive: boolean;
   metaTitle: string | null;
@@ -64,7 +61,7 @@ export interface Product extends ProductListItem {
 export interface ProductQuery {
   page?: number;
   limit?: number;
-  sortBy?: 'createdAt' | 'basePrice' | 'avgRating' | 'name' | 'viewCount' | 'stock';
+  sortBy?: 'createdAt' | 'basePrice' | 'avgRating' | 'name' | 'viewCount';
   sortOrder?: 'asc' | 'desc';
   category?: string;
   isFeatured?: boolean;

@@ -7,9 +7,6 @@
       @if (isOnSale) {
         <span class="sale-badge">Sale</span>
       }
-      @if (product.stock <= 0) {
-        <span class="stock-badge">Out of stock</span>
-      }
 
       <button type="button" class="wishlist-btn" [class.active]="isWishlisted" (click)="toggleWishlist($event)" aria-label="Toggle wishlist">
         <svg width="17" height="17" viewBox="0 0 24 24" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
@@ -17,8 +14,8 @@
         </svg>
       </button>
 
-      <button type="button" class="add-to-cart-overlay-btn" (click)="addToCart($event)" [disabled]="adding() || product.stock <= 0">
-        {{ product.stock <= 0 ? 'Out of stock' : adding() ? 'Adding...' : 'Add to Cart' }}
+      <button type="button" class="add-to-cart-overlay-btn" (click)="addToCart($event)" [disabled]="adding()">
+        {{ adding() ? 'Adding...' : 'Add to Cart' }}
       </button>
     </div>
 

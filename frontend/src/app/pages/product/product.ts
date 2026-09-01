@@ -98,7 +98,9 @@ export class ProductComponent implements OnInit {
             '@type': 'Offer',
             priceCurrency: 'AED',
             price: (product.discountPrice ? Number(product.discountPrice) : Number(product.basePrice)).toFixed(2),
-            availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
+            // Every bouquet is made to order rather than pulled from fixed
+            // inventory, so it's always available to purchase.
+            availability: 'https://schema.org/InStock'
           },
           ...(product.reviewCount > 0
             ? {
@@ -149,14 +151,8 @@ export class ProductComponent implements OnInit {
     return Math.round((base + adjustment) * 100) / 100;
   }
 
-  get availableStock(): number {
-    const product = this.product();
-    if (!product) return 0;
-    return this.selectedVariant ? this.selectedVariant.stock : product.stock;
-  }
-
   incrementQty(): void {
-    if (this.quantity() < this.availableStock) this.quantity.update(q => q + 1);
+    this.quantity.update(q => q + 1);
   }
 
   decrementQty(): void {
@@ -165,7 +161,7 @@ export class ProductComponent implements OnInit {
 
   addToCart(): void {
     const product = this.product();
-    if (!product || this.availableStock <= 0) return;
+    if (!product) return;
 
     this.addingToCart.set(true);
     this.cartService.addItem(product.id, this.quantity(), this.selectedVariantId() ?? undefined).subscribe({

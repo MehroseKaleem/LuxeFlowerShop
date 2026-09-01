@@ -108,8 +108,7 @@
   50% { transform: rotate(4deg); }
 }
 
-.sale-badge,
-.stock-badge {
+.sale-badge {
   position: absolute;
   top: 12px;
   left: 12px;
@@ -120,15 +119,7 @@
   padding: 4px 11px;
   border-radius: 20px;
   z-index: 2;
-}
-
-.sale-badge {
   background: var(--lux-black);
-  color: var(--lux-white);
-}
-
-.stock-badge {
-  background: var(--lux-pink);
   color: var(--lux-white);
 }
 
