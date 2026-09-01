@@ -30,6 +30,4 @@ router.patch(
 );
 router.delete('/:id/variants/:variantId', rules.idParamRule, validate, controller.deleteVariant);
 
-router.patch('/:id/stock', rules.idParamRule, rules.stockAdjustRules, validate, controller.adjustStock);
-
 module.exports = router;

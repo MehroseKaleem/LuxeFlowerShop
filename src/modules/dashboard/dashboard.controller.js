@@ -17,11 +17,6 @@ const getTopProducts = asyncHandler(async (req, res) => {
   new ApiResponse(200, { products }).send(res);
 });
 
-const getLowStockProducts = asyncHandler(async (req, res) => {
-  const products = await dashboardService.getLowStockProducts(Number(req.query.limit) || 50);
-  new ApiResponse(200, { products }).send(res);
-});
-
 const getOrderStatusBreakdown = asyncHandler(async (req, res) => {
   const breakdown = await dashboardService.getOrderStatusBreakdown();
   new ApiResponse(200, { breakdown }).send(res);
@@ -31,6 +26,5 @@ module.exports = {
   getOverview,
   getSalesOverTime,
   getTopProducts,
-  getLowStockProducts,
   getOrderStatusBreakdown,
 };

@@ -12,7 +12,6 @@ const ITEM_INCLUDE = {
       sku: true,
       basePrice: true,
       discountPrice: true,
-      stock: true,
       isActive: true,
       images: { where: { isPrimary: true }, take: 1 },
     },
@@ -59,7 +58,6 @@ async function buildCartResponse(cart) {
       lineTotal,
       product: item.product,
       variant: item.variant,
-      inStock: item.product.isActive && item.product.stock >= item.quantity,
     };
   });
   subtotal = Math.round(subtotal * 100) / 100;
@@ -122,7 +120,6 @@ async function addItem(context, { productId, variantId, quantity }) {
     }
   }
 
-  const stockAvailable = variant ? variant.stock : product.stock;
   // findUnique on a compound key rejects `null` for a nullable member (even
   // though the underlying @@unique allows it), so a plain product (no
   // variant) has to be looked up with findFirst instead.
@@ -131,10 +128,6 @@ async function addItem(context, { productId, variantId, quantity }) {
   });
 
   const newQuantity = (existing ? existing.quantity : 0) + quantity;
-  if (newQuantity > stockAvailable) {
-    throw ApiError.badRequest(`Only ${stockAvailable} unit(s) available in stock`);
-  }
-
   const unitPrice = effectiveUnitPrice(product, variant);
 
   if (existing) {
@@ -159,13 +152,8 @@ async function addItem(context, { productId, variantId, quantity }) {
 
 async function updateItemQuantity(context, itemId, quantity) {
   const cart = await getOrCreateCart(context);
-  const item = await prisma.cartItem.findUnique({ where: { id: itemId }, include: { product: true, variant: true } });
+  const item = await prisma.cartItem.findUnique({ where: { id: itemId } });
   if (!item || item.cartId !== cart.id) throw ApiError.notFound('Cart item not found');
-
-  const stockAvailable = item.variant ? item.variant.stock : item.product.stock;
-  if (quantity > stockAvailable) {
-    throw ApiError.badRequest(`Only ${stockAvailable} unit(s) available in stock`);
-  }
 
   if (quantity <= 0) {
     await prisma.cartItem.delete({ where: { id: itemId } });

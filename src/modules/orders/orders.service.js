@@ -58,16 +58,12 @@ async function createOrder(context, body) {
   const finalEmail = user ? user.email : customerEmail.toLowerCase();
   const finalPhone = user ? user.phone : customerPhone;
 
-  // Validate stock and compute subtotal from live prices (never trust client-sent prices).
+  // Compute subtotal from live prices (never trust client-sent prices).
   let subtotal = 0;
   const orderItemsData = [];
   for (const item of items) {
     if (!item.product.isActive) {
       throw ApiError.badRequest(`"${item.product.name}" is no longer available`);
-    }
-    const stockAvailable = item.variant ? item.variant.stock : item.product.stock;
-    if (item.quantity > stockAvailable) {
-      throw ApiError.badRequest(`Only ${stockAvailable} unit(s) of "${item.product.name}" available`);
     }
 
     const unitPrice = effectiveUnitPrice(item.product, item.variant);
@@ -115,30 +111,6 @@ async function createOrder(context, body) {
   const orderNumber = generateOrderNumber();
 
   const order = await prisma.$transaction(async (tx) => {
-    // Re-check + decrement stock atomically to close the race window between
-    // the pre-check above and this commit under concurrent checkouts.
-    for (const item of orderItemsData) {
-      if (item.variantId) {
-        const variant = await tx.productVariant.findUnique({ where: { id: item.variantId } });
-        if (!variant || variant.stock < item.quantity) {
-          throw ApiError.badRequest(`"${item.productName}" no longer has enough stock`);
-        }
-        await tx.productVariant.update({
-          where: { id: item.variantId },
-          data: { stock: { decrement: item.quantity } },
-        });
-      } else {
-        const product = await tx.product.findUnique({ where: { id: item.productId } });
-        if (!product || product.stock < item.quantity) {
-          throw ApiError.badRequest(`"${item.productName}" no longer has enough stock`);
-        }
-        await tx.product.update({
-          where: { id: item.productId },
-          data: { stock: { decrement: item.quantity } },
-        });
-      }
-    }
-
     const createdOrder = await tx.order.create({
       data: {
         orderNumber,
@@ -270,7 +242,7 @@ async function adminGet(id) {
 }
 
 async function adminUpdateStatus(id, { status, note }, adminId) {
-  const order = await prisma.order.findUnique({ where: { id }, include: { items: true } });
+  const order = await prisma.order.findUnique({ where: { id } });
   if (!order) throw ApiError.notFound('Order not found');
 
   const allowed = VALID_TRANSITIONS[order.status] || [];
@@ -295,22 +267,6 @@ async function adminUpdateStatus(id, { status, note }, adminId) {
   }
 
   const updated = await prisma.$transaction(async (tx) => {
-    if (status === 'CANCELLED' && order.status !== 'CANCELLED') {
-      for (const item of order.items) {
-        if (item.variantId) {
-          await tx.productVariant.update({
-            where: { id: item.variantId },
-            data: { stock: { increment: item.quantity } },
-          });
-        } else if (item.productId) {
-          await tx.product.update({
-            where: { id: item.productId },
-            data: { stock: { increment: item.quantity } },
-          });
-        }
-      }
-    }
-
     const paymentStatusUpdate =
       status === 'DELIVERED' && order.paymentMethod === 'COD' ? { paymentStatus: 'PAID' } : {};
     const cancelPaymentUpdate = status === 'CANCELLED' && order.paymentStatus === 'PENDING' ? { paymentStatus: 'FAILED' } : {};

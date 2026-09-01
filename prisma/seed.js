@@ -106,106 +106,106 @@ async function seedCategories() {
 }
 
 // 20 products spread across the real category list, with realistic AED
-// pricing, a mix of stock levels (including one out-of-stock and one
-// low-stock item to exercise those UI states), a few with sale prices,
-// a few with size variants, and a couple of occasion tags.
+// pricing, a few with sale prices, a few with size variants, and a
+// couple of occasion tags. Every bouquet is made to order, so there's
+// no stock/availability concept to seed here.
 const PRODUCT_DEFS = [
   {
-    name: 'Red Rose Bouquet', sku: 'KF-BQ-ROSE-RED', basePrice: 149, stock: 40, isFeatured: true,
+    name: 'Red Rose Bouquet', sku: 'KF-BQ-ROSE-RED', basePrice: 149, isFeatured: true,
     categoryNames: ['Our Collection', 'Flowers', 'Rose Bouquets', "Valentine's Day Collection"],
     tags: ['Romantic', 'Best Seller'],
     variants: [
-      { name: 'Small (6 roses)', skuSuffix: 'S', priceAdjustment: -30, stock: 15 },
-      { name: 'Medium (12 roses)', skuSuffix: 'M', priceAdjustment: 0, stock: 20, isDefault: true },
-      { name: 'Large (24 roses)', skuSuffix: 'L', priceAdjustment: 60, stock: 10 },
+      { name: 'Small (6 roses)', skuSuffix: 'S', priceAdjustment: -30 },
+      { name: 'Medium (12 roses)', skuSuffix: 'M', priceAdjustment: 0, isDefault: true },
+      { name: 'Large (24 roses)', skuSuffix: 'L', priceAdjustment: 60 },
     ],
   },
   {
-    name: 'Pink Rose Bouquet', sku: 'KF-BQ-ROSE-PINK', basePrice: 139, stock: 45,
+    name: 'Pink Rose Bouquet', sku: 'KF-BQ-ROSE-PINK', basePrice: 139,
     categoryNames: ['Our Collection', 'Flowers', 'Rose Bouquets'],
   },
   {
-    name: 'White Rose Elegance', sku: 'KF-BQ-ROSE-WHITE', basePrice: 159, stock: 30,
+    name: 'White Rose Elegance', sku: 'KF-BQ-ROSE-WHITE', basePrice: 159,
     categoryNames: ['Our Collection', 'Flowers', 'Rose Bouquets', 'Anniversary Special'],
   },
   {
-    name: 'Rainbow Rose Bouquet', sku: 'KF-BQ-ROSE-RAINBOW', basePrice: 189, discountPrice: 159, stock: 25,
+    name: 'Rainbow Rose Bouquet', sku: 'KF-BQ-ROSE-RAINBOW', basePrice: 189, discountPrice: 159,
     categoryNames: ['Our Collection', 'Flowers', 'Rose Bouquets'],
     tags: ['Trending'],
   },
   {
-    name: 'Roses In A Box - Classic Red', sku: 'KF-BOX-ROSE-CLS', basePrice: 219, stock: 50, isFeatured: true,
+    name: 'Roses In A Box - Classic Red', sku: 'KF-BOX-ROSE-CLS', basePrice: 219, isFeatured: true,
     categoryNames: ['Our Collection', 'Flowers', 'Roses In A Box', 'Anniversary Special'],
     variants: [
-      { name: '12 Roses', skuSuffix: '12', priceAdjustment: -40, stock: 18 },
-      { name: '24 Roses', skuSuffix: '24', priceAdjustment: 0, stock: 20, isDefault: true },
-      { name: '36 Roses', skuSuffix: '36', priceAdjustment: 90, stock: 12 },
+      { name: '12 Roses', skuSuffix: '12', priceAdjustment: -40 },
+      { name: '24 Roses', skuSuffix: '24', priceAdjustment: 0, isDefault: true },
+      { name: '36 Roses', skuSuffix: '36', priceAdjustment: 90 },
     ],
   },
   {
-    name: 'Roses In A Box - Pink Elegance', sku: 'KF-BOX-ROSE-PINK', basePrice: 209, stock: 20,
+    name: 'Roses In A Box - Pink Elegance', sku: 'KF-BOX-ROSE-PINK', basePrice: 209,
     categoryNames: ['Our Collection', 'Flowers', 'Roses In A Box', 'Birthday Special'],
   },
   {
-    name: 'Roses In A Box - White & Gold', sku: 'KF-BOX-ROSE-WHTGLD', basePrice: 259, discountPrice: 229, stock: 15,
+    name: 'Roses In A Box - White & Gold', sku: 'KF-BOX-ROSE-WHTGLD', basePrice: 259, discountPrice: 229,
     categoryNames: ['Our Collection', 'Flowers', 'Roses In A Box', 'Anniversary Special'],
   },
   {
-    name: 'Julieta Mix Bouquet', sku: 'KF-BQ-JULIETA', basePrice: 179, stock: 5, lowStockThreshold: 5,
+    name: 'Julieta Mix Bouquet', sku: 'KF-BQ-JULIETA', basePrice: 179,
     categoryNames: ['Our Collection', 'Flowers', 'Julieta Mix'],
   },
   {
-    name: 'Julieta Mix Deluxe', sku: 'KF-BQ-JULIETA-DLX', basePrice: 229, stock: 18,
+    name: 'Julieta Mix Deluxe', sku: 'KF-BQ-JULIETA-DLX', basePrice: 229,
     categoryNames: ['Our Collection', 'Flowers', 'Julieta Mix'],
     variants: [
-      { name: 'Regular', skuSuffix: 'REG', priceAdjustment: 0, stock: 10, isDefault: true },
-      { name: 'Deluxe', skuSuffix: 'DLX', priceAdjustment: 50, stock: 8 },
+      { name: 'Regular', skuSuffix: 'REG', priceAdjustment: 0, isDefault: true },
+      { name: 'Deluxe', skuSuffix: 'DLX', priceAdjustment: 50 },
     ],
   },
   {
-    name: 'Mixed Seasonal Bouquet', sku: 'KF-BQ-MIXED-SSN', basePrice: 129, stock: 50,
+    name: 'Mixed Seasonal Bouquet', sku: 'KF-BQ-MIXED-SSN', basePrice: 129,
     categoryNames: ['Our Collection', 'Flowers', 'Mixed Flowers'],
   },
   {
-    name: 'Garden Fresh Mixed Bouquet', sku: 'KF-BQ-GARDEN-FRESH', basePrice: 119, stock: 40,
+    name: 'Garden Fresh Mixed Bouquet', sku: 'KF-BQ-GARDEN-FRESH', basePrice: 119,
     categoryNames: ['Our Collection', 'Flowers', 'Mixed Flowers'],
   },
   {
-    name: 'Tropical Bloom Arrangement', sku: 'KF-BQ-TROPICAL', basePrice: 169, stock: 22,
+    name: 'Tropical Bloom Arrangement', sku: 'KF-BQ-TROPICAL', basePrice: 169,
     categoryNames: ['Our Collection', 'Flowers', 'Mixed Flowers', 'Birthday Special'],
   },
   {
-    name: 'Birthday Surprise Bouquet', sku: 'KF-BQ-BDAY-SURP', basePrice: 199, stock: 49, isFeatured: true,
+    name: 'Birthday Surprise Bouquet', sku: 'KF-BQ-BDAY-SURP', basePrice: 199, isFeatured: true,
     categoryNames: ['Our Collection', 'Flowers', 'Mixed Flowers', 'Birthday Special'],
   },
   {
-    name: 'Sunshine Birthday Bouquet', sku: 'KF-BQ-BDAY-SUN', basePrice: 149, stock: 35,
+    name: 'Sunshine Birthday Bouquet', sku: 'KF-BQ-BDAY-SUN', basePrice: 149,
     categoryNames: ['Our Collection', 'Flowers', 'Birthday Special'],
     tags: ['Cheerful'],
   },
   {
-    name: 'Balloon & Bloom Birthday Combo', sku: 'KF-CMB-BDAY-BALLOON', basePrice: 219, stock: 12,
+    name: 'Balloon & Bloom Birthday Combo', sku: 'KF-CMB-BDAY-BALLOON', basePrice: 219,
     categoryNames: ['Our Collection', 'Flowers', 'Birthday Special'],
   },
   {
-    name: 'Anniversary Roses In A Box', sku: 'KF-BOX-ROSE-ANNIV', basePrice: 249, stock: 50, isFeatured: true,
+    name: 'Anniversary Roses In A Box', sku: 'KF-BOX-ROSE-ANNIV', basePrice: 249, isFeatured: true,
     categoryNames: ['Our Collection', 'Flowers', 'Roses In A Box', 'Anniversary Special'],
   },
   {
-    name: 'Golden Anniversary Arrangement', sku: 'KF-BQ-ANNIV-GOLD', basePrice: 279, discountPrice: 249, stock: 10,
+    name: 'Golden Anniversary Arrangement', sku: 'KF-BQ-ANNIV-GOLD', basePrice: 279, discountPrice: 249,
     categoryNames: ['Our Collection', 'Flowers', 'Anniversary Special'],
   },
   {
-    name: 'Eternal Love Bouquet', sku: 'KF-BQ-ETERNAL-LOVE', basePrice: 199, stock: 28,
+    name: 'Eternal Love Bouquet', sku: 'KF-BQ-ETERNAL-LOVE', basePrice: 199,
     categoryNames: ['Our Collection', 'Flowers', 'Anniversary Special', "Valentine's Day Collection"],
   },
   {
-    name: "Valentine's Heart Bouquet", sku: 'KF-BQ-VAL-HEART', basePrice: 189, stock: 0,
+    name: "Valentine's Heart Bouquet", sku: 'KF-BQ-VAL-HEART', basePrice: 189,
     categoryNames: ['Our Collection', 'Flowers', "Valentine's Day Collection"],
     tags: ['Romantic'],
   },
   {
-    name: 'Sweetheart Rose Box', sku: 'KF-BOX-ROSE-SWEETHEART', basePrice: 229, discountPrice: 199, stock: 18, isFeatured: true,
+    name: 'Sweetheart Rose Box', sku: 'KF-BOX-ROSE-SWEETHEART', basePrice: 229, discountPrice: 199, isFeatured: true,
     categoryNames: ['Our Collection', 'Flowers', "Valentine's Day Collection", 'Roses In A Box'],
   },
 ];
@@ -239,8 +239,6 @@ async function seedProducts(categories) {
         shortDescription: `Beautifully arranged ${item.name.toLowerCase()}.`,
         basePrice: item.basePrice,
         discountPrice: item.discountPrice ?? null,
-        stock: item.stock,
-        lowStockThreshold: item.lowStockThreshold ?? 5,
         isActive: true,
         isFeatured: item.isFeatured ?? false,
       },
@@ -268,7 +266,6 @@ async function seedProducts(categories) {
             name: v.name,
             sku: `${item.sku}-${v.skuSuffix}`,
             priceAdjustment: v.priceAdjustment,
-            stock: v.stock,
             isDefault: !!v.isDefault,
           })),
         });

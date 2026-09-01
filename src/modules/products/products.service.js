@@ -24,7 +24,6 @@ const LIST_SELECT = {
   shortDescription: true,
   basePrice: true,
   discountPrice: true,
-  stock: true,
   isFeatured: true,
   avgRating: true,
   reviewCount: true,
@@ -203,7 +202,7 @@ async function getRelated(slug, limit = 8) {
 
 async function adminList(query) {
   const pagination = parsePagination(query, {
-    allowedSortFields: ['createdAt', 'basePrice', 'stock', 'name'],
+    allowedSortFields: ['createdAt', 'basePrice', 'name'],
   });
 
   const where = {};
@@ -250,8 +249,6 @@ async function adminCreate(data, files) {
       basePrice: data.basePrice,
       discountPrice: data.discountPrice || null,
       costPrice: data.costPrice || null,
-      stock: data.stock ?? 0,
-      lowStockThreshold: data.lowStockThreshold ?? 5,
       weightGrams: data.weightGrams || null,
       isActive: data.isActive ?? true,
       isFeatured: data.isFeatured ?? false,
@@ -285,8 +282,6 @@ async function adminUpdate(id, data) {
     'basePrice',
     'discountPrice',
     'costPrice',
-    'stock',
-    'lowStockThreshold',
     'weightGrams',
     'isActive',
     'isFeatured',
@@ -391,7 +386,6 @@ async function addVariant(productId, data) {
       name: data.name,
       sku: data.sku,
       priceAdjustment: data.priceAdjustment ?? 0,
-      stock: data.stock ?? 0,
       isDefault: data.isDefault ?? false,
       isActive: data.isActive ?? true,
     },
@@ -420,20 +414,6 @@ async function deleteVariant(productId, variantId) {
   await prisma.productVariant.delete({ where: { id: variantId } });
 }
 
-async function adjustStock(productId, { mode, quantity }) {
-  const product = await prisma.product.findUnique({ where: { id: productId } });
-  if (!product) throw ApiError.notFound('Product not found');
-
-  let newStock;
-  if (mode === 'SET') newStock = quantity;
-  else if (mode === 'INCREMENT') newStock = product.stock + quantity;
-  else newStock = product.stock - quantity;
-
-  if (newStock < 0) throw ApiError.badRequest('Stock cannot go below zero');
-
-  return prisma.product.update({ where: { id: productId }, data: { stock: newStock } });
-}
-
 module.exports = {
   listPublic,
   getBySlugPublic,
@@ -450,5 +430,4 @@ module.exports = {
   addVariant,
   updateVariant,
   deleteVariant,
-  adjustStock,
 };

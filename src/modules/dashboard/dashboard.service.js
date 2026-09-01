@@ -72,19 +72,9 @@ async function getTopProducts(limit = 10) {
   }));
 }
 
-async function getLowStockProducts(limit = 50) {
-  return prisma.$queryRaw`
-    SELECT id, name, sku, stock, lowStockThreshold
-    FROM products
-    WHERE isActive = true AND stock <= lowStockThreshold
-    ORDER BY stock ASC
-    LIMIT ${limit}
-  `;
-}
-
 async function getOrderStatusBreakdown() {
   const rows = await prisma.order.groupBy({ by: ['status'], _count: { status: true } });
   return rows.map((row) => ({ status: row.status, count: row._count.status }));
 }
 
-module.exports = { getOverview, getSalesOverTime, getTopProducts, getLowStockProducts, getOrderStatusBreakdown };
+module.exports = { getOverview, getSalesOverTime, getTopProducts, getOrderStatusBreakdown };

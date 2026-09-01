@@ -65,17 +65,6 @@ const deleteVariant = asyncHandler(async (req, res) => {
   new ApiResponse(200, null, 'Variant deleted').send(res);
 });
 
-const adjustStock = asyncHandler(async (req, res) => {
-  const product = await productsService.adjustStock(Number(req.params.id), req.body);
-  await logAdminActivity(req, {
-    action: 'PRODUCT_STOCK_ADJUST',
-    entityType: 'Product',
-    entityId: product.id,
-    details: req.body,
-  });
-  new ApiResponse(200, { product }, 'Stock updated').send(res);
-});
-
 module.exports = {
   list,
   get,
@@ -88,5 +77,4 @@ module.exports = {
   addVariant,
   updateVariant,
   deleteVariant,
-  adjustStock,
 };
