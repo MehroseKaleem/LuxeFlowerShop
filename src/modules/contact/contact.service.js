@@ -2,9 +2,10 @@ const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const { parsePagination, paginate } = require('../../utils/pagination');
 const { sendMail, templates } = require('../../config/mailer');
+const settingsService = require('../settings/settings.service');
 
 async function create(data) {
-  return prisma.contactMessage.create({
+  const message = await prisma.contactMessage.create({
     data: {
       name: data.name,
       email: data.email.toLowerCase(),
@@ -13,6 +14,18 @@ async function create(data) {
       message: data.message,
     },
   });
+
+  const storeEmail = await settingsService.getValue('STORE_EMAIL');
+  if (storeEmail) {
+    sendMail({
+      to: storeEmail,
+      subject: message.subject ? `New message: ${message.subject}` : 'New Contact Form Message',
+      html: templates.contactNotification(message),
+      replyTo: message.email,
+    });
+  }
+
+  return message;
 }
 
 async function adminList(query) {

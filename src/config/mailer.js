@@ -44,12 +44,13 @@ const layout = (title, bodyHtml) => `
   </div>
 `;
 
-async function sendMail({ to, subject, html }) {
+async function sendMail({ to, subject, html, replyTo }) {
   if (sgMail) {
     try {
       await sgMail.send({
         to,
         from: { email: env.smtp.fromAddress, name: env.smtp.fromName },
+        replyTo: replyTo || undefined,
         subject,
         html,
       });
@@ -69,6 +70,7 @@ async function sendMail({ to, subject, html }) {
     await transporter.sendMail({
       from: `"${env.smtp.fromName}" <${env.smtp.fromAddress}>`,
       to,
+      replyTo: replyTo || undefined,
       subject,
       html,
     });
@@ -122,6 +124,20 @@ const templates = {
     layout(
       `Order #${order.orderNumber} Update`,
       `<p>Hi ${name}, your order status has been updated to: <strong>${order.status}</strong>.</p>`,
+    ),
+
+  contactNotification: (message) =>
+    layout(
+      'New Contact Form Message',
+      `<p>You've received a new message from the website contact form.</p>
+       <table style="width:100%;border-collapse:collapse;">
+         <tr><td style="padding:4px 0;">Name</td><td style="text-align:right;">${message.name}</td></tr>
+         <tr><td style="padding:4px 0;">Email</td><td style="text-align:right;">${message.email}</td></tr>
+         ${message.phone ? `<tr><td style="padding:4px 0;">Phone</td><td style="text-align:right;">${message.phone}</td></tr>` : ''}
+         ${message.subject ? `<tr><td style="padding:4px 0;">Subject</td><td style="text-align:right;">${message.subject}</td></tr>` : ''}
+       </table>
+       <div style="background:#f7f2f4;padding:12px 16px;border-radius:6px;margin:12px 0;white-space:pre-wrap;">${message.message}</div>
+       <p style="color:#888;font-size:13px;">Reply from the admin panel's Contacts page, or reply directly to this email.</p>`,
     ),
 
   contactReply: (name, originalMessage, replyMessage) =>

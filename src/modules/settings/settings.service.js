@@ -6,7 +6,7 @@ const DEFAULTS = {
   TAX_RATE_PERCENT: '5',
   CURRENCY: 'AED',
   STORE_PHONE: '+971 56 389 8820',
-  STORE_EMAIL: 'luxeflower072@gmail.com',
+  STORE_EMAIL: 'info@luxefloweruae.com',
 };
 
 async function getAllPublic() {
