@@ -99,7 +99,10 @@ export class OrdersComponent implements OnInit {
 
   applyFilters(): void {
     this.page.set(1);
-    this.refreshOrders();
+    // Silent - typing in search or switching the status filter should
+    // smoothly swap the rows in, not flash the whole table to a loading
+    // state on every keystroke.
+    this.refreshOrders({ silent: true });
   }
 
   goToPage(page: number): void {

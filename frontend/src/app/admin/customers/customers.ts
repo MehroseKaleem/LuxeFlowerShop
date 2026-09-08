@@ -38,9 +38,11 @@ export class CustomersComponent implements OnInit {
   ngOnInit() {
     this.loadCustomers();
 
+    // Silent - typing in search should smoothly swap the rows in, not
+    // flash the whole table to a loading state on every keystroke.
     this.searchInput$
       .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.loadCustomers());
+      .subscribe(() => this.loadCustomers({ silent: true }));
   }
 
   onSearchInput(value: string): void {
@@ -48,8 +50,8 @@ export class CustomersComponent implements OnInit {
     this.searchInput$.next(value);
   }
 
-  loadCustomers() {
-    this.loading.set(true);
+  loadCustomers(opts: { silent?: boolean } = {}) {
+    if (!opts.silent) this.loading.set(true);
     this.userService.adminList({ role: 'CUSTOMER', limit: 100, search: this.searchQuery() || undefined }).subscribe({
       next: ({ items, meta }) => {
         this.customers.set(items);
@@ -61,7 +63,7 @@ export class CustomersComponent implements OnInit {
   }
 
   search(): void {
-    this.loadCustomers();
+    this.loadCustomers({ silent: true });
   }
 
   get totalSpent(): number {

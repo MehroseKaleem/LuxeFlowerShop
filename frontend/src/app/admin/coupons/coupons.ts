@@ -49,9 +49,11 @@ export class CouponsComponent implements OnInit {
   ngOnInit() {
     this.load();
 
+    // Silent - typing in search should smoothly swap the rows in, not
+    // flash the whole table to a loading state on every keystroke.
     this.searchInput$
       .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.load());
+      .subscribe(() => this.load({ silent: true }));
   }
 
   onSearchInput(value: string): void {
@@ -59,8 +61,8 @@ export class CouponsComponent implements OnInit {
     this.searchInput$.next(value);
   }
 
-  load() {
-    this.loading.set(true);
+  load(opts: { silent?: boolean } = {}) {
+    if (!opts.silent) this.loading.set(true);
     this.couponService.adminList({ limit: 100, search: this.searchQuery() || undefined }).subscribe({
       next: ({ items, meta }) => {
         this.coupons.set(items);
@@ -72,7 +74,7 @@ export class CouponsComponent implements OnInit {
   }
 
   search(): void {
-    this.load();
+    this.load({ silent: true });
   }
 
   openAddModal() {

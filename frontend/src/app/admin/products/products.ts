@@ -80,7 +80,9 @@ export class ProductsComponent implements OnInit {
 
   applyFilters(): void {
     this.page.set(1);
-    this.loadData();
+    // Silent - typing in search or changing a filter should smoothly swap
+    // the rows in, not flash the whole table to a loading state.
+    this.loadData({ silent: true });
   }
 
   goToPage(page: number): void {
