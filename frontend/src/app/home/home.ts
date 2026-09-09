@@ -19,6 +19,7 @@ import { mediaUrl, IMAGE_FALLBACK } from '../shared/utils/media.util';
 import { ScrollRevealDirective } from '../shared/directives/scroll-reveal.directive';
 import { Tilt3dDirective } from '../shared/directives/tilt-3d.directive';
 import { ImgFallbackDirective } from '../shared/directives/img-fallback.directive';
+import { SwipeDirective } from '../shared/directives/swipe.directive';
 
 interface CollectionCard {
   title: string;
@@ -65,7 +66,8 @@ const VALUE_PROPS: ValueProp[] = [
     ImageSliderComponent,
     ScrollRevealDirective,
     Tilt3dDirective,
-    ImgFallbackDirective
+    ImgFallbackDirective,
+    SwipeDirective
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss'
@@ -209,6 +211,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   protected goToAbout(index: number): void {
     this.aboutIndex.set(index);
+  }
+
+  protected nextAbout(): void {
+    const count = this.aboutSlides().length;
+    if (count > 1) this.aboutIndex.update(i => (i + 1) % count);
+  }
+
+  protected prevAbout(): void {
+    const count = this.aboutSlides().length;
+    if (count > 1) this.aboutIndex.update(i => (i - 1 + count) % count);
   }
 
   protected nextTestimonial(): void {

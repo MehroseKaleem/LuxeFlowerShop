@@ -3,11 +3,12 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ProductListItem } from '../../../models/product.model';
 import { ProductCardComponent } from '../product-card/product-card';
 import { ScrollRevealDirective } from '../../directives/scroll-reveal.directive';
+import { SwipeDirective } from '../../directives/swipe.directive';
 
 @Component({
   selector: 'app-featured-coverflow',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, ScrollRevealDirective],
+  imports: [CommonModule, ProductCardComponent, ScrollRevealDirective, SwipeDirective],
   templateUrl: './featured-coverflow.html',
   styleUrl: './featured-coverflow.scss'
 })

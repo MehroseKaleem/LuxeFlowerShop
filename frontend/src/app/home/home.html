@@ -108,7 +108,7 @@
   <!-- About Us teaser -->
   <section class="about-teaser" id="about-teaser">
     <div class="container about-teaser-grid">
-      <div class="about-teaser-image" appReveal="left" appTilt3d [tiltMax]="4" [tiltLift]="6">
+      <div class="about-teaser-image" appReveal="left" appTilt3d [tiltMax]="4" [tiltLift]="6" appSwipe (swipeLeft)="nextAbout()" (swipeRight)="prevAbout()">
         @for (slide of aboutSlides(); track slide; let i = $index) {
           <img
             [src]="slide"
@@ -175,7 +175,7 @@
             </button>
           }
 
-          <div class="testimonial-track-wrap">
+          <div class="testimonial-track-wrap" appSwipe (swipeLeft)="nextTestimonial()" (swipeRight)="prevTestimonial()">
             <div class="testimonial-track" [style.transform]="'translateX(-' + (testimonialIndex() * (100 / testimonialVisible())) + '%)'">
               @for (review of testimonials(); track review.id) {
                 <div class="testimonial-slide">

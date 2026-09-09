@@ -1,5 +1,5 @@
 <div class="coverflow-wrap" appReveal="scale">
-  <div class="coverflow-stage">
+  <div class="coverflow-stage" appSwipe (swipeLeft)="next()" (swipeRight)="prev()">
     @for (product of products; track product.id; let i = $index) {
       <div class="coverflow-item" [style]="cardStyle(i)">
         <app-product-card [product]="product" />

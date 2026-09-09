@@ -5,6 +5,7 @@ import { BannerService } from '../../services/banner.service';
 import { Tilt3dDirective } from '../../shared/directives/tilt-3d.directive';
 import { mediaUrl, IMAGE_FALLBACK } from '../../shared/utils/media.util';
 import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
+import { SwipeDirective } from '../../shared/directives/swipe.directive';
 
 interface HeroSlide {
   image: string;
@@ -23,7 +24,7 @@ const PETAL_COUNT = 30;
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [CommonModule, RouterLink, Tilt3dDirective, ImgFallbackDirective],
+  imports: [CommonModule, RouterLink, Tilt3dDirective, ImgFallbackDirective, SwipeDirective],
   templateUrl: './hero.html',
   styleUrl: './hero.scss'
 })

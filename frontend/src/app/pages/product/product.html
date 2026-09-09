@@ -18,7 +18,7 @@
       <div class="product-layout">
         <!-- Gallery -->
         <div class="gallery" appReveal="left">
-          <div class="gallery-main" appTilt3d [tiltMax]="4" [tiltLift]="0">
+          <div class="gallery-main" appTilt3d [tiltMax]="4" [tiltLift]="0" appSwipe (swipeLeft)="nextImage()" (swipeRight)="prevImage()">
             <img [src]="primaryImageUrl" [alt]="product()!.name" appImgFallback />
           </div>
           @if (product()!.images.length > 1) {

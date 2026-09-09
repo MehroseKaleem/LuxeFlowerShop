@@ -17,6 +17,7 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
 import { mediaUrl, IMAGE_FALLBACK } from '../../shared/utils/media.util';
 import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 import { Tilt3dDirective } from '../../shared/directives/tilt-3d.directive';
+import { SwipeDirective } from '../../shared/directives/swipe.directive';
 import { SeoService } from '../../core/services/seo.service';
 import { formatApiError } from '../../shared/utils/api-error.util';
 import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
@@ -33,7 +34,8 @@ import { ImgFallbackDirective } from '../../shared/directives/img-fallback.direc
     ProductCardComponent,
     ImgFallbackDirective,
     ScrollRevealDirective,
-    Tilt3dDirective
+    Tilt3dDirective,
+    SwipeDirective
   ],
   templateUrl: './product.html',
   styleUrl: './product.scss'
@@ -135,6 +137,16 @@ export class ProductComponent implements OnInit {
 
   imageUrl(url: string): string {
     return mediaUrl(url, undefined, 150);
+  }
+
+  nextImage(): void {
+    const count = this.product()?.images.length ?? 0;
+    if (count > 1) this.selectedImageIndex.update(i => (i + 1) % count);
+  }
+
+  prevImage(): void {
+    const count = this.product()?.images.length ?? 0;
+    if (count > 1) this.selectedImageIndex.update(i => (i - 1 + count) % count);
   }
 
   get selectedVariant() {

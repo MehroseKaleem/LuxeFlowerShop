@@ -15,6 +15,7 @@ import {
 import { CommonModule, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ScrollRevealDirective } from '../../directives/scroll-reveal.directive';
+import { SwipeDirective } from '../../directives/swipe.directive';
 
 const AUTOPLAY_MS = 4000;
 
@@ -31,7 +32,7 @@ const AUTOPLAY_MS = 4000;
 @Component({
   selector: 'app-carousel',
   standalone: true,
-  imports: [CommonModule, NgTemplateOutlet, RouterLink, ScrollRevealDirective],
+  imports: [CommonModule, NgTemplateOutlet, RouterLink, ScrollRevealDirective, SwipeDirective],
   templateUrl: './carousel.html',
   styleUrl: './carousel.scss'
 })

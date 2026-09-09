@@ -12,7 +12,7 @@
       </button>
     }
 
-    <div class="carousel-track-wrapper">
+    <div class="carousel-track-wrapper" appSwipe (swipeLeft)="next()" (swipeRight)="prev()">
       <div
         class="carousel-track"
         [class.static-row]="!canSlide()"

@@ -53,7 +53,7 @@
         <div class="visual-ring" aria-hidden="true"></div>
         <div class="visual-dots" aria-hidden="true"></div>
 
-        <div class="slider-frame">
+        <div class="slider-frame" appSwipe (swipeLeft)="next()" (swipeRight)="prev()">
           @for (slide of slides(); track slide.image; let i = $index) {
             <div class="slider-slide" [class.active]="i === activeIndex()">
               @if (slide.link) {
