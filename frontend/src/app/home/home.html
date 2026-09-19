@@ -32,6 +32,84 @@
     </app-carousel>
   }
 
+  <!-- Featured Products: full-bleed dark showcase, 3D coverflow with center card emphasized -->
+  @if (featuredProducts().length) {
+    <section class="featured-section">
+      <div class="featured-glow" aria-hidden="true"></div>
+      <div class="featured-sparkles" aria-hidden="true">
+        @for (n of [1,2,3,4,5,6,7,8,9,10,11,12,13,14]; track n) {
+          <span class="spark spark-{{ n }}"></span>
+        }
+      </div>
+      <div class="featured-heading">
+        <span class="eyebrow center" appReveal="fade">Hand-Picked</span>
+        <h2 class="section-title center" appReveal="up">Featured Picks</h2>
+        <p class="featured-subtext" appReveal="up" [revealDelay]="100">
+          Our florists' favourites this week — arrangements loved again and again.
+        </p>
+      </div>
+      <app-featured-coverflow [products]="featuredProducts()" />
+      <div class="view-all-wrapper">
+        <a routerLink="/shop" class="view-all-btn light">Discover the Collection</a>
+      </div>
+    </section>
+  }
+
+  <!-- Per-category carousels -->
+  @for (section of categorySections(); track section.title; let i = $index) {
+    <app-carousel
+      [title]="section.title"
+      [items]="section.products"
+      [viewAllLink]="section.link"
+      [ariaLabel]="section.title"
+      [tint]="i % 2 === 0 ? 'none' : 'grey'">
+      <ng-template let-product>
+        <app-product-card [product]="product" />
+      </ng-template>
+    </app-carousel>
+  }
+
+  <!-- About Us teaser -->
+  <section class="about-teaser" id="about-teaser">
+    <div class="container about-teaser-grid">
+      <div class="about-teaser-image" appReveal="left" appTilt3d [tiltMax]="4" [tiltLift]="6" appSwipe (swipeLeft)="nextAbout()" (swipeRight)="prevAbout()">
+        @for (slide of aboutSlides(); track slide; let i = $index) {
+          <img
+            [src]="slide"
+            alt="Luxeflower arrangement"
+            class="about-slide"
+            [class.active]="i === aboutIndex()"
+            loading="lazy"
+            appImgFallback />
+        }
+        <div class="slide-veil"></div>
+        <div class="card-shine"></div>
+        <span class="about-teaser-badge">Luxe Flower UAE</span>
+        <div class="about-slide-dots">
+          @for (slide of aboutSlides(); track slide; let i = $index) {
+            <button
+              type="button"
+              class="dot"
+              [class.active]="i === aboutIndex()"
+              (click)="goToAbout(i)"
+              [attr.aria-label]="'Go to image ' + (i + 1)"></button>
+          }
+        </div>
+      </div>
+      <div class="about-teaser-copy" appReveal="right">
+        <span class="eyebrow">Our Story</span>
+        <h2 class="section-title">Your Moments, Our Flowers</h2>
+        <p>
+          Luxe Flower UAE was born from a simple idea: that love and life's most meaningful moments deserve
+          to be celebrated beautifully. Every arrangement is hand-selected and elegantly designed — fresh,
+          premium blooms with same-day delivery across all seven Emirates, because your moment shouldn't
+          have to wait.
+        </p>
+        <a routerLink="/about" class="view-all-btn">Read Our Story</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Why Choose Us -->
   <section class="why-section" id="why-section">
     <div class="why-glow" aria-hidden="true"></div>
@@ -81,84 +159,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Featured Products: full-bleed dark showcase, 3D coverflow with center card emphasized -->
-  @if (featuredProducts().length) {
-    <section class="featured-section">
-      <div class="featured-glow" aria-hidden="true"></div>
-      <div class="featured-sparkles" aria-hidden="true">
-        @for (n of [1,2,3,4,5,6,7,8,9,10,11,12,13,14]; track n) {
-          <span class="spark spark-{{ n }}"></span>
-        }
-      </div>
-      <div class="featured-heading">
-        <span class="eyebrow center" appReveal="fade">Hand-Picked</span>
-        <h2 class="section-title center" appReveal="up">Featured Picks</h2>
-        <p class="featured-subtext" appReveal="up" [revealDelay]="100">
-          Our florists' favourites this week — arrangements loved again and again.
-        </p>
-      </div>
-      <app-featured-coverflow [products]="featuredProducts()" />
-      <div class="view-all-wrapper">
-        <a routerLink="/shop" class="view-all-btn light">Discover the Collection</a>
-      </div>
-    </section>
-  }
-
-  <!-- About Us teaser -->
-  <section class="about-teaser" id="about-teaser">
-    <div class="container about-teaser-grid">
-      <div class="about-teaser-image" appReveal="left" appTilt3d [tiltMax]="4" [tiltLift]="6" appSwipe (swipeLeft)="nextAbout()" (swipeRight)="prevAbout()">
-        @for (slide of aboutSlides(); track slide; let i = $index) {
-          <img
-            [src]="slide"
-            alt="Luxeflower arrangement"
-            class="about-slide"
-            [class.active]="i === aboutIndex()"
-            loading="lazy"
-            appImgFallback />
-        }
-        <div class="slide-veil"></div>
-        <div class="card-shine"></div>
-        <span class="about-teaser-badge">Luxe Flower UAE</span>
-        <div class="about-slide-dots">
-          @for (slide of aboutSlides(); track slide; let i = $index) {
-            <button
-              type="button"
-              class="dot"
-              [class.active]="i === aboutIndex()"
-              (click)="goToAbout(i)"
-              [attr.aria-label]="'Go to image ' + (i + 1)"></button>
-          }
-        </div>
-      </div>
-      <div class="about-teaser-copy" appReveal="right">
-        <span class="eyebrow">Our Story</span>
-        <h2 class="section-title">Your Moments, Our Flowers</h2>
-        <p>
-          Luxe Flower UAE was born from a simple idea: that love and life's most meaningful moments deserve
-          to be celebrated beautifully. Every arrangement is hand-selected and elegantly designed — fresh,
-          premium blooms with same-day delivery across all seven Emirates, because your moment shouldn't
-          have to wait.
-        </p>
-        <a routerLink="/about" class="view-all-btn">Read Our Story</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Per-category carousels -->
-  @for (section of categorySections(); track section.title; let i = $index) {
-    <app-carousel
-      [title]="section.title"
-      [items]="section.products"
-      [viewAllLink]="section.link"
-      [ariaLabel]="section.title"
-      [tint]="i % 2 === 0 ? 'none' : 'grey'">
-      <ng-template let-product>
-        <app-product-card [product]="product" />
-      </ng-template>
-    </app-carousel>
-  }
 
   <!-- What Our Customers Say -->
   @if (testimonials().length) {
