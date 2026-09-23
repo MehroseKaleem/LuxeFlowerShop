@@ -10,6 +10,11 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'shop', loadComponent: () => import('./pages/shop/shop').then(m => m.ShopComponent) },
   { path: 'category/:slug', loadComponent: () => import('./pages/shop/shop').then(m => m.ShopComponent) },
+  {
+    path: 'recipient-based',
+    loadComponent: () => import('./pages/shop/shop').then(m => m.ShopComponent),
+    data: { categorySlug: 'recipient-based' }
+  },
   { path: 'search', loadComponent: () => import('./pages/shop/shop').then(m => m.ShopComponent) },
   { path: 'product/:slug', loadComponent: () => import('./pages/product/product').then(m => m.ProductComponent) },
   { path: 'cart', loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },

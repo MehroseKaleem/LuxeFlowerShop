@@ -41,7 +41,10 @@ export class ShopComponent implements OnInit {
     this.categoryService.list().subscribe({ next: cats => this.categories.set(cats), error: () => undefined });
 
     combineLatest([this.route.paramMap, this.route.queryParamMap]).subscribe(([params, query]) => {
-      const slug = params.get('slug');
+      // A fixed category can also come from route data (e.g. /recipient-based)
+      // instead of the :slug param - lets a route give a named category its
+      // own friendly URL while reusing this same page, same as /category/:slug.
+      const slug = params.get('slug') || (this.route.snapshot.data['categorySlug'] as string | undefined) || null;
       const q = query.get('q');
       const categorySlug = query.get('category');
       const sort = (query.get('sort') as SortOption) || 'newest';

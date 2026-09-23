@@ -10,6 +10,7 @@ import { Category } from '../../models/category.model';
 import { Product, ProductImage } from '../../models/product.model';
 import { mediaUrl } from '../../shared/utils/media.util';
 import { formatApiError } from '../../shared/utils/api-error.util';
+import { sortShopFirst } from '../../shared/utils/category-groups.util';
 import { ImgFallbackDirective } from '../../shared/directives/img-fallback.directive';
 
 @Component({
@@ -46,7 +47,9 @@ export class AddProductComponent implements OnInit {
   ngOnInit() {
     this.categoryService.list().subscribe({
       next: cats => {
-        this.categories = cats;
+        // Shop categories first, then Recipient-Based, as one group after
+        // the other rather than interleaved alphabetically.
+        this.categories = sortShopFirst(cats);
         this.initForm();
 
         const idParam = this.route.snapshot.paramMap.get('id');

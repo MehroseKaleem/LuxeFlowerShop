@@ -11,6 +11,7 @@ import { ProductService } from '../../services/product.service';
 import { ProductListItem } from '../../models/product.model';
 import { AedCurrencyPipe } from '../../shared/pipes/aed-currency.pipe';
 import { mediaUrl } from '../../shared/utils/media.util';
+import { RECIPIENT_BASED_SLUG } from '../../shared/utils/category-groups.util';
 
 export interface DropdownOption {
   label: string;
@@ -60,6 +61,7 @@ export class HeaderComponent implements OnInit {
   protected readonly navItems = signal<NavItem[]>([
     { label: 'Home', link: '/', id: 'home', hasDropdown: false },
     { label: 'Shop', link: '/shop', id: 'shop', hasDropdown: false },
+    { label: 'Recipient-Based', link: '/recipient-based', id: 'recipient-based', hasDropdown: false },
     { label: 'Our Story', link: '/about', id: 'about', hasDropdown: false },
     {
       label: 'Blog',
@@ -77,15 +79,30 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.categoryService.list().subscribe({
       next: categories => {
-        const shopDropdown: DropdownOption[] = categories.map(c => ({ label: c.name, link: `/category/${c.slug}` }));
+        const recipientParent = categories.find(c => c.slug === RECIPIENT_BASED_SLUG);
+        const recipientChildren = recipientParent ? categories.filter(c => c.parentId === recipientParent.id) : [];
+        const recipientChildIds = new Set(recipientChildren.map(c => c.id));
+
+        // Everything except the Recipient-Based parent and its own
+        // children - those get their own menu below instead.
+        const shopDropdown: DropdownOption[] = categories
+          .filter(c => c.id !== recipientParent?.id && !recipientChildIds.has(c.id))
+          .map(c => ({ label: c.name, link: `/category/${c.slug}` }));
+
+        const recipientDropdown: DropdownOption[] = recipientChildren.map(c => ({ label: c.name, link: `/category/${c.slug}` }));
+
         this.navItems.update(items =>
-          items.map(item =>
-            item.id === 'shop' ? { ...item, hasDropdown: shopDropdown.length > 0, dropdownOptions: shopDropdown } : item
-          )
+          items.map(item => {
+            if (item.id === 'shop') return { ...item, hasDropdown: shopDropdown.length > 0, dropdownOptions: shopDropdown };
+            if (item.id === 'recipient-based') {
+              return { ...item, hasDropdown: recipientDropdown.length > 0, dropdownOptions: recipientDropdown };
+            }
+            return item;
+          })
         );
       },
       error: () => {
-        // Keep the static "Shop" link with no dropdown if categories fail to load.
+        // Keep the static "Shop"/"Recipient-Based" links with no dropdown if categories fail to load.
       }
     });
 

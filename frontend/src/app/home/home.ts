@@ -16,6 +16,7 @@ import { Category } from '../models/category.model';
 import { ProductListItem } from '../models/product.model';
 import { Review } from '../models/review.model';
 import { mediaUrl, IMAGE_FALLBACK } from '../shared/utils/media.util';
+import { sortShopFirst } from '../shared/utils/category-groups.util';
 import { ScrollRevealDirective } from '../shared/directives/scroll-reveal.directive';
 import { Tilt3dDirective } from '../shared/directives/tilt-3d.directive';
 import { ImgFallbackDirective } from '../shared/directives/img-fallback.directive';
@@ -39,7 +40,6 @@ interface ValueProp {
   text: string;
 }
 
-const MAX_HOME_CATEGORY_SECTIONS = 6;
 const ABOUT_SLIDE_MS = 4200;
 const TESTIMONIAL_SLIDE_MS = 5000;
 
@@ -145,9 +145,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.categoryService.list().subscribe({
       next: categories => {
+        const ordered = sortShopFirst(categories);
         this.productService.list({ limit: 1 }).subscribe({
-          next: ({ meta }) => this.loadSections(categories, meta.total),
-          error: () => this.loadSections(categories, 0)
+          next: ({ meta }) => this.loadSections(ordered, meta.total),
+          error: () => this.loadSections(ordered, 0)
         });
       },
       error: () => this.loading.set(false)
@@ -163,12 +164,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Skip only a true "catch-all" category that holds every single product
     // in the store — it would just duplicate the featured/other sections
     // with no distinct content. A category tying with others for the
-    // highest count is NOT the same thing and must still show.
-    const distinctCategories = categories
-      .filter(c => (c._count?.products ?? 0) > 0 && (c._count?.products ?? 0) < totalProductCount)
-      .slice(0, MAX_HOME_CATEGORY_SECTIONS);
+    // highest count is NOT the same thing and must still show. No cap on
+    // how many qualifying categories show - every one with products gets
+    // its own section, however many that ends up being.
+    const distinctCategories = categories.filter(
+      c => (c._count?.products ?? 0) > 0 && (c._count?.products ?? 0) < totalProductCount
+    );
 
-    const usableCategories = distinctCategories.length ? distinctCategories : categories.slice(0, MAX_HOME_CATEGORY_SECTIONS);
+    const usableCategories = distinctCategories.length ? distinctCategories : categories;
 
     if (!usableCategories.length) {
       this.loading.set(false);
