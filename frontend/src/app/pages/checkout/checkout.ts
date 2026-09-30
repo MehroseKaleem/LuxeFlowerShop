@@ -177,7 +177,16 @@ export class CheckoutComponent implements OnInit {
     this.submitting.set(true);
     this.orderService.create(payload).subscribe({
       next: order => {
-        this.cartService.reset();
+        // Mirrors the backend: a COD order is fully placed here, so its
+        // cart is really gone and the local display should match. A card
+        // order hasn't been paid for yet - the backend deliberately leaves
+        // that cart alone until payment succeeds, so resetting the local
+        // view of it here would show "empty" while the real cart still has
+        // everything, which is exactly what happens if the customer backs
+        // out of the card step wanting to switch to COD instead.
+        if (order.paymentMethod !== 'STRIPE') {
+          this.cartService.reset();
+        }
         if (newAddressToSave) {
           // Fire-and-forget - don't let an address-book failure block an
           // order that already succeeded.
@@ -312,6 +321,15 @@ export class CheckoutComponent implements OnInit {
   }
 
   private onPaymentSucceeded(): void {
+    // The cart was deliberately left alone when this card order was
+    // created (see orders.service.js), so backing out of the payment step
+    // doesn't lose it. Now that payment has genuinely gone through, clear
+    // it for real. The Stripe webhook also clears a logged-in customer's
+    // cart server-side, but a guest cart is keyed by a session id the
+    // webhook has no way to know - this call is what reliably clears it
+    // for guests, and is a harmless no-op if the webhook already did it.
+    this.cartService.clearCart().subscribe({ error: () => undefined });
+
     this.router.navigate(['/order-confirmation', this.pendingOrderNumber], {
       state: { order: { ...this.pendingOrder, paymentStatus: 'PAID' } }
     });
