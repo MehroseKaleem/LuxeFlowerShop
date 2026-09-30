@@ -147,12 +147,22 @@ async function createOrder(context, body) {
       });
     }
 
-    await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+    // Cash on Delivery is fully placed right here, so its cart empties
+    // immediately as before. A card order hasn't been paid for yet at this
+    // point - clearing the cart now would silently wipe it if the customer
+    // backs out of the card step (e.g. to switch to COD instead), losing
+    // everything they'd picked. It's left alone here and only cleared once
+    // payment_intent.succeeded actually confirms the charge went through
+    // (see the Stripe webhook handler), matching the same "don't act on it
+    // until payment is real" rule already used for the confirmation email.
+    if (body.paymentMethod !== 'STRIPE') {
+      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
 
-    if (context.userId) {
-      await tx.cart.update({ where: { id: cart.id }, data: { couponId: null } });
-    } else {
-      await tx.cart.delete({ where: { id: cart.id } });
+      if (context.userId) {
+        await tx.cart.update({ where: { id: cart.id }, data: { couponId: null } });
+      } else {
+        await tx.cart.delete({ where: { id: cart.id } });
+      }
     }
 
     return createdOrder;

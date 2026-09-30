@@ -80,6 +80,23 @@ async function handleWebhookEvent(rawBody, signature) {
           subject: `Order Confirmed — #${order.orderNumber}`,
           html: templates.orderConfirmation(order.shippingAddress?.fullName || 'there', order),
         });
+
+        // Same reasoning as the email above, applied to the cart: it was
+        // deliberately left alone at order-creation time for a card order
+        // (see orders.service.js) so a customer backing out of the payment
+        // step doesn't lose their cart. Now that payment has genuinely
+        // gone through, clear it for real. Only possible here for a
+        // logged-in customer's cart (keyed by userId); a guest cart is
+        // keyed by a session id the webhook has no way to know, so that
+        // case is cleared client-side instead, right after the frontend
+        // sees the payment succeed.
+        if (order.userId) {
+          const cart = await prisma.cart.findUnique({ where: { userId: order.userId } });
+          if (cart) {
+            await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+            await prisma.cart.update({ where: { id: cart.id }, data: { couponId: null } });
+          }
+        }
       }
       break;
     }
