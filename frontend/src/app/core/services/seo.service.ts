@@ -17,9 +17,11 @@ const DEFAULT_IMAGE = `${SITE_URL}/logo.png`;
 /**
  * Site-wide kill switch for search engine indexing while the site is still
  * being finalized. When true, every page is forced to noindex regardless of
- * what it passes to `set()`. Flip to false when ready to go fully live.
+ * what it passes to `set()`. Flip to false here (and in robots.txt and
+ * index.html's robots meta tag) if the site ever needs to be pulled back
+ * out of search results, e.g. during a future redesign.
  */
-const SITE_LIVE = false;
+const SITE_LIVE = true;
 
 /**
  * Central place every page calls to set its title + description + Open
