@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://backend-production-7080.up.railway.app/api/v1',
+  apiUrl: 'https://api.luxefloweruae.com/api/v1',
   // Stripe LIVE publishable key - real card payments. Safe to embed
   // client-side (this key can only create charges, never read/move money
   // on its own - the secret key that can is server-side only, in Railway).
