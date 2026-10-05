@@ -1,5 +1,6 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 
 export interface SeoConfig {
@@ -34,7 +35,8 @@ const SITE_LIVE = true;
 export class SeoService {
   private titleService = inject(Title);
   private meta = inject(Meta);
-  private platformId = inject(PLATFORM_ID);
+  private document = inject(DOCUMENT);
+  private router = inject(Router);
 
   set(config: SeoConfig): void {
     const fullTitle = config.title.includes(SITE_NAME) ? config.title : `${config.title} | ${SITE_NAME}`;
@@ -57,33 +59,34 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:description', content: config.description });
     this.meta.updateTag({ name: 'twitter:image', content: image });
 
-    if (isPlatformBrowser(this.platformId)) {
-      const url = SITE_URL + window.location.pathname;
-      this.setCanonical(url);
-      this.meta.updateTag({ property: 'og:url', content: url });
-    }
+    // Router.url (not window.location) so this resolves correctly during
+    // SSR too, not just in the browser - a crawler's first fetch of the
+    // raw HTML needs each page's own canonical/og:url, not the homepage's
+    // (the default baked into index.html), or it can read as every page
+    // being a duplicate of the homepage and skip indexing the rest.
+    const url = SITE_URL + this.router.url;
+    this.setCanonical(url);
+    this.meta.updateTag({ property: 'og:url', content: url });
   }
 
   /** Injects a JSON-LD structured-data block, replacing any previous one this service added. */
   setJsonLd(data: Record<string, unknown>): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    let script = document.getElementById('seo-json-ld') as HTMLScriptElement | null;
+    let script = this.document.getElementById('seo-json-ld') as HTMLScriptElement | null;
     if (!script) {
-      script = document.createElement('script');
+      script = this.document.createElement('script');
       script.id = 'seo-json-ld';
       script.type = 'application/ld+json';
-      document.head.appendChild(script);
+      this.document.head.appendChild(script);
     }
     script.textContent = JSON.stringify(data);
   }
 
   private setCanonical(url: string): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    let link = this.document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!link) {
-      link = document.createElement('link');
+      link = this.document.createElement('link');
       link.setAttribute('rel', 'canonical');
-      document.head.appendChild(link);
+      this.document.head.appendChild(link);
     }
     link.setAttribute('href', url);
   }
