@@ -69,8 +69,8 @@ export class HeaderComponent implements OnInit {
       id: 'blog',
       hasDropdown: true,
       dropdownOptions: [
-        { label: 'News', link: '/blog/news' },
-        { label: 'Bloom', link: '/blog/bloom' }
+        { label: 'News', link: '/blog?category=News' },
+        { label: 'Bloom', link: '/blog?category=Bloom' }
       ]
     },
     { label: 'Contact us', link: '/contact', id: 'contact', hasDropdown: false }

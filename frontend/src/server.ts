@@ -8,6 +8,7 @@ import express from 'express';
 import compression from 'compression';
 import { join } from 'node:path';
 import { environment } from './environments/environment.production';
+import { BLOG_POSTS } from './app/pages/blog/blog-posts.data';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 const SITE_URL = 'https://luxefloweruae.com';
@@ -34,6 +35,7 @@ const STATIC_SITEMAP_URLS: SitemapUrl[] = [
   { loc: '/shipping-policy', changefreq: 'yearly', priority: '0.2' },
   { loc: '/terms-of-service', changefreq: 'yearly', priority: '0.2' },
   { loc: '/refund-policy', changefreq: 'yearly', priority: '0.2' },
+  ...BLOG_POSTS.map((p): SitemapUrl => ({ loc: `/blog/${p.slug}`, changefreq: 'monthly', priority: '0.6' })),
 ];
 
 function buildSitemapXml(urls: SitemapUrl[]): string {

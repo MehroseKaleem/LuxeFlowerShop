@@ -1,0 +1,58 @@
+<div class="blog-post-page">
+  @if (notFound()) {
+    <div class="container state-message">
+      <h1>Article not found</h1>
+      <p>This article doesn't exist or may have been moved.</p>
+      <a routerLink="/blog" class="back-link">← Back to Blog</a>
+    </div>
+  } @else if (post(); as article) {
+    <header class="post-header">
+      <div class="container">
+        <nav class="breadcrumb">
+          <a routerLink="/">Home</a>
+          <span class="separator">/</span>
+          <a routerLink="/blog">Blog</a>
+          <span class="separator">/</span>
+          <span class="current">{{ article.title }}</span>
+        </nav>
+        <span class="post-tag">{{ article.category }}</span>
+        <h1 class="post-title">{{ article.title }}</h1>
+        <span class="post-date">{{ article.date }}</span>
+      </div>
+    </header>
+
+    <main class="container post-content">
+      <div class="post-hero-image">
+        <img [src]="article.image" [alt]="article.title" loading="eager" />
+      </div>
+
+      <article class="post-body">
+        @for (block of article.content; track $index) {
+          @if (block.heading) {
+            <h2>{{ block.heading }}</h2>
+          }
+          <p>{{ block.text }}</p>
+        }
+      </article>
+
+      <div class="post-actions">
+        <a routerLink="/blog" class="back-link">← Back to Blog</a>
+        <a routerLink="/shop" class="shop-cta">Shop Flowers →</a>
+      </div>
+
+      @if (otherPosts.length) {
+        <section class="related-posts">
+          <h2 class="related-title">More from the blog</h2>
+          <div class="related-grid">
+            @for (related of otherPosts; track related.id) {
+              <a [routerLink]="['/blog', related.slug]" class="related-card">
+                <img [src]="related.image" [alt]="related.title" loading="lazy" />
+                <span class="related-card-title">{{ related.title }}</span>
+              </a>
+            }
+          </div>
+        </section>
+      }
+    </main>
+  }
+</div>

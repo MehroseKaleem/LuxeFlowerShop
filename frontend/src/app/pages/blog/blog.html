@@ -20,7 +20,7 @@
             <span class="post-date">{{ post.date }}</span>
             <h2 class="post-title">{{ post.title }}</h2>
             <p class="post-excerpt">{{ post.excerpt }}</p>
-            <a routerLink="/blog" class="read-more">Read Article →</a>
+            <a [routerLink]="['/blog', post.slug]" class="read-more">Read Article →</a>
           </div>
         </article>
       }

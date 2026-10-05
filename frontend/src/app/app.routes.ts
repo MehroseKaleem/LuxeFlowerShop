@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home';
 import { BlogComponent } from './pages/blog/blog';
+import { BlogPostComponent } from './pages/blog-post/blog-post';
 import { ContactComponent } from './pages/contact/contact';
 import { PolicyComponent } from './pages/policy/policy';
 import { AboutComponent } from './pages/about/about';
@@ -35,7 +36,7 @@ export const routes: Routes = [
   { path: 'terms-of-service', component: PolicyComponent },
   { path: 'refund-policy', component: PolicyComponent },
   { path: 'blog', component: BlogComponent },
-  { path: 'blog/:slug', component: BlogComponent },
+  { path: 'blog/:slug', component: BlogPostComponent },
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes').then(m => m.adminRoutes)
