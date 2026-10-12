@@ -86,5 +86,8 @@
 }
 
 @media (max-width: 560px) {
+  .coverflow-wrap { padding: 28px 0 24px; }
+  .coverflow-stage { height: 300px; }
+  .coverflow-item { width: 170px; margin-left: -85px; margin-top: -130px; }
   .coverflow-arrow { width: 32px; height: 32px; font-size: 16px; }
 }

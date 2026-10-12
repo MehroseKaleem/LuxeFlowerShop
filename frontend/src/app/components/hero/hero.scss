@@ -555,4 +555,10 @@
     font-size: 14px;
     padding: 7px 14px;
   }
+
+  /* Hidden on small screens for now (not removed) — keeps the hero to just
+     the headline/copy/CTAs on mobile. */
+  .hero-visual-parallax {
+    display: none;
+  }
 }
