@@ -246,7 +246,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private updateTestimonialVisible(): void {
     const width = window.innerWidth;
-    this.testimonialVisible.set(width < 640 ? 1 : width < 1024 ? 2 : 3);
+    this.testimonialVisible.set(width < 1024 ? 2 : 3);
     const max = this.testimonialMaxIndex();
     if (this.testimonialIndex() > max) this.testimonialIndex.set(max);
   }

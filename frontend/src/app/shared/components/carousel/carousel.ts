@@ -102,7 +102,7 @@ export class CarouselComponent implements OnChanges, OnDestroy {
   private updateItemsPerPage(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     const width = window.innerWidth;
-    this.itemsPerPage.set(width <= 480 ? 1 : width <= 768 ? 2 : width <= 1200 ? 3 : 5);
+    this.itemsPerPage.set(width <= 768 ? 2 : width <= 1200 ? 3 : 5);
     this.index.set(Math.min(this.index(), this.maxIndex()));
   }
 
