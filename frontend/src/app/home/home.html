@@ -16,7 +16,7 @@
 
   <!-- Our Collections: infinite carousel -->
   @if (collectionsCards().length) {
-    <app-carousel title="Our Collections" [items]="collectionsCards()" tint="blush" ariaLabel="Our collections">
+    <app-carousel title="Our Collections" [items]="collectionsCards()" tint="blush" ariaLabel="Our collections" [continuous]="true" [continuousSpeed]="45">
       <ng-template let-card>
         <a [routerLink]="card.link" class="collection-card" appTilt3d [tiltMax]="5" [tiltLift]="4">
           <div class="card-image-wrap">

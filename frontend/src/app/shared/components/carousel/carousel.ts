@@ -42,6 +42,10 @@ export class CarouselComponent implements OnChanges, OnDestroy {
   @Input() viewAllLink: string | null = null;
   @Input() ariaLabel = 'carousel';
   @Input() tint: 'none' | 'blush' | 'grey' = 'none';
+  /** Ambient, ever-scrolling slideshow instead of the click/autoplay-paged carousel — no arrows, no bounded index, just a slow constant drift. */
+  @Input() continuous = false;
+  /** Seconds for one full loop of the (duplicated) item set — higher is slower. */
+  @Input() continuousSpeed = 35;
 
   @ContentChild(TemplateRef) itemTemplate!: TemplateRef<{ $implicit: unknown }>;
 
@@ -77,12 +81,14 @@ export class CarouselComponent implements OnChanges, OnDestroy {
 
   constructor() {
     afterNextRender(() => {
+      if (this.continuous) return;
       this.updateItemsPerPage();
       this.syncAutoplay();
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.continuous) return;
     if (changes['items']) {
       this.index.set(Math.min(this.index(), this.maxIndex()));
       this.syncAutoplay();
@@ -95,6 +101,7 @@ export class CarouselComponent implements OnChanges, OnDestroy {
 
   @HostListener('window:resize')
   onResize(): void {
+    if (this.continuous) return;
     this.updateItemsPerPage();
     this.syncAutoplay();
   }
@@ -113,16 +120,18 @@ export class CarouselComponent implements OnChanges, OnDestroy {
 
   @HostListener('pointerenter')
   pause(): void {
+    if (this.continuous) return;
     this.stopAutoplay();
   }
 
   @HostListener('pointerleave')
   resume(): void {
+    if (this.continuous) return;
     this.startAutoplay();
   }
 
   private startAutoplay(): void {
-    if (this.autoplayTimer || !this.canSlide() || !isPlatformBrowser(this.platformId)) return;
+    if (this.continuous || this.autoplayTimer || !this.canSlide() || !isPlatformBrowser(this.platformId)) return;
     this.autoplayTimer = setInterval(() => {
       this.index.update(i => (i < this.maxIndex() ? i + 1 : 0));
     }, AUTOPLAY_MS);

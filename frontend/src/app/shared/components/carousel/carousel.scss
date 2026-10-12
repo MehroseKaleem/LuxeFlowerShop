@@ -18,6 +18,36 @@
   padding: 0 24px;
 }
 
+.carousel-arrows-mobile {
+  display: none;
+}
+
+.carousel-arrow-mobile {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--lux-grey-150);
+  background: var(--lux-white);
+  color: var(--lux-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s var(--lux-ease);
+
+  &:hover:not(:disabled) {
+    background: var(--lux-pink);
+    color: var(--lux-white);
+    border-color: var(--lux-pink);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+}
+
 .section-title {
   font-size: 34px;
   font-weight: 600;
@@ -83,6 +113,33 @@
     transform: perspective(1400px) rotateY(0deg) translateZ(14px);
     z-index: 2;
   }
+}
+
+/* Continuous mode: an ambient, ever-scrolling slideshow — no arrows, no
+   paging, just a slow constant drift. The item list is duplicated in the
+   template so translating the track by exactly -50% (always half of its own
+   content width, regardless of item/gap sizing) loops seamlessly. */
+.continuous-wrapper {
+  overflow: hidden;
+  width: 100%;
+
+  &:hover .continuous-track {
+    animation-play-state: paused;
+  }
+}
+
+.continuous-track {
+  width: max-content;
+  transition: none;
+  transform-style: flat;
+  animation-name: carousel-continuous-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes carousel-continuous-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 /* Arrows float over the full-width track rather than sharing its row */
@@ -155,16 +212,30 @@
 }
 
 @media (max-width: 768px) {
-  .carousel-heading { padding: 0 20px; }
+  .carousel-heading {
+    padding: 0 20px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
   .carousel-viewport { padding: 0 8px; }
 
   .section-title {
     font-size: 26px;
+    margin-bottom: 14px;
   }
 
   .carousel-arrow {
-    width: 38px;
-    height: 38px;
+    display: none;
+  }
+
+  .carousel-arrows-mobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
   }
 
   /* iOS/mobile WebKit can fail to composite a preserve-3d element inside an
@@ -184,6 +255,28 @@
     transform: none;
 
     &:hover { transform: none; }
+  }
+}
+
+/* Fixed width for continuous-mode slides — declared after the responsive
+   .carousel-slide overrides above so it always wins the cascade at every
+   breakpoint; a percentage basis wouldn't work against a max-content track. */
+.continuous-slide {
+  flex: 0 0 260px;
+  transform: none;
+
+  &:hover { transform: none; }
+}
+
+@media (max-width: 1200px) {
+  .continuous-slide {
+    flex: 0 0 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .continuous-slide {
+    flex: 0 0 170px;
   }
 }
 
