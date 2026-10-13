@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiMeta } from '../models/api-response.model';
-import { CreateOrderPayload, Order, OrderStatus, PaymentStatus } from '../models/order.model';
+import { CreateManualOrderPayload, CreateOrderPayload, Order, OrderStatus, PaymentStatus } from '../models/order.model';
 import { toHttpParams } from '../shared/utils/http-params.util';
 
 @Injectable({
@@ -52,5 +52,11 @@ export class OrderService {
     return this.http
       .patch<{ data: { order: Order } }>(`${this.adminUrl}/${id}/payment-status`, { paymentStatus })
       .pipe(map(res => res.data.order));
+  }
+
+  adminCreateManualOrder(payload: CreateManualOrderPayload): Observable<{ order: Order; paymentLinkUrl: string }> {
+    return this.http
+      .post<{ data: { order: Order; paymentLinkUrl: string } }>(`${this.adminUrl}/manual`, payload)
+      .pipe(map(res => res.data));
   }
 }

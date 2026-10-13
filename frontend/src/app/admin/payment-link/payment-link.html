@@ -1,0 +1,118 @@
+<div class="page-header">
+  <div class="page-header-left">
+    <h2>Payment Link</h2>
+    <span class="count-badge">Order booked via message</span>
+  </div>
+</div>
+
+@if (result(); as res) {
+  <div class="form-card result-card">
+    <h3 class="card-title">Link ready — send this to the customer</h3>
+
+    <p class="result-line">
+      Order <strong>#{{ res.order.orderNumber }}</strong> created for <strong>{{ res.order.customerEmail }}</strong>
+      — total <strong>AED {{ res.order.total }}</strong>. It's marked PENDING and will flip to Paid automatically
+      the moment the customer completes payment.
+    </p>
+
+    <div class="link-row">
+      <input type="text" readonly [value]="res.paymentLinkUrl" (click)="$any($event.target).select()" />
+      <button type="button" class="btn-secondary" (click)="copyLink()">{{ copied() ? 'Copied!' : 'Copy Link' }}</button>
+      <a class="btn-primary" [href]="whatsappHref()" target="_blank" rel="noopener">Send via WhatsApp</a>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="startNew()">Create Another Payment Link</button>
+    </div>
+  </div>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-card">
+      <h3 class="card-title">Customer</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input formControlName="customerName" placeholder="Customer's full name" />
+        </div>
+        <div class="form-group">
+          <label>Phone *</label>
+          <input formControlName="customerPhone" placeholder="+9715XXXXXXXX" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" formControlName="customerEmail" placeholder="customer@email.com" />
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3 class="card-title">Delivery Address</h3>
+      <div class="form-group">
+        <label>Address Line 1 *</label>
+        <input formControlName="addressLine1" placeholder="Street, building, apartment" />
+      </div>
+      <div class="form-group">
+        <label>Address Line 2</label>
+        <input formControlName="addressLine2" placeholder="Optional" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>City *</label>
+          <input formControlName="city" placeholder="e.g. Dubai" />
+        </div>
+        <div class="form-group">
+          <label>Emirate *</label>
+          <select formControlName="emirate">
+            @for (e of emirates; track e) { <option [value]="e">{{ e }}</option> }
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Postal Code</label>
+          <input formControlName="postalCode" placeholder="Optional" />
+        </div>
+        <div class="form-group">
+          <label>Delivery Date</label>
+          <input type="date" formControlName="deliveryDate" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Delivery Time Slot</label>
+        <input formControlName="deliveryTimeSlot" placeholder="e.g. 4 PM - 6 PM (optional)" />
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3 class="card-title">Items</h3>
+
+      <div formArrayName="items">
+        @for (item of items.controls; track $index; let i = $index) {
+          <div class="item-row" [formGroupName]="i">
+            <input class="item-name" formControlName="name" placeholder="e.g. Pink Rose Grand Bouquet" />
+            <input class="item-price" type="number" step="0.01" formControlName="price" placeholder="Price (AED)" />
+            <input class="item-qty" type="number" min="1" formControlName="quantity" placeholder="Qty" />
+            <button type="button" class="remove-item-btn" (click)="removeItem(i)" [disabled]="items.length <= 1" aria-label="Remove item">&times;</button>
+          </div>
+        }
+      </div>
+
+      <button type="button" class="btn-secondary add-item-btn" (click)="addItem()">+ Add Item</button>
+
+      <p class="subtotal-preview">Items subtotal: <strong>AED {{ itemsSubtotal() | number:'1.2-2' }}</strong> — shipping & VAT are calculated automatically at the store's current rates.</p>
+    </div>
+
+    <div class="form-card">
+      <h3 class="card-title">Notes</h3>
+      <div class="form-group">
+        <textarea formControlName="notes" rows="3" placeholder="Internal note about this order (optional)"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button type="submit" class="btn-primary" [disabled]="submitting()">
+        {{ submitting() ? 'Generating link...' : 'Create Order & Generate Payment Link' }}
+      </button>
+    </div>
+  </form>
+}

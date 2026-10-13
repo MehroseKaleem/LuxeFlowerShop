@@ -19,6 +19,7 @@ export const adminRoutes: Routes = [
       { path: 'products/edit/:id', loadComponent: () => import('./add-product/add-product').then(m => m.AddProductComponent) },
       { path: 'categories', loadComponent: () => import('./categories/categories').then(m => m.CategoriesComponent) },
       { path: 'orders', loadComponent: () => import('./orders/orders').then(m => m.OrdersComponent) },
+      { path: 'payment-link', loadComponent: () => import('./payment-link/payment-link').then(m => m.PaymentLinkComponent) },
       { path: 'cart-items', loadComponent: () => import('./cart-items/cart-items').then(m => m.CartItemsComponent) },
       { path: 'reviews', loadComponent: () => import('./reviews/reviews').then(m => m.ReviewsComponent) },
       { path: 'contacts', loadComponent: () => import('./contacts/contacts').then(m => m.ContactsComponent) },

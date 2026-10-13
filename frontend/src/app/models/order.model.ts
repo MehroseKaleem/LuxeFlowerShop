@@ -94,3 +94,20 @@ export interface CreateOrderPayload {
   deliveryTimeSlot?: string;
   notes?: string;
 }
+
+export interface ManualOrderItemInput {
+  name: string;
+  price: number;
+  quantity: number;
+  sku?: string;
+}
+
+export interface CreateManualOrderPayload {
+  customerEmail: string;
+  customerPhone: string;
+  items: ManualOrderItemInput[];
+  shippingAddress: OrderAddress;
+  deliveryDate?: string;
+  deliveryTimeSlot?: string;
+  notes?: string;
+}
