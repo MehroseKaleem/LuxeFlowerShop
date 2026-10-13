@@ -404,6 +404,15 @@ async function adminCreateManualOrder(body) {
       customer_email: customerEmail,
       line_items: lineItems,
       metadata: { orderId: String(order.id), orderNumber: order.orderNumber },
+      // Stripe doesn't always hand back the resulting PaymentIntent's id
+      // synchronously on a Checkout Session (it can still be null here even
+      // though the Session itself was created fine) - stamping the same
+      // metadata directly onto the PaymentIntent means the webhook can still
+      // find this order by orderId once payment actually completes, even
+      // when `session.payment_intent` below comes back empty. See the
+      // fallback lookup in payments.service.js's payment_intent.succeeded
+      // handler.
+      payment_intent_data: { metadata: { orderId: String(order.id), orderNumber: order.orderNumber } },
       success_url: `${env.clientUrl}/order-confirmation/${order.orderNumber}`,
       cancel_url: `${env.clientUrl}/`,
     });
@@ -414,11 +423,14 @@ async function adminCreateManualOrder(body) {
     throw ApiError.badRequest(`Order was created, but the Stripe payment link failed: ${err.message}`);
   }
 
-  const updatedOrder = await prisma.order.update({
-    where: { id: order.id },
-    data: { stripePaymentIntentId: session.payment_intent },
-    include: ORDER_INCLUDE,
-  });
+  let updatedOrder = order;
+  if (typeof session.payment_intent === 'string') {
+    updatedOrder = await prisma.order.update({
+      where: { id: order.id },
+      data: { stripePaymentIntentId: session.payment_intent },
+      include: ORDER_INCLUDE,
+    });
+  }
 
   return { order: updatedOrder, paymentLinkUrl: session.url };
 }

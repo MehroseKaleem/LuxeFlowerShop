@@ -61,7 +61,27 @@ async function handleWebhookEvent(rawBody, signature) {
   switch (event.type) {
     case 'payment_intent.succeeded': {
       const intent = event.data.object;
-      const order = await prisma.order.findFirst({ where: { stripePaymentIntentId: intent.id } });
+      let order = await prisma.order.findFirst({ where: { stripePaymentIntentId: intent.id } });
+
+      // Admin-generated "payment link" orders (orders.service.js
+      // adminCreateManualOrder) go through a Checkout Session rather than a
+      // raw PaymentIntent created directly by this backend, and Stripe
+      // doesn't always hand back that Session's resulting PaymentIntent id
+      // synchronously at creation time - so these orders can't always be
+      // pre-linked by stripePaymentIntentId the way a normal website
+      // checkout is. The PaymentIntent still carries the same orderId in
+      // its own metadata (stamped on via payment_intent_data when the
+      // Session was created), so fall back to that and backfill the id now
+      // that it's actually known.
+      if (!order && intent.metadata?.orderId) {
+        const fallbackOrder = await prisma.order.findUnique({ where: { id: Number(intent.metadata.orderId) } });
+        if (fallbackOrder && !fallbackOrder.stripePaymentIntentId) {
+          order = await prisma.order.update({ where: { id: fallbackOrder.id }, data: { stripePaymentIntentId: intent.id } });
+        } else {
+          order = fallbackOrder;
+        }
+      }
+
       if (order && order.paymentStatus !== 'PAID') {
         await prisma.order.update({
           where: { id: order.id },
