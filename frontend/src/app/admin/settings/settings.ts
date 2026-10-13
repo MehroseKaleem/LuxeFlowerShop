@@ -43,7 +43,10 @@ export class SettingsComponent implements OnInit {
     FREE_SHIPPING_THRESHOLD: [0, [Validators.required, Validators.min(0)]],
     TAX_RATE_PERCENT: [0, [Validators.required, Validators.min(0)]],
     STORE_PHONE: ['', Validators.required],
-    STORE_EMAIL: ['', [Validators.required, Validators.email]]
+    STORE_EMAIL: ['', [Validators.required, Validators.email]],
+    SITEWIDE_DISCOUNT_TYPE: ['NONE'],
+    SITEWIDE_DISCOUNT_VALUE: [0, [Validators.min(0)]],
+    SITEWIDE_DISCOUNT_EXPIRES_AT: ['']
   });
 
   securityForm: FormGroup = this.fb.group({
@@ -60,7 +63,12 @@ export class SettingsComponent implements OnInit {
           FREE_SHIPPING_THRESHOLD: Number(settings['FREE_SHIPPING_THRESHOLD']),
           TAX_RATE_PERCENT: Number(settings['TAX_RATE_PERCENT']),
           STORE_PHONE: settings['STORE_PHONE'],
-          STORE_EMAIL: settings['STORE_EMAIL']
+          STORE_EMAIL: settings['STORE_EMAIL'],
+          SITEWIDE_DISCOUNT_TYPE: settings['SITEWIDE_DISCOUNT_TYPE'] || 'NONE',
+          SITEWIDE_DISCOUNT_VALUE: Number(settings['SITEWIDE_DISCOUNT_VALUE']) || 0,
+          SITEWIDE_DISCOUNT_EXPIRES_AT: settings['SITEWIDE_DISCOUNT_EXPIRES_AT']
+            ? String(settings['SITEWIDE_DISCOUNT_EXPIRES_AT']).substring(0, 10)
+            : ''
         });
         this.loadingStore.set(false);
       },
@@ -103,7 +111,14 @@ export class SettingsComponent implements OnInit {
         FREE_SHIPPING_THRESHOLD: String(value.FREE_SHIPPING_THRESHOLD),
         TAX_RATE_PERCENT: String(value.TAX_RATE_PERCENT),
         STORE_PHONE: value.STORE_PHONE,
-        STORE_EMAIL: value.STORE_EMAIL
+        STORE_EMAIL: value.STORE_EMAIL,
+        SITEWIDE_DISCOUNT_TYPE: value.SITEWIDE_DISCOUNT_TYPE,
+        SITEWIDE_DISCOUNT_VALUE: String(value.SITEWIDE_DISCOUNT_VALUE || 0),
+        // A picked date means "active through the end of that day" rather
+        // than expiring at midnight the moment it starts.
+        SITEWIDE_DISCOUNT_EXPIRES_AT: value.SITEWIDE_DISCOUNT_EXPIRES_AT
+          ? `${value.SITEWIDE_DISCOUNT_EXPIRES_AT}T23:59:59`
+          : ''
       })
       .subscribe({
         next: () => {

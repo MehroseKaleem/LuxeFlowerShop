@@ -143,6 +143,26 @@ $admin-input-bg: rgba(255, 255, 255, 0.08);
             font-size: 0.8rem;
             color: $admin-warning;
           }
+
+          &.disabled-group,
+          .form-control:disabled {
+            opacity: 0.5;
+          }
+        }
+
+        .section-subheading {
+          font-family: 'Playfair Display', serif;
+          margin: 2rem 0 0.5rem;
+          color: white;
+          font-size: 1.15rem;
+        }
+
+        > form > .field-hint {
+          display: block;
+          margin: 0 0 1.25rem;
+          font-size: 0.85rem;
+          line-height: 1.6;
+          color: $admin-text-muted;
         }
 
         .row {

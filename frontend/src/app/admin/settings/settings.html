@@ -80,6 +80,35 @@
                 <label>Store Email</label>
                 <input type="email" formControlName="STORE_EMAIL" class="form-control">
               </div>
+
+              <h3 class="section-subheading">Store-wide Discount</h3>
+              <p class="field-hint">
+                Applies automatically to every product's price (listings, product pages, cart, checkout) for as
+                long as it's active — no need to touch individual products. If a product already has its own
+                discount, whichever price is cheaper for the customer is used.
+              </p>
+              <div class="row">
+                <div class="form-group">
+                  <label>Discount Type</label>
+                  <select formControlName="SITEWIDE_DISCOUNT_TYPE" class="form-control">
+                    <option value="NONE">Off (no store-wide discount)</option>
+                    <option value="PERCENTAGE">Percentage off</option>
+                    <option value="FIXED">Fixed amount off (AED)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Discount Value</label>
+                  <input type="number" formControlName="SITEWIDE_DISCOUNT_VALUE" class="form-control" step="0.01" min="0"
+                    [disabled]="storeForm.value.SITEWIDE_DISCOUNT_TYPE === 'NONE'">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Expires On</label>
+                <input type="date" formControlName="SITEWIDE_DISCOUNT_EXPIRES_AT" class="form-control"
+                  [disabled]="storeForm.value.SITEWIDE_DISCOUNT_TYPE === 'NONE'">
+                <span class="field-hint">Leave blank for the discount to stay active until you turn it off.</span>
+              </div>
+
               <div class="form-actions">
                 <button type="submit" class="btn btn-primary" [disabled]="storeForm.invalid || savingStore()">
                   {{ savingStore() ? 'Saving...' : 'Save Configuration' }}
