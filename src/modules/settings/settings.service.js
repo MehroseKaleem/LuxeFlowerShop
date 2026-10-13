@@ -7,6 +7,14 @@ const DEFAULTS = {
   CURRENCY: 'AED',
   STORE_PHONE: '+971 56 389 8820',
   STORE_EMAIL: 'info@luxefloweruae.com',
+  // Store-wide sale, applied automatically on top of every product's normal
+  // price (storefront display, cart, checkout) for as long as it's active -
+  // see src/utils/siteWideDiscount.js. SITEWIDE_DISCOUNT_TYPE is one of
+  // 'NONE' | 'PERCENTAGE' | 'FIXED'; EXPIRES_AT left blank means it never
+  // auto-expires.
+  SITEWIDE_DISCOUNT_TYPE: 'NONE',
+  SITEWIDE_DISCOUNT_VALUE: '0',
+  SITEWIDE_DISCOUNT_EXPIRES_AT: '',
 };
 
 async function getAllPublic() {

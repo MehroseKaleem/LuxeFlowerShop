@@ -2,6 +2,7 @@ const prisma = require('../../config/prisma');
 const ApiError = require('../../utils/ApiError');
 const { validateCoupon, reconfirmCouponForDisplay } = require('../../utils/couponEngine');
 const { parsePagination, paginate } = require('../../utils/pagination');
+const siteWideDiscount = require('../../utils/siteWideDiscount');
 
 const ITEM_INCLUDE = {
   product: {
@@ -19,10 +20,12 @@ const ITEM_INCLUDE = {
   variant: true,
 };
 
-function effectiveUnitPrice(product, variant) {
-  const base = product.discountPrice !== null && product.discountPrice !== undefined
-    ? Number(product.discountPrice)
-    : Number(product.basePrice);
+/** `discount` is an optional active store-wide sale (siteWideDiscount.getActiveDiscount()) applied on top of the product's own price. */
+function effectiveUnitPrice(product, variant, discount) {
+  const priced = discount ? siteWideDiscount.applyToProduct(product, discount) : product;
+  const base = priced.discountPrice !== null && priced.discountPrice !== undefined
+    ? Number(priced.discountPrice)
+    : Number(priced.basePrice);
   const adjustment = variant ? Number(variant.priceAdjustment) : 0;
   return Math.round((base + adjustment) * 100) / 100;
 }
@@ -42,11 +45,14 @@ async function getOrCreateCart({ userId, sessionId }) {
 }
 
 async function buildCartResponse(cart) {
-  const items = await prisma.cartItem.findMany({ where: { cartId: cart.id }, include: ITEM_INCLUDE });
+  const [items, discount] = await Promise.all([
+    prisma.cartItem.findMany({ where: { cartId: cart.id }, include: ITEM_INCLUDE }),
+    siteWideDiscount.getActiveDiscount(),
+  ]);
 
   let subtotal = 0;
   const lineItems = items.map((item) => {
-    const unitPrice = effectiveUnitPrice(item.product, item.variant);
+    const unitPrice = effectiveUnitPrice(item.product, item.variant, discount);
     const lineTotal = Math.round(unitPrice * item.quantity * 100) / 100;
     subtotal += lineTotal;
     return {
@@ -128,7 +134,8 @@ async function addItem(context, { productId, variantId, quantity }) {
   });
 
   const newQuantity = (existing ? existing.quantity : 0) + quantity;
-  const unitPrice = effectiveUnitPrice(product, variant);
+  const discount = await siteWideDiscount.getActiveDiscount();
+  const unitPrice = effectiveUnitPrice(product, variant, discount);
 
   if (existing) {
     await prisma.cartItem.update({

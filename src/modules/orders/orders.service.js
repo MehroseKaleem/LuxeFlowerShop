@@ -7,6 +7,7 @@ const generateOrderNumber = require('../../utils/orderNumber');
 const { validateCoupon, recordCouponUsage } = require('../../utils/couponEngine');
 const { getRawCart, effectiveUnitPrice } = require('../cart/cart.service');
 const settingsService = require('../settings/settings.service');
+const siteWideDiscount = require('../../utils/siteWideDiscount');
 const { sendMail, templates } = require('../../config/mailer');
 
 const ORDER_INCLUDE = {
@@ -60,6 +61,7 @@ async function createOrder(context, body) {
   const finalPhone = user ? user.phone : customerPhone;
 
   // Compute subtotal from live prices (never trust client-sent prices).
+  const activeDiscount = await siteWideDiscount.getActiveDiscount();
   let subtotal = 0;
   const orderItemsData = [];
   for (const item of items) {
@@ -67,7 +69,7 @@ async function createOrder(context, body) {
       throw ApiError.badRequest(`"${item.product.name}" is no longer available`);
     }
 
-    const unitPrice = effectiveUnitPrice(item.product, item.variant);
+    const unitPrice = effectiveUnitPrice(item.product, item.variant, activeDiscount);
     const lineTotal = Math.round(unitPrice * item.quantity * 100) / 100;
     subtotal += lineTotal;
 

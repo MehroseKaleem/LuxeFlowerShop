@@ -3,6 +3,7 @@ const ApiError = require('../../utils/ApiError');
 const slugify = require('../../utils/slugify');
 const { parsePagination, paginate } = require('../../utils/pagination');
 const { deleteUploadedImage } = require('../../config/multer');
+const siteWideDiscount = require('../../utils/siteWideDiscount');
 
 const CATEGORY_SELECT = { id: true, name: true, slug: true };
 
@@ -151,7 +152,8 @@ async function listPublic(query) {
     select: LIST_SELECT,
   });
 
-  return { items: items.map(serializeProduct), meta };
+  const discount = await siteWideDiscount.getActiveDiscount();
+  return { items: siteWideDiscount.applyToList(items.map(serializeProduct), discount), meta };
 }
 
 async function getBySlugPublic(slug) {
@@ -160,7 +162,8 @@ async function getBySlugPublic(slug) {
 
   prisma.product.update({ where: { id: product.id }, data: { viewCount: { increment: 1 } } }).catch(() => {});
 
-  return serializeProduct(product);
+  const discount = await siteWideDiscount.getActiveDiscount();
+  return siteWideDiscount.applyToProduct(serializeProduct(product), discount);
 }
 
 async function getFeatured(limit = 8) {
@@ -170,7 +173,8 @@ async function getFeatured(limit = 8) {
     orderBy: { createdAt: 'desc' },
     select: LIST_SELECT,
   });
-  return products.map(serializeProduct);
+  const discount = await siteWideDiscount.getActiveDiscount();
+  return siteWideDiscount.applyToList(products.map(serializeProduct), discount);
 }
 
 async function getRelated(slug, limit = 8) {
@@ -193,7 +197,8 @@ async function getRelated(slug, limit = 8) {
     orderBy: { avgRating: 'desc' },
     select: LIST_SELECT,
   });
-  return related.map(serializeProduct);
+  const discount = await siteWideDiscount.getActiveDiscount();
+  return siteWideDiscount.applyToList(related.map(serializeProduct), discount);
 }
 
 // ---------------------------------------------------------------------------
