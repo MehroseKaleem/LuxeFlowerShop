@@ -35,4 +35,15 @@ const updatePaymentStatus = asyncHandler(async (req, res) => {
   new ApiResponse(200, { order }, 'Payment status updated').send(res);
 });
 
-module.exports = { list, get, updateStatus, updatePaymentStatus };
+const createManualOrder = asyncHandler(async (req, res) => {
+  const { order, paymentLinkUrl } = await ordersService.adminCreateManualOrder(req.body);
+  await logAdminActivity(req, {
+    action: 'ORDER_MANUAL_PAYMENT_LINK_CREATED',
+    entityType: 'Order',
+    entityId: order.id,
+    details: { orderNumber: order.orderNumber, total: order.total },
+  });
+  new ApiResponse(201, { order, paymentLinkUrl }, 'Order created and payment link generated').send(res);
+});
+
+module.exports = { list, get, updateStatus, updatePaymentStatus, createManualOrder };

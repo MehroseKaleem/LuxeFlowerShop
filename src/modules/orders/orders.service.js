@@ -1,5 +1,6 @@
 const prisma = require('../../config/prisma');
 const stripe = require('../../config/stripe');
+const env = require('../../config/env');
 const ApiError = require('../../utils/ApiError');
 const { parsePagination, paginate } = require('../../utils/pagination');
 const generateOrderNumber = require('../../utils/orderNumber');
@@ -312,6 +313,116 @@ async function adminUpdatePaymentStatus(id, paymentStatus) {
   return prisma.order.update({ where: { id }, data: { paymentStatus } });
 }
 
+// Orders taken by message (WhatsApp/Instagram/phone) rather than through the
+// website cart - staff enter the items/customer by hand and get back a
+// hosted Stripe payment link to send the customer. The order record is
+// created up front (PENDING/unpaid) purely so Stripe has something to
+// attach a PaymentIntent to; it's picked up by the exact same
+// payment_intent.succeeded webhook used for website Stripe checkouts, so no
+// webhook changes were needed - it marks the order PAID/CONFIRMED the
+// moment the customer completes payment on Stripe's page.
+async function adminCreateManualOrder(body) {
+  if (!stripe) throw ApiError.internal('Online payments are currently unavailable');
+
+  let subtotal = 0;
+  const orderItemsData = body.items.map((item, i) => {
+    const price = Math.round(Number(item.price) * 100) / 100;
+    const quantity = Math.max(1, parseInt(item.quantity, 10) || 1);
+    const lineTotal = Math.round(price * quantity * 100) / 100;
+    subtotal += lineTotal;
+    return {
+      productId: null,
+      variantId: null,
+      productName: String(item.name).slice(0, 200),
+      variantName: null,
+      sku: (item.sku && String(item.sku).slice(0, 60)) || `MANUAL-${i + 1}`,
+      price,
+      quantity,
+      subtotal: lineTotal,
+    };
+  });
+  subtotal = Math.round(subtotal * 100) / 100;
+
+  const shippingAddress = resolveShippingAddress(body);
+  const customerEmail = body.customerEmail.toLowerCase();
+
+  const [shippingFee, tax] = await Promise.all([
+    settingsService.computeShippingFee(subtotal),
+    settingsService.computeTax(subtotal),
+  ]);
+  const total = Math.max(Math.round((subtotal + shippingFee + tax) * 100) / 100, 0);
+
+  const orderNumber = generateOrderNumber();
+
+  const order = await prisma.order.create({
+    data: {
+      orderNumber,
+      userId: null,
+      customerEmail,
+      customerPhone: body.customerPhone,
+      paymentMethod: 'STRIPE',
+      subtotal,
+      shippingFee,
+      tax,
+      total,
+      shippingAddress,
+      deliveryDate: body.deliveryDate ? new Date(body.deliveryDate) : null,
+      deliveryTimeSlot: body.deliveryTimeSlot || null,
+      notes: body.notes || null,
+      items: { create: orderItemsData },
+      statusHistory: { create: { status: 'PENDING', note: 'Manual order booked via message - awaiting payment link' } },
+    },
+    include: ORDER_INCLUDE,
+  });
+
+  const lineItems = orderItemsData.map((item) => ({
+    price_data: {
+      currency: env.stripe.currency,
+      product_data: { name: item.productName },
+      unit_amount: Math.round(Number(item.price) * 100),
+    },
+    quantity: item.quantity,
+  }));
+  if (shippingFee > 0) {
+    lineItems.push({
+      price_data: { currency: env.stripe.currency, product_data: { name: 'Shipping' }, unit_amount: Math.round(Number(shippingFee) * 100) },
+      quantity: 1,
+    });
+  }
+  if (tax > 0) {
+    lineItems.push({
+      price_data: { currency: env.stripe.currency, product_data: { name: 'VAT' }, unit_amount: Math.round(Number(tax) * 100) },
+      quantity: 1,
+    });
+  }
+
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card'],
+      customer_email: customerEmail,
+      line_items: lineItems,
+      metadata: { orderId: String(order.id), orderNumber: order.orderNumber },
+      success_url: `${env.clientUrl}/order-confirmation/${order.orderNumber}`,
+      cancel_url: `${env.clientUrl}/`,
+    });
+  } catch (err) {
+    // The order record still exists (visible in Admin > Orders as
+    // PENDING/unpaid) even though link generation failed - nothing is lost,
+    // staff can just create a fresh manual order to retry.
+    throw ApiError.badRequest(`Order was created, but the Stripe payment link failed: ${err.message}`);
+  }
+
+  const updatedOrder = await prisma.order.update({
+    where: { id: order.id },
+    data: { stripePaymentIntentId: session.payment_intent },
+    include: ORDER_INCLUDE,
+  });
+
+  return { order: updatedOrder, paymentLinkUrl: session.url };
+}
+
 module.exports = {
   createOrder,
   getMyOrders,
@@ -320,4 +431,5 @@ module.exports = {
   adminGet,
   adminUpdateStatus,
   adminUpdatePaymentStatus,
+  adminCreateManualOrder,
 };

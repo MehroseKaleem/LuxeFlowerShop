@@ -9,6 +9,7 @@ const router = express.Router();
 router.use(protect, restrictTo('ADMIN', 'SUPER_ADMIN'));
 
 router.get('/', controller.list);
+router.post('/manual', rules.createManualOrderRules, validate, controller.createManualOrder);
 router.get('/:id', rules.idParamRule, validate, controller.get);
 router.patch('/:id/status', rules.updateStatusRules, validate, controller.updateStatus);
 router.patch('/:id/payment-status', rules.updatePaymentStatusRules, validate, controller.updatePaymentStatus);
