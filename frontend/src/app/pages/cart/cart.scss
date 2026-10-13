@@ -59,16 +59,22 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  // Same implicit-minimum issue as the grid column above, one level down:
+  // a flex item's default min-width:auto also floors it at its content's
+  // size, which can keep it from actually shrinking to fit .cart-layout's
+  // column.
+  min-width: 0;
 }
 
 .cart-item {
+  position: relative;
   display: grid;
-  grid-template-columns: 84px 1fr auto auto auto;
+  grid-template-columns: 84px 1fr auto auto;
   align-items: center;
   gap: 16px;
   background: var(--lux-white);
   border-radius: 4px;
-  padding: 16px;
+  padding: 16px 44px 16px 16px;
   box-shadow: var(--lux-shadow-sm);
   transition: box-shadow 0.3s ease;
 
@@ -135,6 +141,9 @@
 }
 
 .remove-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
   background: none;
   border: none;
   font-size: 22px;
@@ -261,7 +270,66 @@
 }
 
 @media (max-width: 800px) {
-  .cart-layout { grid-template-columns: 1fr; }
-  .cart-item { grid-template-columns: 60px 1fr; grid-template-rows: auto auto; }
-  .item-qty, .item-total, .remove-btn { grid-column: 2; justify-self: start; }
+  // A bare `1fr` track has an implicit content-based auto-minimum, so a
+  // long product name (or anything else that resists shrinking) can force
+  // this single column wider than .cart-layout's own box - invisibly,
+  // since the container itself still reports its correct, smaller size.
+  // minmax(0, 1fr) replaces that auto-minimum with an explicit 0, so the
+  // column actually shrinks to fit and its content wraps instead.
+  .cart-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+// Tablet-ish widths (481-800px) just keep the same single-row layout as
+// desktop (image | name+price | qty | total, defined in the base rules
+// above) - there's enough width for it to fit without wrapping or
+// overflowing, so no separate override is needed here.
+
+@media (max-width: 480px) {
+  // Stacked card instead of a side-by-side row: image, then name, then
+  // quantity + price together at the bottom, all centered.
+  .cart-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 16px 20px;
+  }
+
+  .item-image {
+    width: 110px;
+    height: 110px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+
+  // `.cart-item`'s align-items: center above means its children size to
+  // their own content instead of stretching to the card's width (the
+  // flexbox default) - without an explicit width here, a long product name
+  // just keeps growing on one line instead of wrapping, pushing the whole
+  // card wider than the viewport (invisible now that overflow-x is clipped
+  // site-wide, rather than showing as a scrollbar like before).
+  .item-info {
+    width: 100%;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .item-name {
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+
+  // Redundant with .item-total shown right below the qty stepper on this
+  // compact layout.
+  .item-price {
+    display: none;
+  }
+
+  .item-qty {
+    margin-bottom: 10px;
+  }
+
+  .item-total {
+    font-size: 16px;
+  }
 }

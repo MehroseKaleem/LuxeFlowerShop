@@ -150,6 +150,13 @@
   margin-bottom: 36px;
 }
 
+.purchase-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
 .qty-selector {
   display: flex;
   align-items: center;
@@ -312,5 +319,22 @@
   .product-layout {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .purchase-row {
+    flex-wrap: wrap;
+  }
+
+  // The qty selector keeps its natural compact width and sits on its own
+  // line; .purchase-actions (Add to Cart + wishlist heart) claims the full
+  // row below it instead of squeezing onto the same line.
+  .qty-selector {
+    flex: 0 0 auto;
+  }
+
+  .purchase-actions {
+    flex: 1 1 100%;
   }
 }

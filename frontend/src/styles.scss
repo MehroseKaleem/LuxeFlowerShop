@@ -67,6 +67,11 @@ body {
   color: var(--lux-charcoal);
   background: var(--lux-white);
   line-height: 1.6;
+  // `overflow-x: hidden` on <html> alone doesn't reliably clip a
+  // `position: fixed` element from the page's horizontally-scrollable area
+  // on every mobile browser - setting it on <body> too is the standard
+  // belt-and-suspenders fix for that.
+  overflow-x: hidden;
 }
 
 a {
